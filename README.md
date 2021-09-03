@@ -36,8 +36,8 @@ npx create-next-app ts-next -e https://github.com/jpedroschmitz/typescript-nextj
 
 If you prefer you can clone this repository and run the following commands inside the project folder:
 
-1. `npm install` or `yarn`;
-2. `yarn dev`;
+1. `npm install`;
+2. `npm run dev`;
 
 To view the project open `http://localhost:3000`.
 
