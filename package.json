@@ -14,7 +14,11 @@
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
     "postinstall": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login product@bitsofgood.org --raw` \"npm run secrets:sync\"",
+    "secrets:logout": "(bw logout || exit 0)",
+    "secrets:login": "bw login product@bitsofgood.org",
+    "secrets:sync": "bw sync && bw get item 1321225f-effd-4635-bc85-ad9a013db31c | fx .notes > \".env\""
   },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
@@ -29,6 +33,7 @@
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@bitwarden/cli": "1.18.0",
     "@commitlint/cli": "13.1.0",
     "@commitlint/config-conventional": "13.1.0",
     "@types/node": "14.17.12",
@@ -37,6 +42,7 @@
     "@typescript-eslint/eslint-plugin": "4.29.3",
     "@typescript-eslint/parser": "4.29.3",
     "commitizen": "4.2.4",
+    "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb": "18.2.1",
@@ -48,6 +54,7 @@
     "eslint-plugin-prettier": "3.4.1",
     "eslint-plugin-react": "7.24.0",
     "eslint-plugin-react-hooks": "4.2.0",
+    "fx": "20.0.2",
     "husky": "7.0.2",
     "lint-staged": "11.1.2",
     "prettier": "2.3.2",
