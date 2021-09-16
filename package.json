@@ -27,6 +27,8 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "11.4.1",
+    "@emotion/styled": "11.3.0",
     "@prisma/client": "3.0.2",
     "next": "11.1.2",
     "next-iron-session": "4.2.0",
