@@ -7,7 +7,7 @@ Multi-purpose web platform for managing supply requests and providing donors wit
 ### Development
 
 1. Install dependencies: `npm install`
-2. Sync development environment variables: `npm run secrets:sync`
+2. Sync development environment variables: `npm run secrets`
 
 - You will be prompted for a password. Ask your EM to send it to you.
 - **NOTE:** Windows users need to run `npm run secrets:login` and `npm run secrets:sync` instead
