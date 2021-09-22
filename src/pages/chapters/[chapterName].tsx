@@ -1,3 +1,5 @@
+import { Container, Heading } from '@chakra-ui/react';
+
 interface ChapterMapPageProps {
   chapterName: string;
 }
@@ -9,7 +11,11 @@ interface IStaticPropsContextParams {
 }
 
 export default function ChapterMapPage({ chapterName }: ChapterMapPageProps) {
-  return <h1>{chapterName}</h1>;
+  return (
+    <Container py="5">
+      <Heading textAlign="center">{chapterName.toUpperCase()}</Heading>
+    </Container>
+  );
 }
 
 export async function getStaticPaths() {
