@@ -7,55 +7,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  content   String?
-  published Boolean  @default(false)
-  authorId  Int
-  User      User     @relation(fields: [authorId], references: [id])
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  userId Int     @unique
-  User   User    @relation(fields: [userId], references: [id])
-}
-
 model User {
-  id        Int         @id @default(autoincrement())
-  name      String?     @db.VarChar(255)
-  email     String      @unique @db.VarChar(255)
-  Post      Post[]
-  hash      String
-  Profile   Profile?
-  Chapter   Chapter[]
-  Admin     Admin[]
-  Recipient Recipient[]
+  id         Int         @id @default(autoincrement())
+  username   String
+  hash       String
+  chapters   Chapter[]
+  admins     Admin[]
+  recipients Recipient[]
 }
 
 model Chapter {
-  chapId Int    @unique @default(autoincrement())
-  name   String @unique
-  email  String
-  phone  Int
-  User   User   @relation(fields: [chapId], references: [id])
+  id          Int     @unique @default(autoincrement())
+  name        String  @unique
+  email       String
+  phoneNumber String?
+  userId      Int
+  user        User    @relation(fields: [userId], references: [id])
 }
 
 model Admin {
-  adminId Int    @unique @default(autoincrement())
-  name    String @unique
-  email   String
-  phone   Int
-  User    User   @relation(fields: [adminId], references: [id])
+  id     Int  @unique @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 }
 
 model Recipient {
-  recId Int    @unique @default(autoincrement())
-  name  String @unique
-  email String
-  phone Int
-  User  User   @relation(fields: [recId], references: [id])
+  id     Int  @unique @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 }
