@@ -25,9 +25,37 @@ model Profile {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
-  Post    Post[]
-  Profile Profile?
+  id        Int         @id @default(autoincrement())
+  name      String?     @db.VarChar(255)
+  email     String      @unique @db.VarChar(255)
+  Post      Post[]
+  hash      String
+  Profile   Profile?
+  Chapter   Chapter[]
+  Admin     Admin[]
+  Recipient Recipient[]
+}
+
+model Chapter {
+  chapId Int    @unique @default(autoincrement())
+  name   String @unique
+  email  String
+  phone  Int
+  User   User   @relation(fields: [chapId], references: [id])
+}
+
+model Admin {
+  adminId Int    @unique @default(autoincrement())
+  name    String @unique
+  email   String
+  phone   Int
+  User    User   @relation(fields: [adminId], references: [id])
+}
+
+model Recipient {
+  recId Int    @unique @default(autoincrement())
+  name  String @unique
+  email String
+  phone Int
+  User  User   @relation(fields: [recId], references: [id])
 }
