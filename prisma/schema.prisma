@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  username   String
-  hash       String
-  chapters   Chapter[]
-  admins     Admin[]
-  recipients Recipient[]
+  id        Int        @id @default(autoincrement())
+  username  String
+  hash      String
+  chapter   Chapter?
+  admin     Admin?
+  recipient Recipient?
 }
 
 model Chapter {
-  id          Int     @unique @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String  @unique
   email       String
   phoneNumber String?
@@ -26,13 +26,13 @@ model Chapter {
 }
 
 model Admin {
-  id     Int  @unique @default(autoincrement())
+  id     Int  @id @default(autoincrement())
   userId Int
   user   User @relation(fields: [userId], references: [id])
 }
 
 model Recipient {
-  id     Int  @unique @default(autoincrement())
+  id     Int  @id @default(autoincrement())
   userId Int
   user   User @relation(fields: [userId], references: [id])
 }
