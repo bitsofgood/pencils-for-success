@@ -15,6 +15,7 @@
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
     "postinstall": "husky install",
     "commit": "cz",
+    "db:push": "prisma db push",
     "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login product@bitsofgood.org --raw` \"npm run secrets:sync\"",
     "secrets:logout": "(bw logout || exit 0)",
     "secrets:login": "bw login product@bitsofgood.org",
