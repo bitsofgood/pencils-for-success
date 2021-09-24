@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
+  id        Int            @id @default(autoincrement())
   username  String
   hash      String
-  chapter   Chapter?
-  admin     Admin?
-  recipient Recipient?
+  chapter   ChapterUser?
+  admin     AdminUser?
+  recipient RecipientUser?
 }
 
-model Chapter {
+model ChapterUser {
   id          Int     @id @default(autoincrement())
   name        String  @unique
   email       String
@@ -25,13 +25,13 @@ model Chapter {
   user        User    @relation(fields: [userId], references: [id])
 }
 
-model Admin {
+model AdminUser {
   id     Int  @id @default(autoincrement())
   userId Int
   user   User @relation(fields: [userId], references: [id])
 }
 
-model Recipient {
+model RecipientUser {
   id     Int  @id @default(autoincrement())
   userId Int
   user   User @relation(fields: [userId], references: [id])
