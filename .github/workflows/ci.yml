@@ -41,4 +41,4 @@ jobs:
       - name: Push prisma schema changes
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        runs: npm run db:push
+        run: npm run db:push
