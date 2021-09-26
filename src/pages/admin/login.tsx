@@ -34,7 +34,9 @@ export default function Admin() {
           <FormLabel htmlFor="username">Username</FormLabel>
           <Input
             id="username"
-            placeholder="username"
+            placeholder="Username"
+            borderColor="black"
+            borderRadius="-moz-initial"
             {...register('username', {
               required: 'This is required',
             })}
@@ -47,7 +49,10 @@ export default function Admin() {
           <FormLabel htmlFor="password">Password</FormLabel>
           <Input
             id="password"
-            placeholder="password"
+            placeholder="Password"
+            borderColor="black"
+            borderRadius="-moz-initial"
+            type="password"
             {...register('password', {
               required: 'This is required',
               minLength: { value: 8, message: 'Minimum length should be 8' },
@@ -57,7 +62,13 @@ export default function Admin() {
             {errors.password && errors.password.message}
           </FormErrorMessage>
         </FormControl>
-        <Button mt={4} isLoading={isSubmitting} type="submit">
+        <Button
+          mt={4}
+          isLoading={isSubmitting}
+          type="submit"
+          borderColor="black"
+          borderRadius="-moz-initial"
+        >
           Submit
         </Button>
       </form>
