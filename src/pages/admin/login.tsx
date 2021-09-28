@@ -28,35 +28,35 @@ export default function Admin() {
 
   return (
     <div className={styles.container}>
-      <Heading>Login</Heading>
+      <Heading mb="2vh">Login</Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={errors.username}>
+        <FormControl isInvalid={errors.username} mt={2} mb={2}>
           <FormLabel htmlFor="username">Username</FormLabel>
           <Input
             id="username"
             placeholder="Username"
-            borderColor="black"
-            borderRadius="-moz-initial"
             {...register('username', {
               required: 'This is required',
             })}
+            borderColor="black"
+            borderRadius="-moz-initial"
           />
           <FormErrorMessage>
             {errors.username && errors.username.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.password}>
+        <FormControl isInvalid={errors.password} mb={2}>
           <FormLabel htmlFor="password">Password</FormLabel>
           <Input
             id="password"
             placeholder="Password"
-            borderColor="black"
-            borderRadius="-moz-initial"
             type="password"
             {...register('password', {
               required: 'This is required',
               minLength: { value: 8, message: 'Minimum length should be 8' },
             })}
+            borderColor="black"
+            borderRadius="-moz-initial"
           />
           <FormErrorMessage>
             {errors.password && errors.password.message}
