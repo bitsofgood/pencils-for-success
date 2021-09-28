@@ -23,6 +23,8 @@ model ChapterUser {
   phoneNumber String?
   userId      Int
   user        User    @relation(fields: [userId], references: [id])
+  chapterId   Int
+  chapter     Chapter @relation(fields: [chapterId], references: [id])
 }
 
 model AdminUser {
@@ -32,7 +34,25 @@ model AdminUser {
 }
 
 model RecipientUser {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  recipientId Int
+  recipient   Recipient @relation(fields: [recipientId], references: [id])
+}
+
+model Recipient {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  email         String
+  phoneNumber   String
+  location      String
+  RecipientUser RecipientUser[]
+}
+
+model Chapter {
+  id          Int           @id @default(autoincrement())
+  contactName String
+  email       String
+  ChapterUser ChapterUser[]
 }
