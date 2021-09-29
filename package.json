@@ -37,6 +37,7 @@
     "@emotion/react": "11.4.1",
     "@emotion/styled": "11.3.0",
     "@prisma/client": "3.0.2",
+    "@types/bcryptjs": "2.4.2",
     "bcryptjs": "2.4.3",
     "@types/prop-types": "15.7.4",
     "framer-motion": "4.1.17",
