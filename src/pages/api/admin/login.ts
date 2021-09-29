@@ -26,6 +26,9 @@ async function handler(req: NextIronRequest, res: NextApiResponse<Data>) {
         },
         rejectOnNotFound: true,
       });
+      if (fetchedObject == null) {
+        res.status(401).end();
+      }
       const fetchedPassword = fetchedObject.hash;
       const result = bcrypt.compareSync(password, fetchedPassword);
       if (result) {
