@@ -13,6 +13,9 @@ async function handler(req: NextIronRequest, res: NextApiResponse<Data>) {
   if (req.method === 'POST') {
     const { username, password } = req.body;
     const prisma = new PrismaClient();
+    if (username == null) {
+      res.status(401).end();
+    }
     try {
       const fetchedObject = await prisma.user.findUnique({
         where: {
