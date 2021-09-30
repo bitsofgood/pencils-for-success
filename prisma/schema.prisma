@@ -52,7 +52,7 @@ model Recipient {
 
 model Chapter {
   id          Int           @id @default(autoincrement())
-  contactName String        
+  contactName String
   email       String        @unique
   ChapterUser ChapterUser?
 }
