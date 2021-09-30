@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Chapter, PrismaClient } from '@prisma/client';
+import { Chapter, PrismaClient, Prisma } from '@prisma/client';
 import { ErrorResponse } from '@/utils/types';
 
 type DataResponse = {
@@ -18,9 +18,13 @@ export default async function handler(
 
         return res.status(200).json({ chapters });
       } catch (e) {
-        return res
-          .status(500)
-          .json({ error: true, message: (e as Error).message });
+        let { message } = e as Error;
+
+        if (e instanceof Prisma.PrismaClientInitializationError) {
+          message = 'Failed to connect to the database';
+        }
+
+        return res.status(500).json({ error: true, message });
       }
 
       break;
