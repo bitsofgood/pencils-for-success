@@ -1,19 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { Chapter, PrismaClient } from '@prisma/client';
 import { ErrorResponse } from '@/utils/types';
 
 type DataResponse = {
-  chapters: string[];
+  chapters: Chapter[];
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<DataResponse | ErrorResponse>,
 ) {
   switch (req.method) {
     case 'GET':
       try {
-        // TODO - Use Prisma to find Chapters
-        const chapters: string[] = ['Georgia'];
+        const prisma = new PrismaClient();
+        const chapters = await prisma.chapter.findMany();
 
         return res.status(200).json({ chapters });
       } catch (e) {
