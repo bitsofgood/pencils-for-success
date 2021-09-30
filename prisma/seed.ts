@@ -30,32 +30,69 @@ async function main() {
     },
   });
 
-  // Chapter User only
-  await prisma.user.upsert({
-    where: { username: 'chapter' },
+  // Chapter only
+  await prisma.chapter.upsert({
+    where: { email: 'texas@pfs.org' },
     update: {},
     create: {
-      username: 'chapter',
-      hash: passwordHash,
-      chapter: {
+      contactName: 'Texas',
+      email: 'texas@pfs.org',
+    },
+  });
+
+  // Chapter with a chapter user
+  await prisma.chapter.upsert({
+    where: { email: 'georgia@pfs.org' },
+    update: {},
+    create: {
+      contactName: 'Georgia',
+      email: 'georgia@pfs.org',
+      ChapterUser: {
         create: {
-          name: 'Chapter Test User',
-          email: 'chapteruser@pfs.org',
-          phoneNumber: '4040000000',
+          name: 'Georgia Chapter User',
+          email: 'georgia_user@pfs.org',
+          phoneNumber: '4041110000',
+          user: {
+            create: {
+              username: 'georgia_chapter',
+              hash: passwordHash,
+            },
+          },
         },
       },
     },
   });
 
-  // Recipient User only
-  await prisma.user.upsert({
-    where: { username: 'recipient' },
+  // Recipient only
+  await prisma.recipient.upsert({
+    where: { name: 'Recipient Only' },
     update: {},
     create: {
-      username: 'recipient',
+      name: 'Recipient Only',
+      email: 'recipient_only@pfs.org',
+      phoneNumber: '5555555555',
+      location: 'Atlanta',
+    },
+  });
+
+  // Recipient User with Recipient
+  await prisma.user.upsert({
+    where: { username: 'recipient_user' },
+    update: {},
+    create: {
+      username: 'recipient_user',
       hash: passwordHash,
       recipient: {
-        create: {},
+        create: {
+          recipient: {
+            create: {
+              name: 'Recipient User',
+              email: 'recipient_user@pfs.org',
+              phoneNumber: '4444444444',
+              location: 'Savannah',
+            },
+          },
+        },
       },
     },
   });
