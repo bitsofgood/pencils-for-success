@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import {
+  Box,
   FormLabel,
   FormControl,
   Input,
@@ -8,8 +9,6 @@ import {
   Heading,
   FormErrorMessage,
 } from '@chakra-ui/react';
-
-import styles from '@/styles/Admin.module.css';
 
 export default function Admin() {
   const {
@@ -27,7 +26,13 @@ export default function Admin() {
   }
 
   return (
-    <div className={styles.container}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+    >
       <Heading mb="2vh">Login</Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.username} mt={2} mb={2}>
@@ -36,10 +41,9 @@ export default function Admin() {
             id="username"
             placeholder="Username"
             {...register('username', {
-              required: 'This is required',
+              required: 'Username is required',
             })}
             borderColor="black"
-            borderRadius="-moz-initial"
           />
           <FormErrorMessage>
             {errors.username && errors.username.message}
@@ -52,11 +56,10 @@ export default function Admin() {
             placeholder="Password"
             type="password"
             {...register('password', {
-              required: 'This is required',
+              required: 'Password is required',
               minLength: { value: 8, message: 'Minimum length should be 8' },
             })}
             borderColor="black"
-            borderRadius="-moz-initial"
           />
           <FormErrorMessage>
             {errors.password && errors.password.message}
@@ -67,11 +70,10 @@ export default function Admin() {
           isLoading={isSubmitting}
           type="submit"
           borderColor="black"
-          borderRadius="-moz-initial"
         >
           Submit
         </Button>
       </form>
-    </div>
+    </Box>
   );
 }
