@@ -42,17 +42,45 @@ model RecipientUser {
 }
 
 model Recipient {
-  id            Int            @id @default(autoincrement())
-  name          String         @unique
-  email         String
-  phoneNumber   String
-  location      String
-  recipientUser RecipientUser?
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  email          String
+  phoneNumber    String
+  location       String
+  recipientUser  RecipientUser?
+  supplyRequests SupplyRequest[]
 }
 
 model Chapter {
-  id          Int          @id @default(autoincrement())
-  contactName String
-  email       String       @unique
-  chapterUser ChapterUser?
+  id             Int             @id @default(autoincrement())
+  contactName    String
+  email          String
+  chapterUser    ChapterUser?
+  supplyRequests SupplyRequest[]
+}
+
+enum SupplyRequestStatus {
+  PENDING
+  COMPLETE
+}
+
+model SupplyRequest {
+  id          Int                 @id @default(autoincrement())
+  itemId      Int
+  item        Item                @relation(fields: [itemId], references: [id])
+  quantity    Int
+  status      SupplyRequestStatus
+  lastUpdated DateTime            @default(now())
+  created     DateTime            @default(now())
+  note        String
+  chapterId   Int
+  chapter     Chapter             @relation(fields: [chapterId], references: [id])
+  recipientId Int
+  recipient   Recipient           @relation(fields: [recipientId], references: [id])
+}
+
+model Item {
+  id             Int             @id @default(autoincrement())
+  name           String
+  supplyRequests SupplyRequest[]
 }
