@@ -55,3 +55,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run db:push -- --accept-data-loss
+      - name: Run dev seed script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run seed:dev
