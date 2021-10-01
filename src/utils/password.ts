@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 const SALT_ROUNDS = 10;
 
@@ -9,7 +9,8 @@ const SALT_ROUNDS = 10;
  * @returns Computed hash for provided password
  */
 export async function getPasswordHash(password: string) {
-  return bcrypt.hash(password, SALT_ROUNDS);
+  const salt = await bcryptjs.genSalt(SALT_ROUNDS);
+  return bcryptjs.hash(password, salt);
 }
 
 /**
@@ -20,5 +21,5 @@ export async function getPasswordHash(password: string) {
  * @returns Boolean indicating if the password matches the provided hash
  */
 export async function isMatchingHash(password: string, hash: string) {
-  return bcrypt.compare(password, hash);
+  return bcryptjs.compare(password, hash);
 }
