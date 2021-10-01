@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id        Int            @id @default(autoincrement())
-  username  String
+  username  String         @unique
   hash      String
   chapter   ChapterUser?
   admin     AdminUser?
@@ -53,6 +53,6 @@ model Recipient {
 model Chapter {
   id          Int           @id @default(autoincrement())
   contactName String
-  email       String
+  email       String        @unique
   ChapterUser ChapterUser?
 }

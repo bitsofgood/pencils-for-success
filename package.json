@@ -17,6 +17,7 @@
     "commit": "cz",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
+    "seed:dev": "prisma db seed",
     "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login product@bitsofgood.org --raw` \"npm run secrets:sync\"",
     "secrets:logout": "(bw logout || exit 0)",
     "secrets:login": "bw login product@bitsofgood.org",
@@ -28,11 +29,15 @@
       "npm run format"
     ]
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@chakra-ui/react": "1.6.7",
     "@emotion/react": "11.4.1",
     "@emotion/styled": "11.3.0",
     "@prisma/client": "3.0.2",
+    "bcryptjs": "2.4.3",
     "framer-motion": "4.1.17",
     "next": "11.1.2",
     "next-iron-session": "4.2.0",
@@ -43,6 +48,7 @@
     "@bitwarden/cli": "1.18.0",
     "@commitlint/cli": "13.1.0",
     "@commitlint/config-conventional": "13.1.0",
+    "@types/bcryptjs": "2.4.2",
     "@types/node": "14.17.14",
     "@types/react": "17.0.19",
     "@types/react-dom": "17.0.9",
@@ -66,6 +72,7 @@
     "lint-staged": "11.1.2",
     "prettier": "2.3.2",
     "prisma": "3.0.2",
+    "ts-node": "10.2.1",
     "typescript": "4.4.2"
   },
   "config": {
