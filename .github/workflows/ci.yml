@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies (with cache)
         uses: bahmutov/npm-install@HEAD
 
+      - name: Generate prisma client
+        run: npm run db:generate
+
       - name: Check types
         run: npm run type-check
 
