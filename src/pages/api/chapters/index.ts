@@ -3,9 +3,18 @@ import { Chapter, PrismaClient, Prisma } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionAdminUser } from '../admin/login';
+import { getPasswordHash } from '@/utils/password';
 
 type DataResponse = {
   chapters: Chapter[];
+};
+
+export type ChapterInputBody = {
+  chapter: Prisma.ChapterCreateInput;
+  newUser?: {
+    chapterUser: Prisma.ChapterUserCreateInput;
+    user: Prisma.UserCreateInput;
+  };
 };
 
 /**
@@ -21,6 +30,40 @@ function validateChapterInput(chapter: Prisma.ChapterCreateInput) {
 
   if (!email || email.trim().length === 0) {
     throw Error('Please provide a valid email');
+  }
+}
+
+/**
+ * Checks if the provided chapter user input is valid before storing in the database
+ * @param chapter User input
+ */
+function validateNewChapterUserInput(
+  chapterUser: Prisma.ChapterUserCreateInput | undefined,
+) {
+  const { name, email } = chapterUser || {};
+
+  if (!name || name.trim().length === 0) {
+    throw Error('Please provide a valid name for the chapter user');
+  }
+
+  if (!email || email.trim().length === 0) {
+    throw Error('Please provide a valid email for the chapter user');
+  }
+}
+
+/**
+ * Checks if the provided user input is valid before storing in the database
+ * @param chapter User input
+ */
+function validateNewUserInput(user: Prisma.UserCreateInput | undefined) {
+  const { username, hash } = user || {};
+
+  if (!username || username.trim().length === 0) {
+    throw Error('Please provide a valid username for the user');
+  }
+
+  if (!hash || hash.trim().length === 0) {
+    throw Error('Please provide a valid password for the user');
   }
 }
 
@@ -41,23 +84,50 @@ async function handler(
 
     case 'POST':
       try {
-        const user = req.session.get('user') as SessionAdminUser;
+        const currentUser = req.session.get('user') as SessionAdminUser;
 
         // Check if requesting user is logged in and is an admin
-        if (!user || !user.isLoggedIn || !user.admin) {
+        if (!currentUser || !currentUser.isLoggedIn || !currentUser.admin) {
           return res.status(401).json({
             error: true,
             message: 'Please login as an admin to create a new chapter',
           });
         }
 
-        // Validate user input
-        const chapter = req.body.chapter as Prisma.ChapterCreateInput;
+        const prisma = new PrismaClient();
+
+        // Validate user inputs
+        const { chapter, newUser } = req.body as ChapterInputBody;
+        const { chapterUser, user } = newUser || {};
+
         validateChapterInput(chapter);
 
-        const prisma = new PrismaClient();
+        if (newUser) {
+          validateNewChapterUserInput(chapterUser);
+          validateNewUserInput(user);
+        }
+
+        // Add Prisma records
+        const data = chapter;
+
+        if (chapterUser && user) {
+          const passwordHash = await getPasswordHash(user.hash);
+
+          data.chapterUser = {
+            create: {
+              ...chapterUser,
+              user: {
+                create: {
+                  username: user.username,
+                  hash: passwordHash,
+                },
+              },
+            },
+          };
+        }
+
         await prisma.chapter.create({
-          data: chapter,
+          data,
         });
 
         return res

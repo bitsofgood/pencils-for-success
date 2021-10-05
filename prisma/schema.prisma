@@ -47,12 +47,12 @@ model Recipient {
   email         String
   phoneNumber   String
   location      String
-  RecipientUser RecipientUser?
+  recipientUser RecipientUser?
 }
 
 model Chapter {
   id          Int          @id @default(autoincrement())
   contactName String
   email       String       @unique
-  ChapterUser ChapterUser?
+  chapterUser ChapterUser?
 }
