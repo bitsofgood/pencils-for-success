@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export type NextIronRequest = NextApiRequest & { session: Session };
 
 // Wrapper around 'getServerSideProps' or API routes to expose req.session.* methods
-export default function withSession(
+export function withSession(
   handler: Handler<NextIronRequest, NextApiResponse>,
 ) {
   return withIronSession(handler, {
