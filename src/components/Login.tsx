@@ -28,14 +28,13 @@ const Login = ({ onSubmit }: LoginProps) => {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      height="100vh"
+      mt={8}
     >
-      <Heading mb="2vh">Login</Heading>
+      <Heading mb={4}>Login</Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={errors.username} mt={2} mb={2}>
+        <FormControl isInvalid={errors.username} mt={2} mb={2} id="username">
           <FormLabel htmlFor="username">Username</FormLabel>
           <Input
-            id="username"
             placeholder="Username"
             {...register('username', {
               required: 'Username is required',
@@ -46,10 +45,9 @@ const Login = ({ onSubmit }: LoginProps) => {
             {errors.username && errors.username.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.password} mb={2}>
+        <FormControl isInvalid={errors.password} mb={2} id="password">
           <FormLabel htmlFor="password">Password</FormLabel>
           <Input
-            id="password"
             placeholder="Password"
             type="password"
             {...register('password', {
