@@ -1,29 +1,32 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { AdminUser, PrismaClient } from '@prisma/client';
 import { withSession, NextIronRequest } from '@/utils/session';
-import { ErrorResponse } from '@/utils/types';
+import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { isMatchingHash } from '@/utils/password';
 
-type DataResponse = {
+export type SessionAdminUser = {
   isLoggedIn: boolean;
   name: string;
+  admin: AdminUser;
 };
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<DataResponse | ErrorResponse>,
+  res: NextApiResponse<SessionAdminUser | ErrorResponse>,
 ) {
   switch (req.method) {
     case 'POST':
       try {
         const { username, password } = req.body;
         const prisma = new PrismaClient();
+
         if (username == null || password == null) {
           return res.status(400).json({
             error: true,
             message: 'Username and password are required',
           });
         }
+
         const fetchedUser = await prisma.user.findUnique({
           where: {
             username,
@@ -33,16 +36,25 @@ async function handler(
             admin: true,
           },
         });
+
         if (fetchedUser == null || fetchedUser.admin == null) {
           return res.status(401).json({
             error: true,
             message: 'Invalid credentials',
           });
         }
+
         const hashesMatch = await isMatchingHash(password, fetchedUser.hash);
         if (hashesMatch) {
-          const userInfo = { isLoggedIn: true, name: username };
+          const userInfo = {
+            isLoggedIn: true,
+            name: username,
+            admin: fetchedUser.admin,
+          };
+
           req.session.set('user', userInfo);
+          await req.session.save();
+
           return res.status(200).json(userInfo);
         }
         return res.status(401).json({
@@ -50,11 +62,7 @@ async function handler(
           message: 'Invalid credentials',
         });
       } catch (e) {
-        const { message } = e as Error;
-        return res.status(500).json({
-          error: true,
-          message,
-        });
+        return serverErrorHandler(e, res);
       }
     default:
       res.setHeader('Allow', ['POST']);

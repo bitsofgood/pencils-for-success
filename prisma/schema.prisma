@@ -42,8 +42,8 @@ model RecipientUser {
 }
 
 model Recipient {
-  id            Int             @id @default(autoincrement())
-  name          String          @unique
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
   email         String
   phoneNumber   String
   location      String
@@ -51,8 +51,8 @@ model Recipient {
 }
 
 model Chapter {
-  id          Int           @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   contactName String
-  email       String        @unique
+  email       String       @unique
   ChapterUser ChapterUser?
 }
