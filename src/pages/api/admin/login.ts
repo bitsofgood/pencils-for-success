@@ -57,7 +57,7 @@ async function handler(
         });
       }
     default:
-      res.setHeader('Allow', ['GET']);
+      res.setHeader('Allow', ['POST']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });
