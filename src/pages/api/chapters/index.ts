@@ -61,8 +61,7 @@ async function handler(
           });
         }
 
-        const { username, hash } = newUser;
-        const { name, email, phoneNumber } = newUser;
+        const { username, hash, name, email, phoneNumber } = newUser;
 
         const chapterUser = {
           name,
