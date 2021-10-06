@@ -14,12 +14,9 @@ type DataResponse = {
   chapters: Chapter[];
 };
 
-export type ChapterInputBody = {
+export type NewChapterInputBody = {
   chapter: Prisma.ChapterCreateInput;
-  newUser?: {
-    chapterUser: Prisma.ChapterUserCreateInput;
-    user: Prisma.UserCreateInput;
-  };
+  newUser: Prisma.ChapterUserCreateInput & Prisma.UserCreateInput;
 };
 
 async function handler(
@@ -49,37 +46,54 @@ async function handler(
           });
         }
 
-        const prisma = new PrismaClient();
+        // Check if the user inputs are valid
+        const { chapter, newUser } = req.body as NewChapterInputBody;
 
-        // Validate user inputs
-        const { chapter, newUser } = req.body as ChapterInputBody;
-        const { chapterUser, user } = newUser || {};
-
-        validateChapterInput(chapter);
-
-        if (newUser) {
-          validateNewChapterUserInput(chapterUser);
-          validateNewUserInput(user);
+        try {
+          validateChapterInput(chapter);
+          validateNewChapterUserInput(newUser);
+          validateNewUserInput(newUser);
+        } catch (e) {
+          const { message } = e as Error;
+          return res.status(400).json({
+            error: true,
+            message,
+          });
         }
 
+        const { username, hash } = newUser;
+        const { name, email, phoneNumber } = newUser;
+
+        const chapterUser = {
+          name,
+          email,
+          phoneNumber,
+        } as Prisma.ChapterUserCreateInput;
+
+        const user = {
+          username,
+          hash,
+        } as Prisma.UserCreateInput;
+
+        const passwordHash = await getPasswordHash(hash);
+
         // Add Prisma records
-        const data = chapter;
+        const prisma = new PrismaClient();
 
-        if (chapterUser && user) {
-          const passwordHash = await getPasswordHash(user.hash);
-
-          data.chapterUser = {
+        const data = {
+          ...chapter,
+          chapterUser: {
             create: {
               ...chapterUser,
               user: {
                 create: {
-                  username: user.username,
+                  ...user,
                   hash: passwordHash,
                 },
               },
             },
-          };
-        }
+          },
+        };
 
         await prisma.chapter.create({
           data,

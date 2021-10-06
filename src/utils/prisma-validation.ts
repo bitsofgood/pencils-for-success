@@ -13,13 +13,17 @@ export function validateEmail(email: string | undefined) {
 export function validateChapterInput(
   chapter: Prisma.ChapterCreateInput | undefined,
 ) {
-  const { contactName, email } = chapter || {};
+  if (chapter) {
+    const { contactName, email } = chapter;
 
-  if (!contactName || contactName.trim().length === 0) {
-    throw Error('Please provide a valid contact name');
+    if (!contactName || contactName.trim().length === 0) {
+      throw Error('Please provide a valid contact name');
+    }
+
+    validateEmail(email);
+  } else {
+    throw Error('Please provide a valid chapter');
   }
-
-  validateEmail(email);
 }
 
 /**
@@ -29,13 +33,17 @@ export function validateChapterInput(
 export function validateNewChapterUserInput(
   chapterUser: Prisma.ChapterUserCreateInput | undefined,
 ) {
-  const { name, email } = chapterUser || {};
+  if (chapterUser) {
+    const { name, email } = chapterUser;
 
-  if (!name || name.trim().length === 0) {
-    throw Error('Please provide a valid name for the chapter user');
+    if (!name || name.trim().length === 0) {
+      throw Error('Please provide a valid name for the chapter user');
+    }
+
+    validateEmail(email);
+  } else {
+    throw Error('Please provide a valid chapter user');
   }
-
-  validateEmail(email);
 }
 
 /**
@@ -43,13 +51,17 @@ export function validateNewChapterUserInput(
  * @param chapter User input
  */
 export function validateNewUserInput(user: Prisma.UserCreateInput | undefined) {
-  const { username, hash } = user || {};
+  if (user) {
+    const { username, hash } = user;
 
-  if (!username || username.trim().length === 0) {
-    throw Error('Please provide a valid username for the user');
-  }
+    if (!username || username.trim().length === 0) {
+      throw Error('Please provide a valid username for the user');
+    }
 
-  if (!hash || hash.trim().length === 0) {
-    throw Error('Please provide a valid password for the user');
+    if (!hash || hash.trim().length === 0) {
+      throw Error('Please provide a valid password for the user');
+    }
+  } else {
+    throw Error('Please provide a valid chapter user');
   }
 }
