@@ -56,7 +56,7 @@ async function main() {
     create: {
       contactName: 'Georgia',
       email: 'georgia@pfs.org',
-      ChapterUser: {
+      chapterUser: {
         create: {
           name: 'Georgia Chapter User',
           email: 'georgia_user@pfs.org',
