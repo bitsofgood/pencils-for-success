@@ -54,7 +54,7 @@ jobs:
       - name: Push prisma schema changes
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run db:push -- --accept-data-los --force-reset
+        run: npm run db:push -- --accept-data-loss --force-reset
       - name: Run dev seed script
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
