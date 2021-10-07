@@ -50,7 +50,7 @@ async function main() {
 
   // Chapter with a chapter user
   const chapterUserPassword = await getPasswordHash(PASSWORDS.chapterUser);
-  await prisma.chapter.upsert({
+  const chapter = await prisma.chapter.upsert({
     where: { email: 'georgia@pfs.org' },
     update: {},
     create: {
@@ -81,6 +81,11 @@ async function main() {
       email: 'recipient_only@pfs.org',
       phoneNumber: '5555555555',
       location: 'Atlanta',
+      chapter: {
+        connect: {
+          id: chapter.id,
+        },
+      },
     },
   });
 
@@ -100,6 +105,11 @@ async function main() {
               email: 'recipient_user@pfs.org',
               phoneNumber: '4444444444',
               location: 'Savannah',
+              chapter: {
+                connect: {
+                  id: chapter.id,
+                },
+              },
             },
           },
         },
