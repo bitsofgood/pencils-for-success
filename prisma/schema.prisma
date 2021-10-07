@@ -55,8 +55,8 @@ model Recipient {
 
 model Chapter {
   id          Int          @id @default(autoincrement())
+  email       String       @unique
   contactName String
-  email       String
   chapterUser ChapterUser?
   recipients  Recipient[]
 }
