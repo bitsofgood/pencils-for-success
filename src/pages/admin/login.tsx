@@ -9,5 +9,5 @@ export default function Admin() {
       }, 3000);
     });
 
-  return <Login onSubmit={onSubmit} />;
+  return <Login onSubmit={onSubmit} title="Admin" />;
 }

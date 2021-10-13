@@ -13,9 +13,10 @@ import { useForm } from 'react-hook-form';
 
 type LoginProps = {
   onSubmit: () => void;
+  title: string;
 };
 
-const Login = ({ onSubmit }: LoginProps) => {
+const Login = ({ onSubmit, title }: LoginProps) => {
   const {
     handleSubmit,
     register,
@@ -30,7 +31,7 @@ const Login = ({ onSubmit }: LoginProps) => {
       justifyContent="center"
       mt={8}
     >
-      <Heading mb={4}>Login</Heading>
+      <Heading mb={4}>{title} Login</Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={errors.username} mt={2} mb={2} id="username">
           <FormLabel htmlFor="username">Username</FormLabel>
@@ -75,6 +76,7 @@ const Login = ({ onSubmit }: LoginProps) => {
 
 Login.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default Login;
