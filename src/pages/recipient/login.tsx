@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from '@/components/Login';
 
-export default function ChapterLogin() {
+export default function RecipientLogin() {
   const onSubmit = () =>
     new Promise<void>((resolve) => {
       setTimeout(() => {
