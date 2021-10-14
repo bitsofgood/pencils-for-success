@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
 import { withAdminRequestSession } from '@/utils/middlewares/auth';
