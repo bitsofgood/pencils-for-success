@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from '@/components/Login';
 
-export default function Admin() {
+export default function ChapterLogin() {
   const onSubmit = () =>
     new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -9,5 +9,5 @@ export default function Admin() {
       }, 3000);
     });
 
-  return <Login onSubmit={onSubmit} title="Admin" />;
+  return <Login onSubmit={onSubmit} title="Chapter" />;
 }
