@@ -8,6 +8,23 @@ import {
   withSession,
 } from '../session';
 
+// Helper function for protecting API routes, returns 401 response if not authed
+export function withAuthedRequestSession(
+  handler: Handler<NextIronRequest, NextApiResponse>,
+) {
+  return withSession((req: NextIronRequest, res: NextApiResponse) => {
+    const user = req.session.get('user');
+    if (user) {
+      handler(req, res);
+    } else {
+      res.status(401).json({
+        isLoggedIn: false,
+        message: 'Not Authenticated',
+      });
+    }
+  });
+}
+
 /**
  * Helper function for protecting Admin only API routes.
  * Returns 401 response if unauthenticated or unauthorized.
@@ -23,6 +40,31 @@ export function withAdminRequestSession(
       res.status(401).json({
         isLoggedIn: false,
         message: 'Please login as an admin to access the resource',
+      });
+    }
+  });
+}
+
+/**
+ * Helper function for protecting Admin or Chapter User only API routes
+ * Returns 401 response is unauthenticated or unauthorized
+ */
+export function withAdminOrChapterUserRequestSession(
+  handler: Handler<NextIronRequest, NextApiResponse>,
+) {
+  return withSession(async (req: NextIronRequest, res: NextApiResponse) => {
+    const user = req.session.get('user') as SessionAdminUser;
+
+    // TODO - Simply the boolean expression once endpoint to login as chapter user is implemented
+    const isAdmin = user && user.isLoggedIn && user.admin;
+    const isChapterUser = false;
+    if (isAdmin || isChapterUser) {
+      await handler(req, res);
+    } else {
+      res.status(401).json({
+        isLoggedIn: false,
+        message:
+          'Please login as authorized chapter user or admin to access the resource',
       });
     }
   });
