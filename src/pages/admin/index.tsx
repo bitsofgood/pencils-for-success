@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { Container, Heading, Text, Divider } from '@chakra-ui/react';
-import { withAdminAuthPage } from '@/utils/auth-middleware';
+import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
 
