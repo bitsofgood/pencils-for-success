@@ -36,7 +36,7 @@ async function handler(
           });
           // checks the auth of the current user
           const currentUser = req.session.get('user') as SessionAdminUser;
-          if (!currentUser || !currentUser.isLoggedIn || !currentUser.admin) {
+          if (!currentUser || !currentUser.isLoggedIn) {
             return res.status(401).json({
               error: true,
               message: 'Please login as an admin to create a view chapter info',
