@@ -1,8 +1,17 @@
+import { PrismaClient, Prisma } from '@prisma/client';
 import type { NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+
+import { SessionChapterUser } from '../chapter/login';
+import { SessionAdminUser } from '../admin/login';
+
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
-import { withAdminRequestSession } from '@/utils/middlewares/auth';
+import { withAuthedRequestSession } from '@/utils/middlewares/auth';
+import { validateChapterInput } from '@/utils/prisma-validation';
+
+interface ChapterUpdateBody {
+  updatedChapter: Prisma.ChapterCreateInput;
+}
 
 async function handler(
   req: NextIronRequest,
@@ -10,14 +19,98 @@ async function handler(
 ) {
   const { chapterId } = req.query;
 
+  const user = req.session.get('user') as SessionAdminUser & SessionChapterUser;
+
+  // Verify the provided id is a valid chapter id
+  if (Number.isNaN(chapterId)) {
+    return res.status(400).json({
+      message: 'Please provide a valid chapter id',
+      error: true,
+    });
+  }
+
+  const parsedChapterId = Number(chapterId);
+
+  // Check if admin or if the current chapter user match the chapter they want to update
+  const isUpdateAuthorized =
+    user.admin !== undefined ||
+    (user.chapterUser && user.chapterUser.chapterId === parsedChapterId);
+
   switch (req.method) {
+    case 'PUT':
+      if (!isUpdateAuthorized) {
+        return res.status(401).json({
+          message: 'Please login as an authorized user to access the resource',
+          error: true,
+        });
+      }
+
+      try {
+        const prisma = new PrismaClient();
+        const chapterToUpdate = await prisma.chapter.findUnique({
+          where: {
+            id: parsedChapterId,
+          },
+        });
+
+        if (!chapterToUpdate) {
+          return res.status(400).json({
+            message: 'No valid chapter found for the given chapter id',
+            error: true,
+          });
+        }
+
+        const { updatedChapter } = req.body as ChapterUpdateBody;
+        // Validate update parameters
+        if (!updatedChapter) {
+          return res.status(400).json({
+            message: 'Please provide valid request body with chapter details',
+            error: true,
+          });
+        }
+
+        try {
+          validateChapterInput(updatedChapter);
+        } catch (e) {
+          const { message } = e as Error;
+          return res.status(400).json({
+            message,
+            error: true,
+          });
+        }
+
+        const data = {
+          ...updatedChapter,
+        };
+
+        await prisma.chapter.update({
+          where: {
+            id: parsedChapterId,
+          },
+          data,
+        });
+
+        return res.status(200).json({
+          message: 'Successfully updated the chapter',
+          error: false,
+        });
+      } catch (e) {
+        // console.error(e);
+        return serverErrorHandler(e, res);
+      }
     case 'DELETE':
+      if (!user.admin) {
+        return res.status(401).json({
+          message: 'Please login as an admin to access the resource',
+          error: true,
+        });
+      }
       try {
         const prisma = new PrismaClient();
 
         const chapterToDelete = await prisma.chapter.findUnique({
           where: {
-            id: Number(chapterId),
+            id: parsedChapterId,
           },
           select: {
             id: true,
@@ -70,11 +163,11 @@ async function handler(
       }
 
     default:
-      res.setHeader('Allow', ['DELETE']);
+      res.setHeader('Allow', ['PUT', 'DELETE']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });
   }
 }
 
-export default withAdminRequestSession(handler);
+export default withAuthedRequestSession(handler);

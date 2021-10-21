@@ -7,7 +7,7 @@ import { isMatchingHash } from '@/utils/password';
 export type SessionChapterUser = {
   isLoggedIn: boolean;
   name: string;
-  chapter: ChapterUser;
+  chapterUser: ChapterUser;
 };
 
 async function handler(
@@ -49,7 +49,7 @@ async function handler(
           const userInfo = {
             isLoggedIn: true,
             name: username,
-            chapter: fetchedUser.chapter,
+            chapterUser: fetchedUser.chapter,
           };
 
           req.session.set('user', userInfo);

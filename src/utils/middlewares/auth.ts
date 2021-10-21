@@ -8,6 +8,23 @@ import {
   withSession,
 } from '../session';
 
+// Helper function for protecting API routes, returns 401 response if not authed
+export function withAuthedRequestSession(
+  handler: Handler<NextIronRequest, NextApiResponse>,
+) {
+  return withSession((req: NextIronRequest, res: NextApiResponse) => {
+    const user = req.session.get('user');
+    if (user) {
+      handler(req, res);
+    } else {
+      res.status(401).json({
+        isLoggedIn: false,
+        message: 'Not Authenticated',
+      });
+    }
+  });
+}
+
 /**
  * Helper function for protecting Admin only API routes.
  * Returns 401 response if unauthenticated or unauthorized.
