@@ -45,31 +45,6 @@ export function withAdminRequestSession(
   });
 }
 
-/**
- * Helper function for protecting Admin or Chapter User only API routes
- * Returns 401 response is unauthenticated or unauthorized
- */
-export function withAdminOrChapterUserRequestSession(
-  handler: Handler<NextIronRequest, NextApiResponse>,
-) {
-  return withSession(async (req: NextIronRequest, res: NextApiResponse) => {
-    const user = req.session.get('user') as SessionAdminUser;
-
-    // TODO - Simply the boolean expression once endpoint to login as chapter user is implemented
-    const isAdmin = user && user.isLoggedIn && user.admin;
-    const isChapterUser = false;
-    if (isAdmin || isChapterUser) {
-      await handler(req, res);
-    } else {
-      res.status(401).json({
-        isLoggedIn: false,
-        message:
-          'Please login as authorized chapter user or admin to access the resource',
-      });
-    }
-  });
-}
-
 export function withAdminAuthPage(handler: NextIronContextHandler) {
   return withSession((ctx: NextIronServerSideContext) => {
     const { req, res } = ctx;
