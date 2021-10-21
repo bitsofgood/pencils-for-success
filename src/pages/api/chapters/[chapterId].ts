@@ -171,7 +171,6 @@ async function handler(
         // Check if the provided chapter user exists
         const prisma = new PrismaClient();
 
-        const { chapterId } = req.query;
         const existingChapter = await prisma.chapter.findUnique({
           where: {
             id: Number(chapterId),
