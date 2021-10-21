@@ -1,7 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
-import { SessionChapterUser } from '../chapter/login';
+import { SessionChapterUser } from './login';
 import { SessionAdminUser } from '../admin/login';
 
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
