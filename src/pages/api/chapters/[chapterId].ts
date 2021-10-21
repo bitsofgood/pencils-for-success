@@ -166,63 +166,59 @@ async function handler(
       } catch (e) {
         return serverErrorHandler(e, res);
       }
-
     case 'GET':
       try {
         // Check if the provided chapter user exists
         const prisma = new PrismaClient();
 
-        if (Number.isNaN(chapterId)) {
-          return res.status(400).json({
-            message: 'Please provide a valid chapter id',
-            error: true,
-          });
-        }
-
-        // checks the auth of the current user
-        const currentUser = req.session.get('user') as SessionChapterUser;
-
-        if (
-          !currentUser ||
-          !currentUser.isLoggedIn ||
-          !currentUser.chapterUser
-        ) {
-          return res.status(401).json({
-            error: true,
-            message:
-              'Please login as a chapter user to create a view chapter info',
-          });
-        }
-
-        // checks to see if the user is part of the chapter
-        const { chapterUser } = currentUser;
-
-        if (chapterUser.chapterId !== Number(chapterId)) {
-          return res.status(401).json({
-            message: 'You are not part of the chapter you are trying to access',
-            error: true,
-          });
-        }
-
+        const { chapterId } = req.query;
         const existingChapter = await prisma.chapter.findUnique({
           where: {
             id: Number(chapterId),
           },
         });
 
-        // check if chapter exists
-        if (!existingChapter) {
-          return res.status(400).json({
-            message: 'A chapter with that id does not exist',
+        if (existingChapter) {
+          // Check if the user inputs are valid
+          const chapterUsers = await prisma.chapterUser.findMany({
+            where: {
+              chapterId: Number(chapterId),
+            },
+          });
+          // checks the auth of the current user
+          const currentUser = req.session.get('user') as SessionAdminUser;
+          if (!currentUser || !currentUser.isLoggedIn) {
+            return res.status(401).json({
+              error: true,
+              message: 'Please login as an admin to create a view chapter info',
+            });
+          }
+          // checks to see if the user is part of the chapter
+          const { name } = currentUser;
+          let inChapter = false;
+          for (let i = 0; i < chapterUsers.length; i += 1) {
+            if (chapterUsers[i].name === name) {
+              inChapter = true;
+            }
+          }
+          // return information if they are
+          if (inChapter) {
+            const { contactName, email } = existingChapter;
+            return res.status(200).json({
+              contactName,
+              email,
+            });
+          }
+
+          return res.status(401).json({
             error: true,
+            message: 'You are not a member of the requested chapter',
           });
         }
 
-        // return information if they are
-        const { contactName, email } = existingChapter;
-        return res.status(200).json({
-          contactName,
-          email,
+        return res.status(400).json({
+          error: true,
+          message: `No chapter found for id: ${chapterId}`,
         });
       } catch (e) {
         return serverErrorHandler(e, res);
