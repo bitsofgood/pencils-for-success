@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
 import { withAdminRequestSession } from '@/utils/middlewares/auth';
+import { SessionAdminUser } from '../api/admin/login';
 
 
 export type ChapterInfo = {
