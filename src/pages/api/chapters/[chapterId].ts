@@ -86,7 +86,6 @@ async function handler(
           });
         }
 
-        
         // Check if the user inputs are valid
         const chapterUsers = await prisma.chapterUser.findMany({
           where: {
@@ -115,7 +114,7 @@ async function handler(
             id: Number(chapterId),
           },
         });
-        
+
         if (!existingChapter) {
           return res.status(400).json({
             message: 'A chapter with that id does not exist',
