@@ -6,7 +6,9 @@ import {
   Text,
   Divider,
   Button,
-  useDisclosure,
+  Box,
+  Flex,
+  Spacer,
 } from '@chakra-ui/react';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
@@ -37,14 +39,19 @@ function AddNewChapterButton() {
 export default function AdminDashboardPage({ user }: AdminDashboardProps) {
   return (
     <ChapterModalProvider>
-      <Container py="5" textAlign="center">
+      <Box p="10" textAlign="center">
         <Heading>Admin Dashboard</Heading>
         <Divider my={3} />
         <Text>Admin Id: {user.admin.id}</Text>
 
-        <AddNewChapterButton />
+        <Flex>
+          <Heading>Chapters</Heading>
+          <Spacer />
+          <AddNewChapterButton />
+        </Flex>
+
         <ChapterModalController />
-      </Container>
+      </Box>
     </ChapterModalProvider>
   );
 }

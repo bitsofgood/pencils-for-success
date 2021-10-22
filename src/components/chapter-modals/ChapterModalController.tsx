@@ -1,15 +1,5 @@
 import React, { useContext } from 'react';
-import {
-  Box,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-} from '@chakra-ui/react';
+import { Modal, ModalOverlay } from '@chakra-ui/react';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
 

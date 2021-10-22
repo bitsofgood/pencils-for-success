@@ -10,7 +10,6 @@ import {
   ModalContent,
   ModalHeader,
   SimpleGrid,
-  Flex,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
