@@ -1,13 +1,14 @@
 import { Prisma } from '@prisma/client';
 
+export const emailRegex =
+  /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
 export function validateEmail(email: string | undefined) {
   if (!email || email.trim().length === 0) {
     throw Error('Please provide an email address');
   }
 
   // Credits - https://www.regular-expressions.info/email.html
-  const emailRegex =
-    /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   if (!emailRegex.test(email)) {
     throw Error('Please provided a valid email address');
   }

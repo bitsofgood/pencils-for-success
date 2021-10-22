@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
+import { emailRegex } from '@/utils/prisma-validation';
 
 const NewChapterModal = () => {
   const {
@@ -116,8 +117,7 @@ const NewChapterModal = () => {
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
-                    value:
-                      /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+                    value: emailRegex,
                     message: 'Invalid email address',
                   },
                 })}
