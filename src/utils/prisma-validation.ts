@@ -36,10 +36,10 @@ export function validateChapterInput(
   chapter: Prisma.ChapterCreateInput | undefined,
 ) {
   if (chapter) {
-    const { contactName, email } = chapter;
+    const { chapterName, email } = chapter;
 
-    if (!contactName || contactName.trim().length === 0) {
-      throw Error('Please provide a valid contact name');
+    if (!chapterName || chapterName.trim().length === 0) {
+      throw Error('Please provide a valid chaotert name');
     }
 
     validateEmail(email);

@@ -28,10 +28,7 @@ const createNewChapter = async (data: NewChapterFormBody) => {
   const { chapterName, username, password, contactName, email, phoneNumber } =
     data;
 
-  const chapter = {
-    email,
-    contactName: chapterName,
-  };
+  const chapter = { email, chapterName };
 
   const newUser = {
     name: contactName,
