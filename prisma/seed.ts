@@ -43,7 +43,7 @@ async function main() {
     where: { email: 'texas@pfs.org' },
     update: {},
     create: {
-      contactName: 'Texas',
+      chapterName: 'Texas',
       email: 'texas@pfs.org',
     },
   });
@@ -54,7 +54,7 @@ async function main() {
     where: { email: 'georgia@pfs.org' },
     update: {},
     create: {
-      contactName: 'Georgia',
+      chapterName: 'Georgia',
       email: 'georgia@pfs.org',
       chapterUser: {
         create: {
