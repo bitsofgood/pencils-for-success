@@ -15,6 +15,55 @@ import { useForm } from 'react-hook-form';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { emailRegex } from '@/utils/prisma-validation';
 
+interface NewChapterFormBody {
+  chapterName: string;
+  username: string;
+  password: string;
+  contactName: string;
+  email: string;
+  phoneNumber: string;
+}
+
+const createNewChapter = async (data: NewChapterFormBody) => {
+  const { chapterName, username, password, contactName, email, phoneNumber } =
+    data;
+
+  const chapter = {
+    email,
+    contactName: chapterName,
+  };
+
+  const newUser = {
+    name: contactName,
+    email,
+    phoneNumber,
+    username,
+    hash: password,
+  };
+
+  const response = await fetch('/api/chapters', {
+    method: 'POST',
+    body: JSON.stringify({
+      chapter,
+      newUser,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  return responseJson;
+};
+
 const NewChapterModal = () => {
   const {
     handleSubmit,
@@ -24,8 +73,14 @@ const NewChapterModal = () => {
 
   const { onClose } = useContext(ChapterModalContext);
 
-  const onSubmit = (x: any) => {
-    alert(JSON.stringify(x, null, 4));
+  const onSubmit = async (x: NewChapterFormBody) => {
+    try {
+      const response = await createNewChapter(x);
+      onClose();
+      alert(response.message);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   return (
