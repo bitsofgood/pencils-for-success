@@ -6,7 +6,6 @@ import { SessionAdminUser } from '../admin/login';
 import { getPasswordHash } from '@/utils/password';
 import {
   validateChapterInput,
-  validateNewChapterUserInput,
   validateNewUserInput,
 } from '@/utils/prisma-validation';
 
@@ -51,7 +50,6 @@ async function handler(
 
         try {
           validateChapterInput(chapter);
-          validateNewChapterUserInput(newUser);
           validateNewUserInput(newUser);
         } catch (e) {
           const { message } = e as Error;
@@ -61,13 +59,7 @@ async function handler(
           });
         }
 
-        const { username, hash, name, email, phoneNumber } = newUser;
-
-        const chapterUser = {
-          name,
-          email,
-          phoneNumber,
-        } as Prisma.ChapterUserCreateInput;
+        const { username, hash } = newUser;
 
         const user = {
           username,
@@ -83,7 +75,6 @@ async function handler(
           ...chapter,
           chapterUser: {
             create: {
-              ...chapterUser,
               user: {
                 create: {
                   ...user,
