@@ -94,13 +94,14 @@ async function handler(
           },
         };
 
-        await prisma.chapter.create({
+        const createdChapter = await prisma.chapter.create({
           data,
         });
 
-        return res
-          .status(200)
-          .json({ error: false, message: 'Successfully created a chapter' });
+        return res.status(200).json({
+          error: false,
+          message: `Successfully created a chapter: ${createdChapter.id}`,
+        });
       } catch (e) {
         return serverErrorHandler(e, res);
       }
