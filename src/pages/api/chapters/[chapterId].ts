@@ -13,9 +13,14 @@ interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
 }
 
+export type ChapterInfo = {
+  email: string;
+  contactName: string;
+};
+
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse>,
+  res: NextApiResponse<ErrorResponse | ChapterInfo>,
 ) {
   const { chapterId } = req.query;
 
@@ -157,6 +162,67 @@ async function handler(
         return res.status(200).json({
           error: false,
           message: `Successfully deleted the chapter ${chapterId}`,
+        });
+      } catch (e) {
+        return serverErrorHandler(e, res);
+      }
+
+    case 'GET':
+      try {
+        // Check if the provided chapter user exists
+        const prisma = new PrismaClient();
+
+        if (Number.isNaN(chapterId)) {
+          return res.status(400).json({
+            message: 'Please provide a valid chapter id',
+            error: true,
+          });
+        }
+
+        // checks the auth of the current user
+        const currentUser = req.session.get('user') as SessionChapterUser;
+
+        if (
+          !currentUser ||
+          !currentUser.isLoggedIn ||
+          !currentUser.chapterUser
+        ) {
+          return res.status(401).json({
+            error: true,
+            message:
+              'Please login as a chapter user to create a view chapter info',
+          });
+        }
+
+        // checks to see if the user is part of the chapter
+        const { chapterUser } = currentUser;
+
+        if (chapterUser.chapterId !== Number(chapterId)) {
+          return res.status(401).json({
+            message: 'You are not part of the chapter you are trying to access',
+            error: true,
+          });
+        }
+
+        const existingChapter = await prisma.chapter.findUnique({
+          where: {
+            id: Number(chapterId),
+          },
+        });
+
+        // check if chapter exists
+        if (!existingChapter) {
+          return res.status(400).json({
+            message: 'A chapter with that id does not exist',
+            error: true,
+          });
+        }
+
+        // return information if they are
+        const { contactName, email } = existingChapter;
+        return res.status(200).json({
+          contactName,
+          email,
         });
       } catch (e) {
         return serverErrorHandler(e, res);
