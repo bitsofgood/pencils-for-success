@@ -5,15 +5,6 @@ import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../../chapter/login';
 import { SessionRecipientUser } from '../../recipient/login';
 
-export type Supply = {
-  id: number;
-  quantity: number;
-  status: string;
-  lastupdated: string;
-  created: string;
-  note: string;
-};
-
 export type SupplyResponse = {
   items: any[];
 };
