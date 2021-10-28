@@ -25,8 +25,6 @@ async function handler(
             id: Number(recId),
           },
           select: {
-            id: true,
-            recipientUser: true,
             chapterId: true,
           },
         });
@@ -38,52 +36,38 @@ async function handler(
           });
         }
 
-        let access = false;
-
         const currentUser = req.session.get('user') as SessionChapterUser &
           SessionRecipientUser;
-        if (currentUser.recipient) {
-          const { recipient } = currentUser;
-          if (recipient.recipientId === Number(recId)) {
-            access = true;
-          }
-        } else if (currentUser.chapter) {
-          const { chapter } = currentUser;
-          if (chapter.chapterId === existRecipient.chapterId) {
-            access = true;
-          }
-        } else {
-          return res.status(400).json({
-            error: true,
-            message: `You don't have access to this resource`,
-          });
-        }
-        if (access) {
+
+        const isValidRecipient =
+          currentUser.recipient &&
+          currentUser.recipient.recipientId === Number(recId);
+        const isValidChapter =
+          currentUser.chapter &&
+          currentUser.chapter.chapterId === existRecipient.chapterId;
+
+        if (isValidRecipient || isValidChapter) {
           const supplyRequests = await prisma.supplyRequest.findMany({
             where: {
               recipientId: Number(recId),
             },
+            select: {
+              id: true,
+              quantity: true,
+              status: true,
+              lastUpdated: true,
+              created: true,
+              note: true,
+            },
           });
-          const supplyItems = [];
 
-          for (let i = 0; i < supplyRequests.length; i += 1) {
-            const current = {
-              id: supplyRequests[i].id,
-              quantity: supplyRequests[i].quantity,
-              status: supplyRequests[i].status,
-              lastUpdated: supplyRequests[i].lastUpdated,
-              created: supplyRequests[i].created,
-              note: supplyRequests[i].note,
-            };
-            supplyItems.push(current);
-          }
           return res.status(200).json({
-            items: supplyItems,
+            items: supplyRequests,
           });
         }
         return res.status(400).json({
           error: true,
-          message: `You don't have access to this supply request`,
+          message: `You don't have access to this resource`,
         });
       } catch (e) {
         return serverErrorHandler(e, res);
