@@ -1,12 +1,12 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SupplyRequest } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionRecipientUser } from '../login';
 
 export type SupplyResponse = {
-  items: any[];
+  items: Omit<SupplyRequest, 'recipientId'>[];
 };
 
 async function handler(
