@@ -17,14 +17,11 @@ model User {
 }
 
 model ChapterUser {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  email       String
-  phoneNumber String?
-  userId      Int
-  user        User    @relation(fields: [userId], references: [id])
-  chapterId   Int
-  chapter     Chapter @relation(fields: [chapterId], references: [id])
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
 }
 
 model AdminUser {
@@ -55,8 +52,10 @@ model Recipient {
 
 model Chapter {
   id          Int          @id @default(autoincrement())
-  email       String       @unique
+  chapterName String       @unique
   contactName String
+  email       String
+  phoneNumber String?
   chapterUser ChapterUser?
   recipients  Recipient[]
 }
