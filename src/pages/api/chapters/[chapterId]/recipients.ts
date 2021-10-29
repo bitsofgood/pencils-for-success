@@ -1,16 +1,11 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Prisma, Recipient } from '@prisma/client';
+import { PrismaClient, Recipient } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../login';
 
 type DataResponse = {
   recipients: Recipient[];
-};
-
-export type NewChapterInputBody = {
-  chapter: Prisma.ChapterCreateInput;
-  newUser: Prisma.ChapterUserCreateInput & Prisma.UserCreateInput;
 };
 
 async function handler(
