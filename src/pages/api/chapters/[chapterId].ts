@@ -167,6 +167,48 @@ async function handler(
         return serverErrorHandler(e, res);
       }
 
+    case 'GET':
+      try {
+        // Check if the provided chapter user exists
+        const prisma = new PrismaClient();
+
+        if (Number.isNaN(chapterId)) {
+          return res.status(400).json({
+            message: 'Please provide a valid chapter id',
+            error: true,
+          });
+        }
+
+        // checks to see if the user is part of the chapter
+        if (isUpdateAuthorized) {
+          const existingChapter = await prisma.chapter.findUnique({
+            where: {
+              id: Number(chapterId),
+            },
+          });
+
+          // check if chapter exists
+          if (!existingChapter) {
+            return res.status(400).json({
+              message: 'A chapter with that id does not exist',
+              error: true,
+            });
+          }
+
+          // return information if they are
+          const { contactName, email } = existingChapter;
+          return res.status(200).json({
+            contactName,
+            email,
+          });
+        }
+        return res.status(400).json({
+          message: 'Please login as an authorized user to access the resource',
+          error: true,
+        });
+      } catch (e) {
+        return serverErrorHandler(e, res);
+      }
     default:
       res.setHeader('Allow', ['PUT', 'DELETE']);
       return res
