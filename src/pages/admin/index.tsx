@@ -9,6 +9,8 @@ import {
   Box,
   Flex,
   Spacer,
+  Grid,
+  Image,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
@@ -22,11 +24,14 @@ import {
   ChapterModalProvider,
 } from '@/providers/ChapterModalProvider';
 import ChapterCard from '@/components/ChapterCard';
+<<<<<<< HEAD
 import {
   ChaptersContext,
   ChaptersProvider,
 } from '@/providers/ChaptersProvider';
 import { ChapterDetails } from '../api/chapters/[chapterId]';
+=======
+>>>>>>> feat(ui): created basic Chapter Card component for admin dashboard
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -70,6 +75,7 @@ export default function AdminDashboardPage({
           <Divider my={3} />
           <Text>Admin Id: {user.admin.id}</Text>
 
+<<<<<<< HEAD
           <Flex>
             <Heading>Chapters</Heading>
             <Spacer />
@@ -84,6 +90,20 @@ export default function AdminDashboardPage({
         </Box>
       </ChapterModalProvider>
     </ChaptersProvider>
+=======
+        <Grid templateColumns="repeat(4, 1fr)" gap={5}>
+          <ChapterCard
+            name="Chapter"
+            image=""
+            contact="John Smith"
+            email="johnsmith@gmail.com"
+          />
+        </Grid>
+
+        <ChapterModalController />
+      </Box>
+    </ChapterModalProvider>
+>>>>>>> feat(ui): created basic Chapter Card component for admin dashboard
   );
 }
 
