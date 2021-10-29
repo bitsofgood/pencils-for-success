@@ -39,6 +39,13 @@ async function handler(
         const currentUser = req.session.get('user') as SessionChapterUser &
           SessionRecipientUser;
 
+        if (!currentUser || !currentUser.isLoggedIn) {
+          return res.status(401).json({
+            error: true,
+            message: 'Please login to fetch supply requests',
+          });
+        }
+
         const isValidRecipient =
           currentUser.recipient &&
           currentUser.recipient.recipientId === Number(recId);
@@ -65,7 +72,7 @@ async function handler(
             items: supplyRequests,
           });
         }
-        return res.status(400).json({
+        return res.status(401).json({
           error: true,
           message: `You don't have access to this resource`,
         });
