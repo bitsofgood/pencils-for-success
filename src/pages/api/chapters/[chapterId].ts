@@ -215,7 +215,7 @@ async function handler(
         return serverErrorHandler(e, res);
       }
     default:
-      res.setHeader('Allow', ['PUT', 'DELETE']);
+      res.setHeader('Allow', ['PUT', 'DELETE', 'GET']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });
