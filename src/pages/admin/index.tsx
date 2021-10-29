@@ -9,6 +9,8 @@ import {
   Box,
   Flex,
   Spacer,
+  Grid,
+  Image,
 } from '@chakra-ui/react';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
@@ -20,6 +22,7 @@ import {
   ChapterModalContext,
   ChapterModalProvider,
 } from '@/providers/ChapterModalProvider';
+import ChapterCard from '@/components/ChapterCard';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -49,6 +52,15 @@ export default function AdminDashboardPage({ user }: AdminDashboardProps) {
           <Spacer />
           <AddNewChapterButton />
         </Flex>
+
+        <Grid templateColumns="repeat(4, 1fr)" gap={5}>
+          <ChapterCard
+            name="Chapter"
+            image=""
+            contact="John Smith"
+            email="johnsmith@gmail.com"
+          />
+        </Grid>
 
         <ChapterModalController />
       </Box>
