@@ -174,18 +174,11 @@ async function handler(
         // Check if the provided chapter user exists
         const prisma = new PrismaClient();
 
-        if (Number.isNaN(chapterId)) {
-          return res.status(400).json({
-            message: 'Please provide a valid chapter id',
-            error: true,
-          });
-        }
-
         // checks to see if the user is part of the chapter
         if (isUpdateAuthorized) {
           const existingChapter = await prisma.chapter.findUnique({
             where: {
-              id: Number(chapterId),
+              id: parsedChapterId,
             },
           });
 
