@@ -13,9 +13,16 @@ interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
 }
 
+export type ChapterInfo = {
+  email: string;
+  contactName: string;
+  chapterName: string;
+  phoneNumber: string | null;
+};
+
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse>,
+  res: NextApiResponse<ErrorResponse | ChapterInfo>,
 ) {
   const { chapterId } = req.query;
 
@@ -162,8 +169,46 @@ async function handler(
         return serverErrorHandler(e, res);
       }
 
+    case 'GET':
+      try {
+        // Check if the provided chapter user exists
+        const prisma = new PrismaClient();
+
+        // checks to see if the user is part of the chapter
+        if (isUpdateAuthorized) {
+          const existingChapter = await prisma.chapter.findUnique({
+            where: {
+              id: parsedChapterId,
+            },
+          });
+
+          // check if chapter exists
+          if (!existingChapter) {
+            return res.status(400).json({
+              message: 'A chapter with that id does not exist',
+              error: true,
+            });
+          }
+
+          // return information if they are
+          const { contactName, email, chapterName, phoneNumber } =
+            existingChapter;
+          return res.status(200).json({
+            contactName,
+            email,
+            chapterName,
+            phoneNumber,
+          });
+        }
+        return res.status(400).json({
+          message: 'Please login as an authorized user to access the resource',
+          error: true,
+        });
+      } catch (e) {
+        return serverErrorHandler(e, res);
+      }
     default:
-      res.setHeader('Allow', ['PUT', 'DELETE']);
+      res.setHeader('Allow', ['PUT', 'DELETE', 'GET']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });
