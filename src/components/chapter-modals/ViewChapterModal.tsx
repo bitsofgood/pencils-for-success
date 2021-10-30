@@ -14,7 +14,10 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
-import { ChapterModalContext } from '@/providers/ChapterModalProvider';
+import {
+  ChapterModalContext,
+  ModalState,
+} from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 
 const getChapterDetails = async (id: number) => {
@@ -54,7 +57,8 @@ const ChapterDetails = ({ chapter }: ChapterDetailsProps) => (
 );
 
 const ViewChapterModal = () => {
-  const { onClose, activeChapter } = useContext(ChapterModalContext);
+  const { onClose, activeChapter, setModalState } =
+    useContext(ChapterModalContext);
   const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const [loading, setLoading] = useState(true);
@@ -85,8 +89,7 @@ const ViewChapterModal = () => {
   };
 
   const onDeleteClick = () => {
-    // TODO - Open delete confirmation modal for the active chapter
-    onClose();
+    setModalState(ModalState.DeleteChapter);
   };
 
   return (
