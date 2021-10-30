@@ -43,12 +43,13 @@ const DeleteChapterModal = () => {
   const [loading, setLoading] = useState(false);
 
   const onConfirmation = () => {
-    // TODO - Open Edit Modal for the active chapter
     setLoading(true);
     deleteChapter(activeChapter)
       .then(() => {
-        setActiveChapter(-1);
         onClose();
+        setModalState(ModalState.NewChapter);
+        removeChapter(activeChapter);
+        setActiveChapter(-1);
       })
       .catch((err) => {
         alert(err);
@@ -74,11 +75,11 @@ const DeleteChapterModal = () => {
           Are you sure?
         </Text>
         <Text color="gray.500">This action will delete chapter</Text>
-        <Text fontSize="3xl">{chapterToDelete.chapterName}</Text>
+        <Text fontSize="3xl">{chapterToDelete?.chapterName}</Text>
         <Text color="gray.500">This action cannot be undone</Text>
         <Divider my="5" />
         <Flex>
-          <Button colorScheme="red" disabled={loading}>
+          <Button colorScheme="red" disabled={loading} onClick={onConfirmation}>
             Delete
           </Button>
           <Spacer />
