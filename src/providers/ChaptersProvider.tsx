@@ -1,4 +1,4 @@
-import { Chapter, User } from '@prisma/client';
+import { Chapter } from '@prisma/client';
 import { createContext, useEffect, useState } from 'react';
 
 export interface ChaptersContextProps {

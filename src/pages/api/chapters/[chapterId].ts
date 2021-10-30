@@ -42,7 +42,7 @@ async function handler(
 
   const parsedChapterId = Number(chapterId);
 
-  // Check if admin or if the current chapter user match the chapter they want to update
+  // Check if admin or if the current chapter user match the chapter they want to access
   const isAuthorizedUser =
     user.admin !== undefined ||
     (user.chapterUser && user.chapterUser.chapterId === parsedChapterId);
