@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import {
-  Container,
+  SimpleGrid,
   Heading,
   Text,
   Divider,
@@ -20,6 +20,7 @@ import {
   ChapterModalContext,
   ChapterModalProvider,
 } from '@/providers/ChapterModalProvider';
+import ChapterCard from '@/components/ChapterCard';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -49,6 +50,10 @@ export default function AdminDashboardPage({ user }: AdminDashboardProps) {
           <Spacer />
           <AddNewChapterButton />
         </Flex>
+
+        <SimpleGrid columns={[1, 2, 4]} my="5">
+          <ChapterCard />
+        </SimpleGrid>
 
         <ChapterModalController />
       </Box>
