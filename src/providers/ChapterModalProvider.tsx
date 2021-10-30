@@ -25,7 +25,7 @@ export interface ChapterModalProviderProps {
 
 export const ChapterModalContext = createContext<ChapterModalContextProps>({
   isOpen: false,
-  activeChapter: 0,
+  activeChapter: -1,
   currentModalState: ModalState.NewChapter,
   onClose: () => {
     throw new Error('Method not implemented');

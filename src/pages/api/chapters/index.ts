@@ -9,8 +9,12 @@ import {
   validateNewUserInput,
 } from '@/utils/prisma-validation';
 
-type DataResponse = {
+export type GetChapterResponse = {
   chapters: Chapter[];
+};
+
+export type PostChapterResponse = {
+  chapter: Chapter;
 };
 
 export type NewChapterInputBody = {
@@ -20,7 +24,9 @@ export type NewChapterInputBody = {
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<DataResponse | ErrorResponse>,
+  res: NextApiResponse<
+    GetChapterResponse | PostChapterResponse | ErrorResponse
+  >,
 ) {
   switch (req.method) {
     case 'GET':
@@ -90,8 +96,7 @@ async function handler(
         });
 
         return res.status(200).json({
-          error: false,
-          message: `Successfully created a chapter: ${createdChapter.id}`,
+          chapter: createdChapter,
         });
       } catch (e) {
         return serverErrorHandler(e, res);
