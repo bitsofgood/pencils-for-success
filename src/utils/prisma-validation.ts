@@ -61,6 +61,31 @@ export function validateChapterInput(
 }
 
 /**
+ * Checks if the provided recipient input is valid before storing in the database
+ * @param recipient Recipient input
+ */
+export function validateRecipientInput(
+  recipient: Prisma.RecipientCreateInput | undefined,
+) {
+  if (recipient) {
+    const { name, email, phoneNumber, location } = recipient;
+
+    if (isEmpty(name)) {
+      throw Error('Please provide a valid recipient name');
+    }
+
+    if (isEmpty(location)) {
+      throw Error('Please provide a valid location');
+    }
+
+    validateEmail(email);
+    validatePhoneNumber(phoneNumber);
+  } else {
+    throw Error('Please provide a valid recipient');
+  }
+}
+
+/**
  * Checks if the provided user input is valid before storing in the database
  * @param chapter User input
  */
