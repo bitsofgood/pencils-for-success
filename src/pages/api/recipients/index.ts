@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { Chapter, PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { getPasswordHash } from '@/utils/password';
@@ -9,10 +9,6 @@ import {
 } from '@/utils/prisma-validation';
 import { SessionChapterUser } from '../chapters/login';
 
-type DataResponse = {
-  chapters: Chapter[];
-};
-
 export type NewRecipientInputBody = {
   recipient: Prisma.RecipientCreateInput;
   newUser: Prisma.RecipientUserCreateInput & Prisma.UserCreateInput;
@@ -20,14 +16,14 @@ export type NewRecipientInputBody = {
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<DataResponse | ErrorResponse>,
+  res: NextApiResponse<ErrorResponse>,
 ) {
   switch (req.method) {
     case 'POST':
       try {
         const currentUser = req.session.get('user') as SessionChapterUser;
 
-        // Check if requesting user is logged in and is an admin
+        // Check if requesting user is logged in
         if (
           !currentUser ||
           !currentUser.isLoggedIn ||
