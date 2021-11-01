@@ -38,9 +38,9 @@ export const ChaptersProvider = ({
   }, [initChapters]);
 
   const removeChapter = (id: number) => {
-    if (id in chapters) {
-      delete chapters[id];
-    }
+    const newChapters = { ...chapters };
+    delete newChapters[id];
+    setChapters(newChapters);
   };
 
   const upsertChapter = (addChapter: Chapter) => {
