@@ -12,8 +12,9 @@ import {
   Flex,
   Spacer,
   Divider,
+  SimpleGrid,
 } from '@chakra-ui/react';
-import { Chapter } from '@prisma/client';
+import { Chapter, User } from '@prisma/client';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 
@@ -41,15 +42,47 @@ interface ChapterDetailsProps {
   chapter: Chapter;
 }
 
+interface UserDetailsProps {
+  user?: User;
+}
+
 const ChapterDetails = ({ chapter }: ChapterDetailsProps) => (
   <Box>
     <Heading size="md" mb="2">
       Contact Information
     </Heading>
 
-    <Text>{chapter.contactName}</Text>
-    <Text>{chapter.email}</Text>
-    <Text>{chapter.phoneNumber}</Text>
+    <Divider />
+
+    <Box my="2">
+      <Heading size="xs">Contact Name</Heading>
+      <Text>{chapter.contactName}</Text>
+    </Box>
+
+    <Box my="2">
+      <Heading size="xs">Email</Heading>
+      <Text>{chapter.email}</Text>
+    </Box>
+
+    <Box my="2">
+      <Heading size="xs">Phone Number</Heading>
+      <Text>{chapter.phoneNumber}</Text>
+    </Box>
+  </Box>
+);
+
+const UserDetails = ({ user }: UserDetailsProps) => (
+  <Box>
+    <Heading size="md" mb="2">
+      Login Credentials
+    </Heading>
+
+    <Divider />
+
+    <Box my="2">
+      <Heading size="xs">Username</Heading>
+      <Text>{user?.username || 'username'}</Text>
+    </Box>
   </Box>
 );
 
@@ -95,7 +128,10 @@ const ViewChapterModal = () => {
       <ModalCloseButton />
       <ModalBody pb="5">
         {loading && <Spinner />}
-        {currentChapter && <ChapterDetails chapter={currentChapter} />}
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5">
+          {currentChapter && <ChapterDetails chapter={currentChapter} />}
+          {currentChapter && <UserDetails />}
+        </SimpleGrid>
         <Divider my="5" />
         <Flex>
           <Button
