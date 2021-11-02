@@ -115,8 +115,7 @@ const ViewChapterModal = () => {
   }, [activeChapter, chapters, upsertChapter]);
 
   const onEditClick = () => {
-    // TODO - Open Edit Modal for the active chapter
-    onClose();
+    setModalState(ModalState.EditChapter);
   };
 
   const onDeleteClick = () => {

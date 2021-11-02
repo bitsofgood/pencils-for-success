@@ -11,6 +11,7 @@ import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
 import ViewChapterModal from './ViewChapterModal';
 import DeleteChapterModal from './DeleteChapterModal';
+import EditChapterModal from './EditChapterModal';
 
 // eslint-disable-next-line no-shadow
 export enum ModalState {
@@ -30,6 +31,8 @@ const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
       return <NewChapterModal />;
     case ModalState.ViewChapter:
       return <ViewChapterModal />;
+    case ModalState.EditChapter:
+      return <EditChapterModal />;
     case ModalState.DeleteChapter:
       return <DeleteChapterModal />;
     default:
