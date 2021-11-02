@@ -26,10 +26,11 @@ import {
   ChaptersContext,
   ChaptersProvider,
 } from '@/providers/ChaptersProvider';
+import { ChapterDetails } from '../api/chapters/[chapterId]';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
-  chapters: Chapter[];
+  chapters: ChapterDetails[];
   chapterError?: string;
 }
 
@@ -94,7 +95,15 @@ export const getServerSideProps: GetServerSideProps<AdminDashboardProps> =
     let chapterError = '';
     try {
       const prisma = new PrismaClient();
-      chapters = await prisma.chapter.findMany();
+      chapters = await prisma.chapter.findMany({
+        include: {
+          chapterUser: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
     } catch (e) {
       chapters = [];
       chapterError = 'Failed to retrieve the chapters. Please try again later';

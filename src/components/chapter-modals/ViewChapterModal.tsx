@@ -12,13 +12,14 @@ import {
   Flex,
   Spacer,
   Divider,
+  SimpleGrid,
 } from '@chakra-ui/react';
-import { Chapter } from '@prisma/client';
 import {
   ChapterModalContext,
   ModalState,
 } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 const getChapterDetails = async (id: number) => {
   const response = await fetch(`/api/chapters/${id}`, {
@@ -37,22 +38,50 @@ const getChapterDetails = async (id: number) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson.chapter as Chapter;
+  return responseJson.chapter as ChapterDetails;
 };
 
 interface ChapterDetailsProps {
-  chapter: Chapter;
+  chapter: ChapterDetails;
 }
 
-const ChapterDetails = ({ chapter }: ChapterDetailsProps) => (
+const ChapterInformation = ({ chapter }: ChapterDetailsProps) => (
   <Box>
     <Heading size="md" mb="2">
       Contact Information
     </Heading>
 
-    <Text>{chapter.contactName}</Text>
-    <Text>{chapter.email}</Text>
-    <Text>{chapter.phoneNumber}</Text>
+    <Divider />
+
+    <Box my="2">
+      <Heading size="xs">Contact Name</Heading>
+      <Text>{chapter.contactName}</Text>
+    </Box>
+
+    <Box my="2">
+      <Heading size="xs">Email</Heading>
+      <Text>{chapter.email}</Text>
+    </Box>
+
+    <Box my="2">
+      <Heading size="xs">Phone Number</Heading>
+      <Text>{chapter.phoneNumber}</Text>
+    </Box>
+  </Box>
+);
+
+const UserInformation = ({ chapter }: ChapterDetailsProps) => (
+  <Box>
+    <Heading size="md" mb="2">
+      Login Credentials
+    </Heading>
+
+    <Divider />
+
+    <Box my="2">
+      <Heading size="xs">Username</Heading>
+      <Text>{chapter?.chapterUser?.user?.username}</Text>
+    </Box>
   </Box>
 );
 
@@ -62,7 +91,9 @@ const ViewChapterModal = () => {
   const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const [loading, setLoading] = useState(true);
-  const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
+  const [currentChapter, setCurrentChapter] = useState<ChapterDetails | null>(
+    null,
+  );
 
   useEffect(() => {
     if (activeChapter >= 0) {
@@ -98,7 +129,12 @@ const ViewChapterModal = () => {
       <ModalCloseButton />
       <ModalBody pb="5">
         {loading && <Spinner />}
-        {currentChapter && <ChapterDetails chapter={currentChapter} />}
+        {currentChapter && (
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5">
+            <ChapterInformation chapter={currentChapter} />
+            <UserInformation chapter={currentChapter} />
+          </SimpleGrid>
+        )}
         <Divider my="5" />
         <Flex>
           <Button

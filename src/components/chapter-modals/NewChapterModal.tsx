@@ -17,6 +17,7 @@ import { emailRegex } from '@/utils/prisma-validation';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 import { PostChapterResponse } from '@/pages/api/chapters';
 import { ErrorResponse } from '@/utils/error';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 interface NewChapterFormBody {
   chapterName: string;
@@ -59,7 +60,7 @@ const createNewChapter = async (data: NewChapterFormBody) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson.chapter;
+  return responseJson.chapter as ChapterDetails;
 };
 
 const NewChapterModal = () => {

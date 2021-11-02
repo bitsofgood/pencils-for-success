@@ -1,4 +1,10 @@
-import { PrismaClient, Prisma, Chapter } from '@prisma/client';
+import {
+  PrismaClient,
+  Prisma,
+  Chapter,
+  ChapterUser,
+  User,
+} from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
 import { SessionChapterUser } from './login';
@@ -13,15 +19,16 @@ interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
 }
 
-export type ChapterInfo = {
-  email: string;
-  contactName: string;
-  chapterName: string;
-  phoneNumber: string | null;
+export type ChapterDetails = Chapter & {
+  chapterUser:
+    | (ChapterUser & {
+        user: User;
+      })
+    | null;
 };
 
 export type ChapterResponse = {
-  chapter: Chapter;
+  chapter: Chapter | ChapterDetails;
 };
 
 async function handler(
@@ -183,6 +190,13 @@ async function handler(
           const existingChapter = await prisma.chapter.findUnique({
             where: {
               id: parsedChapterId,
+            },
+            include: {
+              chapterUser: {
+                include: {
+                  user: true,
+                },
+              },
             },
           });
 
