@@ -64,7 +64,7 @@ const EditChapterModal = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<Chapter>({
     defaultValues: {
       ...chapterToEdit,
@@ -198,6 +198,7 @@ const EditChapterModal = () => {
             <Button
               colorScheme="blue"
               isLoading={isSubmitting || loading}
+              disabled={!isDirty}
               type="submit"
             >
               Save
