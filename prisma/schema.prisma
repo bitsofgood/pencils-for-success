@@ -11,31 +11,31 @@ model User {
   id        Int            @id @default(autoincrement())
   username  String         @unique
   hash      String
-  admin     AdminUser?
   chapter   ChapterUser?
+  admin     AdminUser?
   recipient RecipientUser?
 }
 
 model ChapterUser {
   id        Int     @id @default(autoincrement())
-  userId    Int     @unique(map: "ChapterUser_userId_unique")
-  chapterId Int     @unique(map: "ChapterUser_chapterId_unique")
-  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  userId    Int     @unique
   user      User    @relation(fields: [userId], references: [id])
+  chapterId Int     @unique
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
 }
 
 model AdminUser {
   id     Int  @id @default(autoincrement())
-  userId Int  @unique(map: "AdminUser_userId_unique")
+  userId Int  @unique
   user   User @relation(fields: [userId], references: [id])
 }
 
 model RecipientUser {
   id          Int       @id @default(autoincrement())
-  userId      Int       @unique(map: "RecipientUser_userId_unique")
-  recipientId Int       @unique(map: "RecipientUser_recipientId_unique")
-  recipient   Recipient @relation(fields: [recipientId], references: [id])
+  userId      Int       @unique
   user        User      @relation(fields: [userId], references: [id])
+  recipientId Int       @unique
+  recipient   Recipient @relation(fields: [recipientId], references: [id])
 }
 
 model Recipient {
@@ -60,6 +60,11 @@ model Chapter {
   recipients  Recipient[]
 }
 
+enum SupplyRequestStatus {
+  PENDING
+  COMPLETE
+}
+
 model SupplyRequest {
   id          Int                 @id @default(autoincrement())
   quantity    Int
@@ -76,9 +81,4 @@ model Item {
   id             Int             @id @default(autoincrement())
   name           String          @unique
   supplyRequests SupplyRequest[]
-}
-
-enum SupplyRequestStatus {
-  PENDING
-  COMPLETE
 }
