@@ -1,8 +1,16 @@
 import React, { useContext } from 'react';
-import { Modal, ModalOverlay } from '@chakra-ui/react';
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from '@chakra-ui/react';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
 import ViewChapterModal from './ViewChapterModal';
+import DeleteChapterModal from './DeleteChapterModal';
 
 // eslint-disable-next-line no-shadow
 export enum ModalState {
@@ -22,8 +30,18 @@ const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
       return <NewChapterModal />;
     case ModalState.ViewChapter:
       return <ViewChapterModal />;
+    case ModalState.DeleteChapter:
+      return <DeleteChapterModal />;
     default:
-      return <h1>No Modal created for this state</h1>;
+      return (
+        <ModalContent>
+          <ModalHeader>Chapter</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb="5">
+            <h1>No Modal created for this action</h1>
+          </ModalBody>
+        </ModalContent>
+      );
   }
 };
 

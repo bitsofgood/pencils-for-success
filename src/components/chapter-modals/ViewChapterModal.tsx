@@ -14,7 +14,10 @@ import {
   Divider,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { ChapterModalContext } from '@/providers/ChapterModalProvider';
+import {
+  ChapterModalContext,
+  ModalState,
+} from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
@@ -83,7 +86,8 @@ const UserInformation = ({ chapter }: ChapterDetailsProps) => (
 );
 
 const ViewChapterModal = () => {
-  const { onClose, activeChapter } = useContext(ChapterModalContext);
+  const { onClose, activeChapter, setModalState } =
+    useContext(ChapterModalContext);
   const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const [loading, setLoading] = useState(true);
@@ -116,8 +120,7 @@ const ViewChapterModal = () => {
   };
 
   const onDeleteClick = () => {
-    // TODO - Open delete confirmation modal for the active chapter
-    onClose();
+    setModalState(ModalState.DeleteChapter);
   };
 
   return (
