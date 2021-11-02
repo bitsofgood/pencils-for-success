@@ -14,9 +14,9 @@ import {
   Divider,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { Chapter, User } from '@prisma/client';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 const getChapterDetails = async (id: number) => {
   const response = await fetch(`/api/chapters/${id}`, {
@@ -35,18 +35,14 @@ const getChapterDetails = async (id: number) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson.chapter as Chapter;
+  return responseJson.chapter as ChapterDetails;
 };
 
 interface ChapterDetailsProps {
-  chapter: Chapter;
+  chapter: ChapterDetails;
 }
 
-interface UserDetailsProps {
-  user?: User;
-}
-
-const ChapterDetails = ({ chapter }: ChapterDetailsProps) => (
+const ChapterInformation = ({ chapter }: ChapterDetailsProps) => (
   <Box>
     <Heading size="md" mb="2">
       Contact Information
@@ -71,7 +67,7 @@ const ChapterDetails = ({ chapter }: ChapterDetailsProps) => (
   </Box>
 );
 
-const UserDetails = ({ user }: UserDetailsProps) => (
+const UserInformation = ({ chapter }: ChapterDetailsProps) => (
   <Box>
     <Heading size="md" mb="2">
       Login Credentials
@@ -81,7 +77,7 @@ const UserDetails = ({ user }: UserDetailsProps) => (
 
     <Box my="2">
       <Heading size="xs">Username</Heading>
-      <Text>{user?.username || 'username'}</Text>
+      <Text>{chapter?.chapterUser?.user?.username}</Text>
     </Box>
   </Box>
 );
@@ -91,7 +87,9 @@ const ViewChapterModal = () => {
   const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const [loading, setLoading] = useState(true);
-  const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
+  const [currentChapter, setCurrentChapter] = useState<ChapterDetails | null>(
+    null,
+  );
 
   useEffect(() => {
     if (activeChapter >= 0) {
@@ -128,10 +126,12 @@ const ViewChapterModal = () => {
       <ModalCloseButton />
       <ModalBody pb="5">
         {loading && <Spinner />}
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5">
-          {currentChapter && <ChapterDetails chapter={currentChapter} />}
-          {currentChapter && <UserDetails />}
-        </SimpleGrid>
+        {currentChapter && (
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing="5">
+            <ChapterInformation chapter={currentChapter} />
+            <UserInformation chapter={currentChapter} />
+          </SimpleGrid>
+        )}
         <Divider my="5" />
         <Flex>
           <Button
