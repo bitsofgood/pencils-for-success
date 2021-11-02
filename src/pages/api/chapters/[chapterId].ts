@@ -1,4 +1,10 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import {
+  PrismaClient,
+  Prisma,
+  Chapter,
+  ChapterUser,
+  User,
+} from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
 import { SessionChapterUser } from './login';
@@ -13,16 +19,21 @@ interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
 }
 
-export type ChapterInfo = {
-  email: string;
-  contactName: string;
-  chapterName: string;
-  phoneNumber: string | null;
+export type ChapterDetails = Chapter & {
+  chapterUser:
+    | (ChapterUser & {
+        user: User;
+      })
+    | null;
+};
+
+export type ChapterResponse = {
+  chapter: Chapter | ChapterDetails;
 };
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse | ChapterInfo>,
+  res: NextApiResponse<ErrorResponse | ChapterResponse>,
 ) {
   const { chapterId } = req.query;
 
@@ -38,14 +49,14 @@ async function handler(
 
   const parsedChapterId = Number(chapterId);
 
-  // Check if admin or if the current chapter user match the chapter they want to update
-  const isUpdateAuthorized =
+  // Check if admin or if the current chapter user match the chapter they want to access
+  const isAuthorizedUser =
     user.admin !== undefined ||
     (user.chapterUser && user.chapterUser.chapterId === parsedChapterId);
 
   switch (req.method) {
     case 'PUT':
-      if (!isUpdateAuthorized) {
+      if (!isAuthorizedUser) {
         return res.status(401).json({
           message: 'Please login as an authorized user to access the resource',
           error: true,
@@ -175,10 +186,17 @@ async function handler(
         const prisma = new PrismaClient();
 
         // checks to see if the user is part of the chapter
-        if (isUpdateAuthorized) {
+        if (isAuthorizedUser) {
           const existingChapter = await prisma.chapter.findUnique({
             where: {
               id: parsedChapterId,
+            },
+            include: {
+              chapterUser: {
+                include: {
+                  user: true,
+                },
+              },
             },
           });
 
@@ -190,14 +208,8 @@ async function handler(
             });
           }
 
-          // return information if they are
-          const { contactName, email, chapterName, phoneNumber } =
-            existingChapter;
           return res.status(200).json({
-            contactName,
-            email,
-            chapterName,
-            phoneNumber,
+            chapter: existingChapter,
           });
         }
         return res.status(400).json({

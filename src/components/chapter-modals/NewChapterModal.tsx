@@ -14,6 +14,10 @@ import {
 import { useForm } from 'react-hook-form';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { emailRegex } from '@/utils/prisma-validation';
+import { ChaptersContext } from '@/providers/ChaptersProvider';
+import { PostChapterResponse } from '@/pages/api/chapters';
+import { ErrorResponse } from '@/utils/error';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 interface NewChapterFormBody {
   chapterName: string;
@@ -46,7 +50,8 @@ const createNewChapter = async (data: NewChapterFormBody) => {
     },
   });
 
-  const responseJson = await response.json();
+  const responseJson = (await response.json()) as PostChapterResponse &
+    ErrorResponse;
   if (response.status !== 200) {
     throw Error(responseJson.message);
   }
@@ -55,7 +60,7 @@ const createNewChapter = async (data: NewChapterFormBody) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson;
+  return responseJson.chapter as ChapterDetails;
 };
 
 const NewChapterModal = () => {
@@ -66,12 +71,14 @@ const NewChapterModal = () => {
   } = useForm();
 
   const { onClose } = useContext(ChapterModalContext);
+  const { upsertChapter } = useContext(ChaptersContext);
 
   const onSubmit = async (x: NewChapterFormBody) => {
     try {
-      const response = await createNewChapter(x);
+      const newChapter = await createNewChapter(x);
+      upsertChapter(newChapter);
       onClose();
-      alert(response.message);
+      alert(`Sucessfully added new chapter: ${newChapter.id}`);
     } catch (e) {
       alert(e);
     }

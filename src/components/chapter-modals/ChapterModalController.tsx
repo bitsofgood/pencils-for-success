@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Modal, ModalOverlay } from '@chakra-ui/react';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
+import ViewChapterModal from './ViewChapterModal';
 
 // eslint-disable-next-line no-shadow
 export enum ModalState {
@@ -19,6 +20,8 @@ const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
   switch (state) {
     case ModalState.NewChapter:
       return <NewChapterModal />;
+    case ModalState.ViewChapter:
+      return <ViewChapterModal />;
     default:
       return <h1>No Modal created for this state</h1>;
   }

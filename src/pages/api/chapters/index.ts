@@ -8,9 +8,14 @@ import {
   validateChapterInput,
   validateNewUserInput,
 } from '@/utils/prisma-validation';
+import { ChapterDetails } from './[chapterId]';
 
-type DataResponse = {
+export type GetChapterResponse = {
   chapters: Chapter[];
+};
+
+export type PostChapterResponse = {
+  chapter: ChapterDetails | null;
 };
 
 export type NewChapterInputBody = {
@@ -20,7 +25,9 @@ export type NewChapterInputBody = {
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<DataResponse | ErrorResponse>,
+  res: NextApiResponse<
+    GetChapterResponse | PostChapterResponse | ErrorResponse
+  >,
 ) {
   switch (req.method) {
     case 'GET':
@@ -89,9 +96,23 @@ async function handler(
           data,
         });
 
+        // We cannot retrieve newly created records - https://github.com/prisma/prisma/discussions/2367#discussioncomment-9059
+        // As a workaround, query the details for newly created chapter to get information for chapter user and user
+        const chapterWithUser = await prisma.chapter.findUnique({
+          where: {
+            id: createdChapter.id,
+          },
+          include: {
+            chapterUser: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+
         return res.status(200).json({
-          error: false,
-          message: `Successfully created a chapter: ${createdChapter.id}`,
+          chapter: chapterWithUser,
         });
       } catch (e) {
         return serverErrorHandler(e, res);
