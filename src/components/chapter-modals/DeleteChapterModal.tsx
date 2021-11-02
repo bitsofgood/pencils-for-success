@@ -79,7 +79,11 @@ const DeleteChapterModal = () => {
         <Text color="gray.500">This action cannot be undone</Text>
         <Divider my="5" />
         <Flex>
-          <Button colorScheme="red" disabled={loading} onClick={onConfirmation}>
+          <Button
+            colorScheme="red"
+            isLoading={loading}
+            onClick={onConfirmation}
+          >
             Delete
           </Button>
           <Spacer />
