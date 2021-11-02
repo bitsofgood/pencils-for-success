@@ -23,12 +23,29 @@ export function validateUsername(username: string | undefined) {
   if (isEmpty(username)) {
     throw Error('Please provide a valid username');
   }
+  if (
+    !(username === undefined) &&
+    (username.length < 6 || username.length > 30)
+  ) {
+    throw Error('Please provide a username of valid length');
+  }
+  if (!(username === undefined)) {
+    if (username.match(/^[a-zA-Z0-9_]*$/)) {
+      throw Error('Please provide an alphanumeric username');
+    }
+  }
 }
 
 export function validatePassword(password: string | undefined) {
   // TODO: Add constraints to password as required
   if (isEmpty(password)) {
     throw Error('Please provide a valid password');
+  }
+  if (
+    !(password === undefined) &&
+    (password.length < 8 || password.length > 128)
+  ) {
+    throw Error('Please provide a password of valid length');
   }
 }
 
