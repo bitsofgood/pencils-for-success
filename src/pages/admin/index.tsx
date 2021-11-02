@@ -14,12 +14,11 @@ import { Chapter, PrismaClient } from '@prisma/client';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
-import ChapterModalController, {
-  ModalState,
-} from '@/components/chapter-modals/ChapterModalController';
+import ChapterModalController from '@/components/chapter-modals/ChapterModalController';
 import {
   ChapterModalContext,
   ChapterModalProvider,
+  ModalState,
 } from '@/providers/ChapterModalProvider';
 import ChapterCard from '@/components/ChapterCard';
 import {

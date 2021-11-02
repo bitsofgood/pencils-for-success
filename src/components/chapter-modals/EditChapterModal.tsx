@@ -1,10 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
   Button,
-  Text,
   Flex,
   Spacer,
   Divider,
@@ -14,6 +13,7 @@ import {
   Input,
   FormErrorMessage,
   SimpleGrid,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { Chapter } from '@prisma/client';
@@ -23,12 +23,20 @@ import {
 } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 import { emailRegex } from '@/utils/prisma-validation';
+import EditConfirmationModal from './EditConfirmationModal';
 
 const EditChapterModal = () => {
-  const { activeChapter, setModalState } = useContext(ChapterModalContext);
+  const { activeChapter, setModalState, currentModalState } =
+    useContext(ChapterModalContext);
   const { chapters } = useContext(ChaptersContext);
 
   const chapterToEdit = chapters[activeChapter];
+  const [editedChapter, setEditedChapter] = useState<Chapter>(chapterToEdit);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setEditedChapter(chapterToEdit);
+  }, [chapterToEdit, currentModalState]);
 
   const {
     handleSubmit,
@@ -40,12 +48,26 @@ const EditChapterModal = () => {
     },
   });
 
+  // Manage edit confirmation modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const onCancel = () => {
     setModalState(ModalState.ViewChapter);
   };
 
   const onSubmit = async (data: Chapter) => {
-    alert('Updating chapter');
+    // If valid inputs, open confirmation modal
+    setEditedChapter(data);
+    onOpen();
+  };
+
+  const onConfirmation = async () => {
+    setLoading(true);
+    console.log(editedChapter);
+    await new Promise((resolve) => {
+      setTimeout(() => resolve('Updated the chapter'), 3000);
+    });
+    setLoading(false);
   };
 
   return (
@@ -53,6 +75,12 @@ const EditChapterModal = () => {
       <ModalHeader>Edit Chapter {chapterToEdit?.chapterName}</ModalHeader>
       <ModalCloseButton />
       <ModalBody pb="5" mt="5" textAlign="center">
+        <EditConfirmationModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onConfirmation={onConfirmation}
+          chapter={chapterToEdit}
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isRequired
@@ -140,11 +168,20 @@ const EditChapterModal = () => {
           <Divider my="5" />
 
           <Flex>
-            <Button colorScheme="blue" isLoading={isSubmitting} type="submit">
+            <Button
+              colorScheme="blue"
+              isLoading={isSubmitting || loading}
+              type="submit"
+            >
               Save
             </Button>
+
             <Spacer />
-            <Button disabled={isSubmitting} onClick={onCancel} variant="ghost">
+            <Button
+              disabled={isSubmitting || loading}
+              onClick={onCancel}
+              variant="ghost"
+            >
               Cancel
             </Button>
           </Flex>
