@@ -22,13 +22,36 @@ import {
   ModalState,
 } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
-import { emailRegex } from '@/utils/prisma-validation';
+import { emailRegex, validateChapterInput } from '@/utils/prisma-validation';
 import EditConfirmationModal from './EditConfirmationModal';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
+
+const editChapter = async (id: number, updatedChapter: Chapter) => {
+  validateChapterInput(updatedChapter);
+
+  const response = await fetch(`/api/chapters/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ updatedChapter }),
+  });
+
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  return responseJson.chapter as ChapterDetails;
+};
 
 const EditChapterModal = () => {
-  const { activeChapter, setModalState, currentModalState } =
-    useContext(ChapterModalContext);
-  const { chapters } = useContext(ChaptersContext);
+  const { activeChapter, setModalState } = useContext(ChapterModalContext);
+  const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const chapterToEdit = chapters[activeChapter];
   const [editedChapter, setEditedChapter] = useState<Chapter>(chapterToEdit);
@@ -36,7 +59,7 @@ const EditChapterModal = () => {
 
   useEffect(() => {
     setEditedChapter(chapterToEdit);
-  }, [chapterToEdit, currentModalState]);
+  }, [chapterToEdit]);
 
   const {
     handleSubmit,
@@ -63,11 +86,15 @@ const EditChapterModal = () => {
 
   const onConfirmation = async () => {
     setLoading(true);
-    console.log(editedChapter);
-    await new Promise((resolve) => {
-      setTimeout(() => resolve('Updated the chapter'), 3000);
-    });
-    setLoading(false);
+    editChapter(activeChapter, editedChapter)
+      .then((newChapter) => {
+        upsertChapter(newChapter);
+        setModalState(ModalState.ViewChapter);
+      })
+      .catch((err) => {
+        alert(err);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
