@@ -9,6 +9,8 @@ import {
   Box,
   Flex,
   Spacer,
+  Grid,
+  Image,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
