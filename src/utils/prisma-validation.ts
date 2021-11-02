@@ -3,12 +3,12 @@ import { Prisma } from '@prisma/client';
 export const emailRegex =
   /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
-function isEmpty(input: string | undefined) {
+function isNonEmpty(input: string | undefined): input is string {
   return typeof input === 'undefined' || input.trim().length === 0;
 }
 
 export function validateEmail(email: string | undefined) {
-  if (isEmpty(email)) {
+  if (!isNonEmpty(email)) {
     throw Error('Please provide an email address');
   }
 
@@ -19,16 +19,24 @@ export function validateEmail(email: string | undefined) {
 }
 
 export function validateUsername(username: string | undefined) {
-  // TODO: Add constraints to username as required
-  if (isEmpty(username)) {
+  if (!isNonEmpty(username)) {
     throw Error('Please provide a valid username');
+  }
+  if (username.length < 6 || username.length > 30) {
+    throw Error('Please provide a username of valid length');
+  }
+
+  if (username.match(/^[a-zA-Z0-9_]*$/)) {
+    throw Error('Please provide an alphanumeric username');
   }
 }
 
 export function validatePassword(password: string | undefined) {
-  // TODO: Add constraints to password as required
-  if (isEmpty(password)) {
+  if (!isNonEmpty(password)) {
     throw Error('Please provide a valid password');
+  }
+  if (password.length < 8 || password.length > 128) {
+    throw Error('Please provide a password of valid length');
   }
 }
 
@@ -46,11 +54,11 @@ export function validateChapterInput(
   if (chapter) {
     const { chapterName, contactName, email, phoneNumber } = chapter;
 
-    if (isEmpty(chapterName)) {
+    if (!isNonEmpty(chapterName)) {
       throw Error('Please provide a valid chapter name');
     }
 
-    if (isEmpty(contactName)) {
+    if (!isNonEmpty(contactName)) {
       throw Error('Please provide a valid chapter contact name');
     }
     validateEmail(email);
@@ -70,11 +78,11 @@ export function validateRecipientInput(
   if (recipient) {
     const { name, email, phoneNumber, location } = recipient;
 
-    if (isEmpty(name)) {
+    if (!isNonEmpty(name)) {
       throw Error('Please provide a valid recipient name');
     }
 
-    if (isEmpty(location)) {
+    if (!isNonEmpty(location)) {
       throw Error('Please provide a valid location');
     }
 
