@@ -4,7 +4,7 @@ export const emailRegex =
   /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 function isNonEmpty(input: string | undefined): input is string {
-  return typeof input === 'undefined' || input.trim().length === 0;
+  return typeof input !== 'undefined' && input.trim().length > 0;
 }
 
 export function validateEmail(email: string | undefined) {
