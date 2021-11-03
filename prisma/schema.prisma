@@ -18,23 +18,23 @@ model User {
 
 model ChapterUser {
   id        Int     @id @default(autoincrement())
-  userId    Int
+  userId    Int     @unique
   user      User    @relation(fields: [userId], references: [id])
-  chapterId Int
+  chapterId Int     @unique
   chapter   Chapter @relation(fields: [chapterId], references: [id])
 }
 
 model AdminUser {
   id     Int  @id @default(autoincrement())
-  userId Int
+  userId Int  @unique
   user   User @relation(fields: [userId], references: [id])
 }
 
 model RecipientUser {
   id          Int       @id @default(autoincrement())
-  userId      Int
+  userId      Int       @unique
   user        User      @relation(fields: [userId], references: [id])
-  recipientId Int
+  recipientId Int       @unique
   recipient   Recipient @relation(fields: [recipientId], references: [id])
 }
 
