@@ -1,6 +1,6 @@
 // This is a dummy card to test functionality to view/edit/delete chapter.
 
-import { Box } from '@chakra-ui/react';
+import { Heading, Image, Text, Flex } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { Chapter } from '@prisma/client';
 import {
@@ -24,16 +24,31 @@ function ChapterCard({ chapter }: ChapterCardProps) {
   };
 
   return (
-    <Box
+    <Flex
       onClick={() => onChapterClick()}
       boxShadow="lg"
-      borderRadius="md"
+      borderRadius="lg"
       borderWidth="1px"
       cursor="pointer"
-      py="5"
+      direction="column"
+      alignItems="baseline"
+      padding="5"
     >
-      {chapter.chapterName}
-    </Box>
+      <Heading size="md" paddingBottom="5">
+        {chapter.chapterName}
+      </Heading>
+      <Image
+        src="https://picsum.photos/200"
+        alt=""
+        w="100%"
+        maxH="250px"
+        alignSelf="center"
+        borderRadius="xl"
+      />
+      <Text paddingTop="2">{chapter.contactName}</Text>
+      <Text paddingTop="2">{chapter.email}</Text>
+      <Text paddingTop="2">{chapter.phoneNumber}</Text>
+    </Flex>
   );
 }
 
