@@ -28,7 +28,7 @@ export type ChapterDetails = Chapter & {
 };
 
 export type ChapterResponse = {
-  chapter: Chapter | ChapterDetails;
+  chapter: Chapter | ChapterDetails | null;
 };
 
 async function handler(
@@ -69,6 +69,13 @@ async function handler(
           where: {
             id: parsedChapterId,
           },
+          include: {
+            chapterUser: {
+              include: {
+                user: true,
+              },
+            },
+          },
         });
 
         if (!chapterToUpdate) {
@@ -97,8 +104,13 @@ async function handler(
           });
         }
 
+        const { contactName, chapterName, email, phoneNumber } = updatedChapter;
+
         const data = {
-          ...updatedChapter,
+          contactName,
+          chapterName,
+          email,
+          phoneNumber,
         };
 
         await prisma.chapter.update({
@@ -108,9 +120,13 @@ async function handler(
           data,
         });
 
+        const returnChapter = {
+          ...chapterToUpdate,
+          ...data,
+        };
+
         return res.status(200).json({
-          message: 'Successfully updated the chapter',
-          error: false,
+          chapter: returnChapter as ChapterDetails,
         });
       } catch (e) {
         // console.error(e);

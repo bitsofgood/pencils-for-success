@@ -7,18 +7,14 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import { ChapterModalContext } from '@/providers/ChapterModalProvider';
+import {
+  ChapterModalContext,
+  ModalState,
+} from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
 import ViewChapterModal from './ViewChapterModal';
 import DeleteChapterModal from './DeleteChapterModal';
-
-// eslint-disable-next-line no-shadow
-export enum ModalState {
-  NewChapter,
-  ViewChapter,
-  EditChapter,
-  DeleteChapter,
-}
+import EditChapterModal from './EditChapterModal';
 
 interface ChapterModalContentProps {
   state: ModalState;
@@ -30,6 +26,8 @@ const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
       return <NewChapterModal />;
     case ModalState.ViewChapter:
       return <ViewChapterModal />;
+    case ModalState.EditChapter:
+      return <EditChapterModal />;
     case ModalState.DeleteChapter:
       return <DeleteChapterModal />;
     default:
