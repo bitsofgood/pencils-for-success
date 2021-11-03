@@ -9,8 +9,6 @@ import {
   Box,
   Flex,
   Spacer,
-  Grid,
-  Image,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
@@ -51,7 +49,7 @@ function ChapterCardsGrid() {
   const { chapters } = useContext(ChaptersContext);
 
   return (
-    <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} my="5" spacing="5">
+    <SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} my="5" spacing="5">
       {Object.values(chapters).map((x) => (
         <ChapterCard chapter={x} key={x.id} />
       ))}
