@@ -40,7 +40,8 @@ function ChapterCard({ chapter }: ChapterCardProps) {
       <Image
         src="https://picsum.photos/200"
         alt=""
-        w="95%"
+        w="100%"
+        maxH="250px"
         alignSelf="center"
         borderRadius="xl"
       />
