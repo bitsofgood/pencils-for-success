@@ -132,3 +132,19 @@ export function validateNewUserInput(user: Prisma.UserCreateInput | undefined) {
     throw Error('Please provide a valid chapter user');
   }
 }
+
+export function validateNewSupplyRequest(
+  supplyRequest: Prisma.SupplyRequestCreateInput,
+) {
+  if (supplyRequest) {
+    const validStatus =
+      supplyRequest.status !== 'PENDING' && supplyRequest.status !== 'COMPLETE';
+
+    const validnote = supplyRequest.note && supplyRequest.note !== '';
+    if (supplyRequest.quantity < 0 || validStatus || validnote) {
+      throw Error('Please provide valid input fields for the supply request');
+    }
+  } else {
+    throw Error('Please provide valid supply request');
+  }
+}
