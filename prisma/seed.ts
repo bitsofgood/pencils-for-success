@@ -81,7 +81,11 @@ async function main() {
       name: 'Recipient Only',
       email: 'recipient_only@pfs.org',
       phoneNumber: '5555555555',
-      location: 'Atlanta',
+      primaryStreetAddress: '350 Ferst Drive',
+      city: 'Atlanta',
+      state: 'Georgia',
+      country: 'USA',
+      postalCode: '30332',
       chapter: {
         connect: {
           id: chapter.id,
@@ -105,7 +109,12 @@ async function main() {
               name: 'Recipient User',
               email: 'recipient_user@pfs.org',
               phoneNumber: '4444444444',
-              location: 'Savannah',
+              primaryStreetAddress: '1 Abercorn Street',
+              secondaryStreetAddress: 'Apt 420',
+              city: 'Savannah',
+              state: 'Georgia',
+              country: 'USA',
+              postalCode: '31419',
               chapter: {
                 connect: {
                   id: chapter.id,
