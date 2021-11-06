@@ -121,23 +121,6 @@ async function main() {
       recipient: {
         create: {
           recipient: {
-            create: {
-              name: 'Recipient User',
-              email: 'recipient_user@pfs.org',
-              contactName: 'General Oglethorpe',
-              phoneNumber: '4444444444',
-              primaryStreetAddress: '1 Abercorn Street',
-              secondaryStreetAddress: 'Apt 420',
-              city: 'Savannah',
-              state: 'Georgia',
-              country: 'USA',
-              postalCode: '31419',
-              chapter: {
-                connect: {
-                  id: chapter.id,
-                },
-              },
-            },
             connect: {
               id: recipient.id,
             },
