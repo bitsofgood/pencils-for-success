@@ -14,6 +14,7 @@ import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
 import { validateChapterInput } from '@/utils/prisma-validation';
+import { generateChapterSlug } from '@/utils/slug';
 
 interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
@@ -106,9 +107,12 @@ async function handler(
 
         const { contactName, chapterName, email, phoneNumber } = updatedChapter;
 
+        const chapterSlug = generateChapterSlug(chapterName);
+
         const data = {
           contactName,
           chapterName,
+          chapterSlug,
           email,
           phoneNumber,
         };
