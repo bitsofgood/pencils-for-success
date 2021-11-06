@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SupplyRequestStatus } from '@prisma/client';
 import { generateChapterSlug } from '../src/utils/slug';
 import { getPasswordHash } from '../src/utils/password';
 
@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 // List of passwords for initial User accounts
 const PASSWORDS = {
-  basicUser: 'bitsofgood',
   adminUser: 'bog_admin',
   chapterUser: 'bog_chapter',
   recipientUser: 'bog_recipient',
@@ -14,17 +13,6 @@ const PASSWORDS = {
 
 // Create basic models and relations
 async function main() {
-  // Basic User
-  const basicUserPassword = await getPasswordHash(PASSWORDS.basicUser);
-  await prisma.user.upsert({
-    where: { username: 'panda' },
-    update: {},
-    create: {
-      username: 'panda',
-      hash: basicUserPassword,
-    },
-  });
-
   // Admin User only
   const adminUserPassword = await getPasswordHash(PASSWORDS.adminUser);
   await prisma.user.upsert({
@@ -99,6 +87,29 @@ async function main() {
   });
 
   // Recipient User with Recipient
+  const recipient = await prisma.recipient.upsert({
+    where: {
+      name: 'Recipient with User',
+    },
+    update: {},
+    create: {
+      name: 'Recipient with User',
+      email: 'recipient_user@pfs.org',
+      phoneNumber: '4444444444',
+      primaryStreetAddress: '460 4th St NW',
+      secondaryStreetAddress: 'Room 420',
+      city: 'Atlanta',
+      state: 'Georgia',
+      country: 'USA',
+      postalCode: '30313',
+      chapter: {
+        connect: {
+          id: chapter.id,
+        },
+      },
+    },
+  });
+
   const recipientUserPassword = await getPasswordHash(PASSWORDS.recipientUser);
   await prisma.user.upsert({
     where: { username: 'recipient_user' },
@@ -109,27 +120,49 @@ async function main() {
       recipient: {
         create: {
           recipient: {
-            create: {
-              name: 'Recipient User',
-              email: 'recipient_user@pfs.org',
-              contactName: 'General Oglethorpe',
-              phoneNumber: '4444444444',
-              primaryStreetAddress: '1 Abercorn Street',
-              secondaryStreetAddress: 'Apt 420',
-              city: 'Savannah',
-              state: 'Georgia',
-              country: 'USA',
-              postalCode: '31419',
-              chapter: {
-                connect: {
-                  id: chapter.id,
-                },
-              },
+            connect: {
+              id: recipient.id,
             },
           },
         },
       },
     },
+  });
+
+  // Add items
+  const items = ['computers', 'pencils', 'pens', 'erasers', 'markers', 'paper'];
+  await Promise.all(
+    items.map((item) =>
+      prisma.item.upsert({
+        where: {
+          name: item,
+        },
+        update: {},
+        create: {
+          name: item,
+        },
+      }),
+    ),
+  );
+
+  // Insert supply requests
+  const supplyRequestData = [
+    {
+      quantity: 5,
+      status: SupplyRequestStatus.PENDING,
+      note: 'extra details about the supply request',
+      recipientId: recipient.id,
+    },
+    {
+      quantity: 10,
+      status: SupplyRequestStatus.COMPLETE,
+      note: 'supply request has been completed',
+      recipientId: recipient.id,
+    },
+  ];
+
+  await prisma.supplyRequest.createMany({
+    data: supplyRequestData,
   });
 }
 
