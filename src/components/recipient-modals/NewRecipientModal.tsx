@@ -280,7 +280,7 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
               id="secondaryStreetAddress"
             >
               <Input
-                placeholder="Apt, Suite, etc."
+                placeholder="Apt, Suite, etc. (Optional)"
                 {...register('secondaryStreetAddress')}
                 borderColor="black"
               />
