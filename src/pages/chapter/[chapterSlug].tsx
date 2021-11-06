@@ -20,7 +20,7 @@ interface ChapterMapPageProps {
 
 interface IStaticPropsContextParams {
   params: {
-    chapterName: string;
+    chapterSlug: string;
   };
 }
 
@@ -68,14 +68,14 @@ export async function getStaticPaths() {
   const prisma = new PrismaClient();
   const rawChapters = await prisma.chapter.findMany({
     select: {
-      chapterName: true,
+      chapterSlug: true,
     },
   });
 
-  const chapters = rawChapters.map((x) => x.chapterName.trim().toLowerCase());
+  const chapters = rawChapters.map((x) => x.chapterSlug);
 
-  const paths = chapters.map((chapterName) => ({
-    params: { chapterName },
+  const paths = chapters.map((chapterSlug) => ({
+    params: { chapterSlug },
   }));
 
   return { paths, fallback: false };
@@ -83,12 +83,12 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: IStaticPropsContextParams) {
   // TODO - Figure out how to allow case insensitive searches in Prisma
-  const { chapterName } = params;
+  const { chapterSlug } = params;
 
   const prisma = new PrismaClient();
   const chapter = await prisma.chapter.findUnique({
     where: {
-      chapterName: 'Georgia',
+      chapterSlug,
     },
     include: {
       recipients: true,
