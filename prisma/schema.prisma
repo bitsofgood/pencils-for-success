@@ -58,6 +58,7 @@ model Recipient {
 model Chapter {
   id          Int          @id @default(autoincrement())
   chapterName String       @unique
+  chapterSlug String       @unique
   contactName String
   email       String
   phoneNumber String?

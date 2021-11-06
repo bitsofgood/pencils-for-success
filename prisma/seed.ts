@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { generateChapterSlug } from '../src/utils/slug';
 import { getPasswordHash } from '../src/utils/password';
 
 const prisma = new PrismaClient();
@@ -44,6 +45,7 @@ async function main() {
     update: {},
     create: {
       chapterName: 'Texas',
+      chapterSlug: generateChapterSlug('Texas'),
       contactName: 'Texas Chapter User',
       email: 'texas@pfs.org',
       phoneNumber: '4048888888',
@@ -57,6 +59,7 @@ async function main() {
     update: {},
     create: {
       chapterName: 'Georgia',
+      chapterSlug: generateChapterSlug('Georgia'),
       email: 'georgia@pfs.org',
       contactName: 'Georgia Chapter User',
       phoneNumber: '4041110000',

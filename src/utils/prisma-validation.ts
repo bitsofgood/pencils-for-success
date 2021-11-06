@@ -26,7 +26,7 @@ export function validateUsername(username: string | undefined) {
     throw Error('Please provide a username of valid length');
   }
 
-  if (username.match(/^[a-zA-Z0-9_]*$/)) {
+  if (!username.match(/^[a-zA-Z0-9_]*$/)) {
     throw Error('Please provide an alphanumeric username');
   }
 }
