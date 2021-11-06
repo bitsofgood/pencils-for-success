@@ -8,28 +8,35 @@ import {
   Box,
   Flex,
   Spacer,
+  Spinner,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
-import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
-import ChapterCard from '@/components/ChapterCard';
-import { ChaptersContext } from '@/providers/ChaptersProvider';
 import { SessionChapterUser } from '../api/chapters/login';
+import {
+  RecipientsContext,
+  RecipientsProvider,
+} from '@/providers/RecipientsProvider';
+import RecipientCard from '@/components/RecipientCard';
 
 interface ChapterDashboardProps {
-  user: SessionAdminUser;
+  user: SessionChapterUser;
   chapter: Chapter;
   chapterError?: string;
 }
 
-function ChapterCardsGrid() {
-  const { chapters } = useContext(ChaptersContext);
+function RecipientsCardsGrid() {
+  const { recipients, loading } = useContext(RecipientsContext);
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} my="5" spacing="5">
-      {Object.values(chapters).map((x) => (
-        <ChapterCard chapter={x} key={x.id} />
+      {recipients.map((x) => (
+        <RecipientCard recipient={x} key={x.id} />
       ))}
     </SimpleGrid>
   );
@@ -40,16 +47,22 @@ export default function AdminDashboardPage({
   chapter,
   chapterError,
 }: ChapterDashboardProps) {
-  return (
-    <Box p="10">
-      <Flex>
-        <Heading>{chapter?.chapterName} Chapter</Heading>
-        <Spacer />
-        <Button colorScheme="blue">+ Add New</Button>
-      </Flex>
+  const { chapterId } = user.chapterUser;
 
-      {chapterError && <Text>{chapterError}</Text>}
-    </Box>
+  return (
+    <RecipientsProvider chapterId={chapterId}>
+      <Box p="10">
+        <Flex>
+          <Heading>{chapter?.chapterName} Chapter</Heading>
+          <Spacer />
+          <Button colorScheme="blue">+ Add New</Button>
+        </Flex>
+
+        {chapterError && <Text>{chapterError}</Text>}
+
+        <RecipientsCardsGrid />
+      </Box>
+    </RecipientsProvider>
   );
 }
 
