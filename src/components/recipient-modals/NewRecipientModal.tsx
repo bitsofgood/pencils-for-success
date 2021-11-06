@@ -23,6 +23,7 @@ type NewRecipientFormBody = {
   name: string;
   username: string;
   password: string;
+  contactName: string;
   email: string;
   phoneNumber?: number;
   primaryStreetAddress: string;
@@ -51,10 +52,12 @@ const createNewRecipient = async (data: NewRecipientFormBody) => {
     postalCode,
     username,
     password,
+    contactName,
   } = data;
 
   const recipient = {
     name,
+    contactName,
     email,
     phoneNumber,
     primaryStreetAddress,
@@ -186,6 +189,25 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
 
             <FormControl isRequired>
               <FormLabel>Contact Info</FormLabel>
+            </FormControl>
+
+            <FormControl
+              isRequired
+              isInvalid={errors.contactName !== undefined}
+              mb={2}
+              id="contactName"
+            >
+              <Input
+                placeholder="Contact Name"
+                type="contactName"
+                {...register('contactName', {
+                  required: 'Email is required',
+                })}
+                borderColor="black"
+              />
+              <FormErrorMessage>
+                {errors.contactName && errors.contactName.message}
+              </FormErrorMessage>
             </FormControl>
 
             <SimpleGrid columns={[1, null, 2]} spacing={[0, null, 5]}>
