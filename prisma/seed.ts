@@ -70,6 +70,7 @@ async function main() {
     update: {},
     create: {
       name: 'Recipient Only',
+      contactName: 'George Burdell',
       email: 'recipient_only@pfs.org',
       phoneNumber: '5555555555',
       primaryStreetAddress: '350 Ferst Drive',
@@ -93,6 +94,7 @@ async function main() {
     update: {},
     create: {
       name: 'Recipient with User',
+      contactName: 'Mr. Pringles',
       email: 'recipient_user@pfs.org',
       phoneNumber: '4444444444',
       primaryStreetAddress: '460 4th St NW',

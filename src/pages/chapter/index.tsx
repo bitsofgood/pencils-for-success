@@ -9,6 +9,7 @@ import {
   Flex,
   Spacer,
   Spinner,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
@@ -19,6 +20,7 @@ import {
   RecipientsProvider,
 } from '@/providers/RecipientsProvider';
 import RecipientCard from '@/components/RecipientCard';
+import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
@@ -46,20 +48,6 @@ function RecipientsCardsGrid() {
   );
 }
 
-function AddNewRecipientButton() {
-  //   const { onOpen, setModalState } = useContext(ChapterModalContext);
-
-  const onNewChapterClick = () => {
-    alert('Creating new recipient');
-  };
-
-  return (
-    <Button onClick={onNewChapterClick} colorScheme="blue">
-      + Add New
-    </Button>
-  );
-}
-
 export default function ChapterDashboardPage({
   user,
   chapter,
@@ -67,18 +55,23 @@ export default function ChapterDashboardPage({
 }: ChapterDashboardProps) {
   const { chapterId } = user.chapterUser;
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <RecipientsProvider chapterId={chapterId}>
       <Box p="10">
         <Flex>
           <Heading>{chapter?.chapterName} Chapter</Heading>
           <Spacer />
-          <AddNewRecipientButton />
+          <Button onClick={onOpen} colorScheme="blue">
+            + Add New
+          </Button>
         </Flex>
 
         {chapterError && <Text>{chapterError}</Text>}
 
         <RecipientsCardsGrid />
+        <NewRecipientModal isOpen={isOpen} onClose={onClose} />
       </Box>
     </RecipientsProvider>
   );
