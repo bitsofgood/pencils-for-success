@@ -41,6 +41,7 @@ model RecipientUser {
 model Recipient {
   id                     Int             @id @default(autoincrement())
   name                   String          @unique
+  contactName            String
   email                  String
   phoneNumber            String
   chapterId              Int
