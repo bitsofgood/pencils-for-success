@@ -3,6 +3,7 @@ import { Recipient } from '@prisma/client';
 
 export interface RecipientsContextProps {
   recipients: Recipient[];
+  chapterId: number;
   loading: boolean;
   error?: string;
   upsertRecipient: (data: Recipient) => void;
@@ -16,6 +17,7 @@ export interface ChaptersProviderProps {
 
 export const RecipientsContext = createContext<RecipientsContextProps>({
   recipients: [],
+  chapterId: -1,
   loading: true,
   removeRecipient: (id: number) => {
     throw Error('Method not implemented');
@@ -26,7 +28,7 @@ export const RecipientsContext = createContext<RecipientsContextProps>({
 });
 
 const getRecipients = async (chapterId: number) => {
-  if (!chapterId) {
+  if (!chapterId || chapterId < 0) {
     throw Error('Please provide a valid chapter id');
   }
 
@@ -82,6 +84,7 @@ export const RecipientsProvider = ({
   return (
     <RecipientsContext.Provider
       value={{
+        chapterId,
         recipients,
         loading,
         error,

@@ -27,10 +27,14 @@ interface ChapterDashboardProps {
 }
 
 function RecipientsCardsGrid() {
-  const { recipients, loading } = useContext(RecipientsContext);
+  const { recipients, loading, error } = useContext(RecipientsContext);
 
   if (loading) {
     return <Spinner />;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
   }
 
   return (
@@ -42,7 +46,21 @@ function RecipientsCardsGrid() {
   );
 }
 
-export default function AdminDashboardPage({
+function AddNewRecipientButton() {
+  //   const { onOpen, setModalState } = useContext(ChapterModalContext);
+
+  const onNewChapterClick = () => {
+    alert('Creating new recipient');
+  };
+
+  return (
+    <Button onClick={onNewChapterClick} colorScheme="blue">
+      + Add New
+    </Button>
+  );
+}
+
+export default function ChapterDashboardPage({
   user,
   chapter,
   chapterError,
@@ -55,7 +73,7 @@ export default function AdminDashboardPage({
         <Flex>
           <Heading>{chapter?.chapterName} Chapter</Heading>
           <Spacer />
-          <Button colorScheme="blue">+ Add New</Button>
+          <AddNewRecipientButton />
         </Flex>
 
         {chapterError && <Text>{chapterError}</Text>}
