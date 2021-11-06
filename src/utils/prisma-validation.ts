@@ -1,4 +1,5 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, SupplyRequestStatus } from '@prisma/client';
+import { NewSupplyRequestInputBody } from './api-types';
 
 export const emailRegex =
   /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
@@ -130,5 +131,34 @@ export function validateNewUserInput(user: Prisma.UserCreateInput | undefined) {
     validatePassword(hash);
   } else {
     throw Error('Please provide a valid chapter user');
+  }
+}
+/**
+ * Checj if the provided supplyRequest parameters are valid before creating new
+ * @param supplyRequest
+ */
+export function validateNewSupplyRequest(
+  supplyRequest: NewSupplyRequestInputBody,
+) {
+  if (supplyRequest) {
+    const validStatus =
+      supplyRequest.status === SupplyRequestStatus.PENDING ||
+      supplyRequest.status === SupplyRequestStatus.COMPLETE;
+
+    const validNote = supplyRequest.note && supplyRequest.note !== '';
+
+    const validateItems =
+      Array.isArray(supplyRequest.items) && supplyRequest.items.length > 0;
+
+    if (
+      supplyRequest.quantity < 0 ||
+      !validStatus ||
+      !validNote ||
+      !validateItems
+    ) {
+      throw Error('Please provide valid input fields for the supply request');
+    }
+  } else {
+    throw Error('Please provide valid supply request');
   }
 }
