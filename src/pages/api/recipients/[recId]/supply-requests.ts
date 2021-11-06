@@ -1,10 +1,11 @@
 import type { NextApiResponse } from 'next';
-import { Prisma, PrismaClient, SupplyRequest } from '@prisma/client';
+import { PrismaClient, SupplyRequest } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionRecipientUser } from '../login';
 import { validateNewSupplyRequest } from '@/utils/prisma-validation';
+import { NewSupplyRequestInputBody } from '@/utils/api-types';
 
 export type SupplyResponse = {
   items: Omit<SupplyRequest, 'recipientId'>[];
@@ -91,6 +92,12 @@ async function handler(
       }
     case 'POST':
       try {
+        if (!isValidRecipient) {
+          return res.status(401).json({
+            error: true,
+            message: `Please login as an authorized recipient user to access this resource`,
+          });
+        }
         const prisma = new PrismaClient();
         const recipientAddSupply = await prisma.recipient.findUnique({
           where: {
@@ -105,21 +112,8 @@ async function handler(
           });
         }
 
-        if (!isValidRecipient) {
-          return res.status(400).json({
-            error: true,
-            message: `Please login as an authorized recipient user to access this resource`,
-          });
-        }
-        const newSupplyRequest = req.body as Prisma.SupplyRequestCreateInput;
-        const { items } = req.body;
-        const itemsId = [];
+        const newSupplyRequest = req.body as NewSupplyRequestInputBody;
 
-        if (Array.isArray(items)) {
-          for (let i = 0; i < items.length; i += 1) {
-            itemsId.push({ id: Number(items[i]) });
-          }
-        }
         validateNewSupplyRequest(newSupplyRequest);
 
         try {
@@ -128,7 +122,7 @@ async function handler(
               quantity: newSupplyRequest.quantity,
               status: newSupplyRequest.status,
               note: newSupplyRequest.note,
-              items: { connect: itemsId },
+              items: { connect: newSupplyRequest.items },
               recipient: { connect: { id: Number(recId) } },
             },
           });
