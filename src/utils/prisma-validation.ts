@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, SupplyRequestStatus } from '@prisma/client';
 import { NewSupplyRequestInputBody } from './api-types';
 
 export const emailRegex =
@@ -142,16 +142,18 @@ export function validateNewSupplyRequest(
 ) {
   if (supplyRequest) {
     const validStatus =
-      supplyRequest.status === 'PENDING' || supplyRequest.status === 'COMPLETE';
+      supplyRequest.status === SupplyRequestStatus.PENDING ||
+      supplyRequest.status === SupplyRequestStatus.COMPLETE;
 
-    const validnote = supplyRequest.note && supplyRequest.note !== '';
+    const validNote = supplyRequest.note && supplyRequest.note !== '';
 
-    const validateItems = supplyRequest.items && supplyRequest.items.length > 0;
+    const validateItems =
+      Array.isArray(supplyRequest.items) && supplyRequest.items.length > 0;
 
     if (
       supplyRequest.quantity < 0 ||
       !validStatus ||
-      !validnote ||
+      !validNote ||
       !validateItems
     ) {
       throw Error('Please provide valid input fields for the supply request');
