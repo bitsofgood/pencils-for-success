@@ -145,23 +145,32 @@ async function main() {
   );
 
   // Insert supply requests
-  const supplyRequestData = [
-    {
+  await prisma.supplyRequest.create({
+    data: {
       quantity: 5,
       status: SupplyRequestStatus.PENDING,
       note: 'extra details about the supply request',
-      recipientId: recipient.id,
+      recipient: { connect: { id: recipient.id } },
+      items: {
+        connect: [{ id: 3 }, { id: 4 }],
+      },
     },
-    {
+  });
+
+  await prisma.supplyRequest.create({
+    data: {
       quantity: 10,
       status: SupplyRequestStatus.COMPLETE,
       note: 'supply request has been completed',
-      recipientId: recipient.id,
+      recipient: {
+        connect: {
+          id: recipient.id,
+        },
+      },
+      items: {
+        connect: [{ id: 1 }, { id: 2 }],
+      },
     },
-  ];
-
-  await prisma.supplyRequest.createMany({
-    data: supplyRequestData,
   });
 }
 
