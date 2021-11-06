@@ -79,6 +79,7 @@ export function validateRecipientInput(
   if (recipient) {
     const {
       name,
+      contactName,
       email,
       phoneNumber,
       primaryStreetAddress,
@@ -90,6 +91,10 @@ export function validateRecipientInput(
 
     if (!isNonEmpty(name)) {
       throw Error('Please provide a valid recipient name');
+    }
+
+    if (!isNonEmpty(contactName)) {
+      throw Error('Please provide a valid contact name');
     }
 
     if (!isNonEmpty(primaryStreetAddress)) {
