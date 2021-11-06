@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { generateChapterSlug } from '../src/utils/slug';
 import { getPasswordHash } from '../src/utils/password';
 
 const prisma = new PrismaClient();
@@ -44,6 +45,7 @@ async function main() {
     update: {},
     create: {
       chapterName: 'Texas',
+      chapterSlug: generateChapterSlug('Texas'),
       contactName: 'Texas Chapter User',
       email: 'texas@pfs.org',
       phoneNumber: '4048888888',
@@ -57,6 +59,7 @@ async function main() {
     update: {},
     create: {
       chapterName: 'Georgia',
+      chapterSlug: generateChapterSlug('Georgia'),
       email: 'georgia@pfs.org',
       contactName: 'Georgia Chapter User',
       phoneNumber: '4041110000',
@@ -81,7 +84,11 @@ async function main() {
       name: 'Recipient Only',
       email: 'recipient_only@pfs.org',
       phoneNumber: '5555555555',
-      location: 'Atlanta',
+      primaryStreetAddress: '350 Ferst Drive',
+      city: 'Atlanta',
+      state: 'Georgia',
+      country: 'USA',
+      postalCode: '30332',
       chapter: {
         connect: {
           id: chapter.id,
@@ -105,7 +112,12 @@ async function main() {
               name: 'Recipient User',
               email: 'recipient_user@pfs.org',
               phoneNumber: '4444444444',
-              location: 'Savannah',
+              primaryStreetAddress: '1 Abercorn Street',
+              secondaryStreetAddress: 'Apt 420',
+              city: 'Savannah',
+              state: 'Georgia',
+              country: 'USA',
+              postalCode: '31419',
               chapter: {
                 connect: {
                   id: chapter.id,

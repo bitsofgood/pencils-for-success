@@ -26,7 +26,7 @@ export function validateUsername(username: string | undefined) {
     throw Error('Please provide a username of valid length');
   }
 
-  if (username.match(/^[a-zA-Z0-9_]*$/)) {
+  if (!username.match(/^[a-zA-Z0-9_]*$/)) {
     throw Error('Please provide an alphanumeric username');
   }
 }
@@ -76,14 +76,39 @@ export function validateRecipientInput(
   recipient: Prisma.RecipientCreateInput | undefined,
 ) {
   if (recipient) {
-    const { name, email, phoneNumber, location } = recipient;
+    const {
+      name,
+      email,
+      phoneNumber,
+      primaryStreetAddress,
+      city,
+      state,
+      country,
+      postalCode,
+    } = recipient;
 
     if (!isNonEmpty(name)) {
       throw Error('Please provide a valid recipient name');
     }
 
-    if (!isNonEmpty(location)) {
-      throw Error('Please provide a valid location');
+    if (!isNonEmpty(primaryStreetAddress)) {
+      throw Error('Please provide a valid street address');
+    }
+
+    if (!isNonEmpty(city)) {
+      throw Error('Please provide a valid city');
+    }
+
+    if (!isNonEmpty(state)) {
+      throw Error('Please provide a valid state');
+    }
+
+    if (!isNonEmpty(country)) {
+      throw Error('Please provide a valid country');
+    }
+
+    if (!isNonEmpty(postalCode)) {
+      throw Error('Please provide a valid postal code');
     }
 
     validateEmail(email);

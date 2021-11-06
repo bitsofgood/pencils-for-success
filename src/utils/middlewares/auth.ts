@@ -1,5 +1,6 @@
 import { NextApiResponse } from 'next';
 import { Handler } from 'next-iron-session';
+import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionAdminUser } from '@/pages/api/admin/login';
 import {
   NextIronContextHandler,
@@ -52,6 +53,25 @@ export function withAdminAuthPage(handler: NextIronContextHandler) {
 
     if (!user || !user.isLoggedIn || !user.admin) {
       res.setHeader('location', '/admin/login');
+      res.statusCode = 302;
+      res.end();
+      // Even if redirecting to a different location, getServerSideProps expects valid return
+      return {
+        props: {},
+      };
+    }
+
+    return handler(ctx, null);
+  });
+}
+
+export function withChapterAuthPage(handler: NextIronContextHandler) {
+  return withSession((ctx: NextIronServerSideContext) => {
+    const { req, res } = ctx;
+    const user = req.session.get('user') as SessionChapterUser;
+
+    if (!user || !user.isLoggedIn || !user.chapterUser) {
+      res.setHeader('location', '/chapter/login');
       res.statusCode = 302;
       res.end();
       // Even if redirecting to a different location, getServerSideProps expects valid return

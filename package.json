@@ -36,7 +36,7 @@
     "@chakra-ui/react": "1.6.7",
     "@emotion/react": "11.4.1",
     "@emotion/styled": "11.3.0",
-    "@prisma/client": "3.0.2",
+    "@prisma/client": "3.4.0",
     "@types/bcryptjs": "2.4.2",
     "@types/prop-types": "15.7.4",
     "@types/react-map-gl": "6.1.1",
