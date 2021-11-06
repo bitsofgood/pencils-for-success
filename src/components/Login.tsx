@@ -10,18 +10,38 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 
 type LoginProps = {
-  onSubmit: () => void;
+  apiURL: string;
+  replaceURL: string;
   title: string;
 };
 
-const Login = ({ onSubmit, title }: LoginProps) => {
+const Login = ({ apiURL, replaceURL, title }: LoginProps) => {
+  const router = useRouter();
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
+    getValues,
   } = useForm();
+
+  let inputs: any;
+
+  const onSubmit = () => {
+    fetch(apiURL, {
+      method: 'POST',
+      body: JSON.stringify(inputs),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => router.replace(replaceURL))
+      // eslint-disable-next-line no-alert
+      .catch((error) => window.alert(error.message));
+  };
 
   return (
     <Box
@@ -66,6 +86,9 @@ const Login = ({ onSubmit, title }: LoginProps) => {
           isLoading={isSubmitting}
           type="submit"
           borderColor="black"
+          onClick={() => {
+            inputs = getValues(['username', 'password']);
+          }}
         >
           Submit
         </Button>
@@ -75,7 +98,8 @@ const Login = ({ onSubmit, title }: LoginProps) => {
 };
 
 Login.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  apiURL: PropTypes.string.isRequired,
+  replaceURL: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
 };
 
