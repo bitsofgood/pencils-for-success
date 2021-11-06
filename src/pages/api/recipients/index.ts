@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, Recipient } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { getPasswordHash } from '@/utils/password';
@@ -14,9 +14,13 @@ export type NewRecipientInputBody = {
   newUser: Prisma.RecipientUserCreateInput & Prisma.UserCreateInput;
 };
 
+export type PostRecipientResponse = {
+  recipient: Recipient;
+};
+
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse>,
+  res: NextApiResponse<ErrorResponse | PostRecipientResponse>,
 ) {
   switch (req.method) {
     case 'POST':
@@ -85,8 +89,7 @@ async function handler(
         });
 
         return res.status(200).json({
-          error: false,
-          message: `Successfully created a recipient: ${createdRecipient.id}`,
+          recipient: createdRecipient,
         });
       } catch (e) {
         return serverErrorHandler(e, res);

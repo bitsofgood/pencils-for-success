@@ -78,7 +78,7 @@ export const RecipientsProvider = ({
       newRecipients.push(data);
     }
 
-    setRecipients(recipients);
+    setRecipients(newRecipients);
   };
 
   return (
