@@ -105,6 +105,7 @@ const ChapterInformationForm = ({
         onClose={onClose}
         onConfirmation={onConfirmation}
         chapter={chapterToEdit}
+        message="This action will update chapter"
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl

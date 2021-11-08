@@ -15,6 +15,7 @@ import { Chapter } from '@prisma/client';
 
 interface EditConfirmationProps {
   isOpen: boolean;
+  message: string;
   onClose: () => void;
   onConfirmation: () => void;
   chapter: Chapter;
@@ -25,6 +26,7 @@ const EditConfirmationModal = ({
   onClose,
   chapter,
   onConfirmation,
+  message,
 }: EditConfirmationProps) => {
   const onCancel = () => onClose();
   const onConfirm = () => {
@@ -41,7 +43,7 @@ const EditConfirmationModal = ({
           <Text fontSize="4xl" my="5">
             Are you sure?
           </Text>
-          <Text color="gray.500">This action will update chapter</Text>
+          <Text color="gray.500">{message}</Text>
           <Text fontSize="3xl">{chapter?.chapterName}</Text>
           <Text color="gray.500">This action cannot be undone</Text>
           <Divider my="5" />
