@@ -23,8 +23,43 @@ interface EditCredentialsForm {
   chapterToEdit: ChapterDetails;
 }
 
+const updateCredentials = async (
+  chapterUserId: number,
+  newUser: User | null,
+) => {
+  if (!newUser) {
+    throw Error('Please provide valid credentials');
+  }
+
+  if (!chapterUserId || chapterUserId < 0) {
+    throw Error('Credentials cannot be updated for non-existing users');
+  }
+
+  const response = await fetch(`/api/chapters/users/${chapterUserId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      newUsername: newUser.username,
+      newPassword: newUser.hash,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  return newUser as User;
+};
+
 const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
-  const { activeChapter, setModalState } = useContext(ChapterModalContext);
+  const { setModalState } = useContext(ChapterModalContext);
   const { upsertChapter } = useContext(ChaptersContext);
 
   const userToEdit = chapterToEdit?.chapterUser?.user || null;
@@ -51,15 +86,23 @@ const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
   };
 
   const onSubmit = async (data: User) => {
-    // If valid inputs, open confirmfation modal
     setEditedUser(data);
-    onOpen();
+    onOpen(); // Opens confirmation modal
   };
 
   const onConfirmation = async () => {
-    alert(
-      `Updating the user credentials:\n${JSON.stringify(editedUser, null, 4)}`,
-    );
+    setLoading(true);
+    updateCredentials(chapterToEdit.chapterUser?.id || -1, editedUser)
+      .then((data) => {
+        const updatedChapter = { ...chapterToEdit };
+        if (updatedChapter?.chapterUser?.user) {
+          updatedChapter.chapterUser.user.username = data.username;
+        }
+        upsertChapter(updatedChapter);
+        setModalState(ModalState.ViewChapter);
+      })
+      .catch((err) => alert(err))
+      .finally(() => setLoading(false));
   };
 
   return (
