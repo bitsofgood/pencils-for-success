@@ -17,6 +17,7 @@ import {
   ModalState,
 } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
+import EditConfirmationModal from './EditConfirmationModal';
 
 interface EditCredentialsForm {
   chapterToEdit: ChapterDetails;
@@ -55,8 +56,21 @@ const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
     onOpen();
   };
 
+  const onConfirmation = async () => {
+    alert(
+      `Updating the user credentials:\n${JSON.stringify(editedUser, null, 4)}`,
+    );
+  };
+
   return (
     <>
+      <EditConfirmationModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirmation={onConfirmation}
+        chapter={chapterToEdit}
+        message="This action will update user credentials for chapter"
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isRequired>
           <FormLabel>Credentials</FormLabel>
