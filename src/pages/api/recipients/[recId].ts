@@ -41,10 +41,7 @@ async function handler(
           user.chapterUser &&
           user.chapterUser.chapterId === existRecipient?.chapterId;
 
-        const isAuthorizedRecipientUser =
-          user.recipient && user.recipient.recipientId === Number(recId);
-
-        if (!isAuthorizedChapterUser && !isAuthorizedRecipientUser) {
+        if (!isAuthorizedChapterUser) {
           return res.status(401).json({
             error: true,
             message: "You don't have access to this chapter resource",
