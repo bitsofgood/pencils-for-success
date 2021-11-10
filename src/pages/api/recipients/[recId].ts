@@ -20,6 +20,13 @@ async function handler(
       try {
         const prisma = new PrismaClient();
 
+        if (!user || !user.isLoggedIn) {
+          return res.status(401).json({
+            error: true,
+            message: 'Please login as a chapter user to delete recipient',
+          });
+        }
+
         // get the recipient to be deleted
         const existRecipient = await prisma.recipient.findUnique({
           where: {
@@ -27,6 +34,7 @@ async function handler(
           },
           select: {
             chapterId: true,
+            recipientUser: true,
           },
         });
 
@@ -39,7 +47,7 @@ async function handler(
 
         const isAuthorizedChapterUser =
           user.chapterUser &&
-          user.chapterUser.chapterId === existRecipient?.chapterId;
+          user.chapterUser.chapterId === existRecipient.chapterId;
 
         if (!isAuthorizedChapterUser) {
           return res.status(401).json({
@@ -48,22 +56,17 @@ async function handler(
           });
         }
 
-        const existUsers = await prisma.recipientUser.findFirst({
-          where: {
-            recipientId: Number(recId),
-          },
-        });
         const transactionQueries = [];
 
-        if (existUsers) {
+        if (existRecipient.recipientUser) {
           const deleteRecipientUser = prisma.recipientUser.delete({
             where: {
-              id: existUsers.recipientId,
+              id: existRecipient.recipientUser.id,
             },
           });
           const deleteUser = prisma.user.delete({
             where: {
-              id: existUsers.id,
+              id: existRecipient.recipientUser.userId,
             },
           });
           transactionQueries.push(deleteRecipientUser);

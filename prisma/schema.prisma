@@ -45,7 +45,7 @@ model Recipient {
   email                  String
   phoneNumber            String
   chapterId              Int
-  chapter                Chapter         @relation(fields: [chapterId], references: [id])
+  chapter                Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   recipientUser          RecipientUser?
   supplyRequests         SupplyRequest[]
   primaryStreetAddress   String
@@ -80,7 +80,7 @@ model SupplyRequest {
   created     DateTime            @default(now())
   note        String
   recipientId Int
-  recipient   Recipient           @relation(fields: [recipientId], references: [id])
+  recipient   Recipient           @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   items       Item[]
 }
 
