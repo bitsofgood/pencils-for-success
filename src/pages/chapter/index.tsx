@@ -75,8 +75,6 @@ export default function ChapterDashboardPage({
 
   const [activeRecipientId, setActiveRecipientId] = useState(-1);
 
-  console.log(activeRecipientId);
-
   return (
     <RecipientsProvider chapterId={chapterId}>
       <Box p="10" background="gray.100" minH="100vh">
@@ -84,8 +82,8 @@ export default function ChapterDashboardPage({
 
         {chapterError && <Text>{chapterError}</Text>}
 
-        <Grid templateColumns="300px 1fr">
-          <Stack spacing="5" my="5">
+        <Grid templateColumns="300px 1fr" my="5" gap="4">
+          <Stack spacing="5">
             <Flex
               boxShadow="lg"
               borderRadius="lg"
@@ -106,7 +104,7 @@ export default function ChapterDashboardPage({
             />
           </Stack>
 
-          <RecipientDetails />
+          <RecipientDetails recipientId={activeRecipientId} />
         </Grid>
 
         <NewRecipientModal isOpen={isOpen} onClose={onClose} />
