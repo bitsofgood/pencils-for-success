@@ -1,25 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import { HStack } from '@chakra-ui/react';
 import styles from '@/styles/Home.module.css';
-import NavBar from '@/components/navbar';
 import DonorNavBar from '@/components/donorNavbar';
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-      <NavBar>
-        <HStack
-          borderWidth={3}
-          borderColor="black"
-          spacing={1000}
-          alignItems="center"
-        >
-          <h1>Pencils for Success</h1>
-          <DonorNavBar />
-        </HStack>
-      </NavBar>
+    <div>
+      <DonorNavBar />
 
       <Head>
         <title>Pencils for Success</title>
