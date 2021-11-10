@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import {
   SimpleGrid,
@@ -10,6 +10,8 @@ import {
   Spacer,
   Spinner,
   useDisclosure,
+  Grid,
+  Stack,
 } from '@chakra-ui/react';
 import { Chapter, PrismaClient } from '@prisma/client';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
@@ -21,6 +23,7 @@ import {
 } from '@/providers/RecipientsProvider';
 import RecipientCard from '@/components/RecipientCard';
 import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
+import RecipientDetails from '@/components/RecipientDetails';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
@@ -28,7 +31,15 @@ interface ChapterDashboardProps {
   chapterError?: string;
 }
 
-function RecipientsCardsGrid() {
+interface RecipientsCardsListProps {
+  activeRecipientId: number;
+  onRecipientClick: (id: number) => void;
+}
+
+function RecipientsCardsList({
+  activeRecipientId,
+  onRecipientClick,
+}: RecipientsCardsListProps) {
   const { recipients, loading, error } = useContext(RecipientsContext);
 
   if (loading) {
@@ -40,11 +51,16 @@ function RecipientsCardsGrid() {
   }
 
   return (
-    <SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} my="5" spacing="5">
+    <>
       {recipients.map((x) => (
-        <RecipientCard recipient={x} key={x.id} />
+        <RecipientCard
+          recipient={x}
+          key={x.id}
+          isActive={x.id === activeRecipientId}
+          onClick={onRecipientClick}
+        />
       ))}
-    </SimpleGrid>
+    </>
   );
 }
 
@@ -57,20 +73,42 @@ export default function ChapterDashboardPage({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [activeRecipientId, setActiveRecipientId] = useState(-1);
+
+  console.log(activeRecipientId);
+
   return (
     <RecipientsProvider chapterId={chapterId}>
-      <Box p="10">
-        <Flex>
-          <Heading>{chapter?.chapterName} Chapter</Heading>
-          <Spacer />
-          <Button onClick={onOpen} colorScheme="blue">
-            + Add New
-          </Button>
-        </Flex>
+      <Box p="10" background="gray.100" minH="100vh">
+        <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>
 
         {chapterError && <Text>{chapterError}</Text>}
 
-        <RecipientsCardsGrid />
+        <Grid templateColumns="300px 1fr">
+          <Stack spacing="5" my="5">
+            <Flex
+              boxShadow="lg"
+              borderRadius="lg"
+              borderWidth="1px"
+              alignItems="baseline"
+              background="white"
+              padding="3"
+            >
+              <Heading size="md">Recipients</Heading>
+              <Spacer />
+              <Button onClick={onOpen} colorScheme="blue" width="60px">
+                +
+              </Button>
+            </Flex>
+            <RecipientsCardsList
+              activeRecipientId={activeRecipientId}
+              onRecipientClick={setActiveRecipientId}
+            />
+          </Stack>
+
+          <RecipientDetails />
+        </Grid>
+
         <NewRecipientModal isOpen={isOpen} onClose={onClose} />
       </Box>
     </RecipientsProvider>
