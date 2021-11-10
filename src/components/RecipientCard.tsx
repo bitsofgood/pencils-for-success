@@ -3,9 +3,11 @@ import { Recipient } from '@prisma/client';
 
 interface RecipientCardProps {
   recipient: Recipient;
+  isActive?: boolean;
+  onClick: (id: number) => void;
 }
 
-function RecipientCard({ recipient }: RecipientCardProps) {
+function RecipientCard({ recipient, onClick }: RecipientCardProps) {
   return (
     <Flex
       boxShadow="lg"
@@ -14,7 +16,9 @@ function RecipientCard({ recipient }: RecipientCardProps) {
       cursor="pointer"
       direction="column"
       alignItems="baseline"
+      bg="white"
       padding="5"
+      onClick={() => onClick(recipient.id)}
     >
       <Heading size="md" paddingBottom="5">
         {recipient.name}
