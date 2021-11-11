@@ -57,11 +57,10 @@ function RecipientDetails({ recipient }: RecipientDetailsProps) {
   );
 }
 
-function SupplyRequestStatus() {
-  // TODO - Fetch this dynamically once implemented
-  const [pendingRequests, setPendingRequests] = useState(
-    Math.floor(Math.random() * 6),
-  );
+function SupplyRequestStatus({ recipient }: RecipientDetailsProps) {
+  const pendingRequests = recipient.supplyRequests.filter(
+    (x) => x.status === 'PENDING',
+  ).length;
 
   const statusColor = pendingRequests > 0 ? '#CA9000' : '#858585';
 
@@ -118,7 +117,7 @@ function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
         <Spacer />
         <RecipientContextMenu />
       </Flex>
-      <SupplyRequestStatus />
+      <SupplyRequestStatus recipient={recipient} />
 
       {isActive && <RecipientDetails recipient={recipient} />}
     </Box>
