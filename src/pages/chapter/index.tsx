@@ -51,7 +51,7 @@ function RecipientsCardsList({
   }
 
   return (
-    <>
+    <Stack spacing="5" h="90vh" maxH="600px" overflowY="scroll" pr="2" py="5">
       {recipients.map((x) => (
         <RecipientCard
           recipient={x}
@@ -60,7 +60,7 @@ function RecipientsCardsList({
           onClick={onRecipientClick}
         />
       ))}
-    </>
+    </Stack>
   );
 }
 
