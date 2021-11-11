@@ -14,18 +14,18 @@ import {
   Stack,
   Divider,
 } from '@chakra-ui/react';
-import { Recipient } from '@prisma/client';
 import React, { useState } from 'react';
 import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
+import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
 interface RecipientCardProps {
-  recipient: Recipient;
+  recipient: DetailedRecipient;
   isActive?: boolean;
   onClick: (id: number) => void;
 }
 
 interface RecipientDetailsProps {
-  recipient: Recipient;
+  recipient: DetailedRecipient;
 }
 
 function RecipientDetails({ recipient }: RecipientDetailsProps) {
@@ -51,7 +51,7 @@ function RecipientDetails({ recipient }: RecipientDetailsProps) {
 
       <Box my="2">
         <Heading size="sm">Username</Heading>
-        {/* <Text>{recipient?.user.username}</Text> */}
+        <Text>{recipient?.recipientUser?.user?.username}</Text>
       </Box>
     </Box>
   );

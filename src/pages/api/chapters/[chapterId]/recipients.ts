@@ -1,11 +1,19 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Recipient } from '@prisma/client';
+import { PrismaClient, Recipient, RecipientUser, User } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../login';
 
+export type DetailedRecipient = Recipient & {
+  recipientUser:
+    | (RecipientUser & {
+        user: User;
+      })
+    | null;
+};
+
 type DataResponse = {
-  recipients: Recipient[];
+  recipients: DetailedRecipient[];
 };
 
 async function handler(
@@ -32,31 +40,28 @@ async function handler(
         }
 
         const { chapterId } = req.query;
-        const chapter = await prisma.chapter.findUnique({
-          where: {
-            id: Number(chapterId),
-          },
-          include: {
-            chapterUser: true,
-            recipients: true,
-          },
-        });
 
-        if (!chapter) {
-          return res.status(400).json({
-            error: true,
-            message: `No chapter found for id: ${chapterId}`,
-          });
-        }
-
-        if (chapter.chapterUser?.id !== currentUser.chapterUser.id) {
+        if (currentUser.chapterUser.chapterId !== Number(chapterId)) {
           return res.status(401).json({
             error: true,
             message: `Must be logged in as a user for this chapter`,
           });
         }
 
-        return res.status(200).json({ recipients: chapter.recipients });
+        const recipients = await prisma.recipient.findMany({
+          where: {
+            chapterId: Number(chapterId),
+          },
+          include: {
+            recipientUser: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+
+        return res.status(200).json({ recipients });
       } catch (e) {
         return serverErrorHandler(e, res);
       }
