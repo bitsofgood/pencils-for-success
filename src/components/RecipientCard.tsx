@@ -6,10 +6,17 @@ import {
   Text,
   UnorderedList,
   ListItem,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+  Stack,
+  Divider,
 } from '@chakra-ui/react';
 import { Recipient } from '@prisma/client';
 import React, { useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
 
 interface RecipientCardProps {
   recipient: Recipient;
@@ -65,6 +72,36 @@ function SupplyRequestStatus() {
   );
 }
 
+function RecipientContextMenu() {
+  return (
+    <Popover placement="bottom-end">
+      <PopoverTrigger>
+        <Box>
+          <BsThreeDots />
+        </Box>
+      </PopoverTrigger>
+      <PopoverContent width="200px">
+        <PopoverArrow />
+        <PopoverBody width="200px">
+          <Stack>
+            <Flex color="gray.700">
+              <BsPencilFill />
+              <Text ml="3">Edit Recipient</Text>
+            </Flex>
+
+            <Divider />
+
+            <Flex color="red">
+              <BsFillTrashFill />
+              <Text ml="3">Delete Recipient</Text>
+            </Flex>
+          </Stack>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
   return (
     <Box
@@ -79,7 +116,7 @@ function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
       <Flex>
         <Heading size="sm">{recipient.name}</Heading>
         <Spacer />
-        <BsThreeDots />
+        <RecipientContextMenu />
       </Flex>
       <SupplyRequestStatus />
 
