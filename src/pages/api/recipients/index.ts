@@ -99,6 +99,7 @@ async function handler(
                 user: true,
               },
             },
+            supplyRequests: true,
           },
         })) as DetailedRecipient;
 

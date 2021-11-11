@@ -1,10 +1,17 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Recipient, RecipientUser, User } from '@prisma/client';
+import {
+  PrismaClient,
+  Recipient,
+  RecipientUser,
+  SupplyRequest,
+  User,
+} from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../login';
 
 export type DetailedRecipient = Recipient & {
+  supplyRequests: SupplyRequest[];
   recipientUser:
     | (RecipientUser & {
         user: User;
@@ -58,6 +65,7 @@ async function handler(
                 user: true,
               },
             },
+            supplyRequests: true,
           },
         });
 
