@@ -3,7 +3,7 @@ import { Recipient } from '@prisma/client';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
 export interface RecipientsContextProps {
-  recipients: Recipient[];
+  recipients: DetailedRecipient[];
   chapterId: number;
   loading: boolean;
   error?: string;
