@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from 'react';
-import { Recipient } from '@prisma/client';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
 export interface RecipientsContextProps {
