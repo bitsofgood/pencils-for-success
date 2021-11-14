@@ -94,6 +94,7 @@ async function main() {
     update: {},
     create: {
       name: 'Recipient with User',
+      contactName: 'Mr. Pringles',
       email: 'recipient_user@pfs.org',
       phoneNumber: '4444444444',
       primaryStreetAddress: '460 4th St NW',
