@@ -3,28 +3,19 @@ import { Box } from '@chakra-ui/react';
 
 export default function RecipientSidePanel() {
   return (
-    <div style={{ paddingTop: '20px', paddingLeft: '40px' }}>
+    <Box h="full" pt="70px" pl="40px">
       <Box
-        as="button"
         borderRadius="md"
         borderWidth="2px"
         borderColor="grey"
         bg="white"
         color="white"
         w={352}
-        h={728}
       >
-        <div style={{ paddingTop: '20px' }}>
-          <Box
-            as="button"
-            borderRadius="md"
-            bg="#BBDEFF"
-            color="blue"
-            w={292}
-            h={170}
-          />
-        </div>
-        <div style={{ paddingTop: '20px' }}>
+        <Box pl="28px" pt="20px">
+          <Box borderRadius="md" bg="#BBDEFF" color="blue" w={292} h={170} />
+        </Box>
+        <Box pt="20px">
           <div
             style={{
               color: 'black',
@@ -59,8 +50,8 @@ export default function RecipientSidePanel() {
           </div>
           <br />
           <br />
-        </div>
-        <div style={{ paddingTop: '100px' }}>
+        </Box>
+        <Box pl="125px" pt="200px" pb="25px">
           <Box
             as="button"
             borderRadius="md"
@@ -74,8 +65,8 @@ export default function RecipientSidePanel() {
           >
             Edit Info
           </Box>
-        </div>
+        </Box>
       </Box>
-    </div>
+    </Box>
   );
 }
