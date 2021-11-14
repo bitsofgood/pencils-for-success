@@ -1,12 +1,12 @@
 import { createContext, useEffect, useState } from 'react';
-import { Recipient } from '@prisma/client';
+import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
 export interface RecipientsContextProps {
-  recipients: Recipient[];
+  recipients: DetailedRecipient[];
   chapterId: number;
   loading: boolean;
   error?: string;
-  upsertRecipient: (data: Recipient) => void;
+  upsertRecipient: (data: DetailedRecipient) => void;
   removeRecipient: (id: number) => void;
 }
 
@@ -22,7 +22,7 @@ export const RecipientsContext = createContext<RecipientsContextProps>({
   removeRecipient: (id: number) => {
     throw Error('Method not implemented');
   },
-  upsertRecipient: (x: Recipient) => {
+  upsertRecipient: (x: DetailedRecipient) => {
     throw Error('Method not implemented');
   },
 });
@@ -44,14 +44,14 @@ const getRecipients = async (chapterId: number) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson.recipients as Recipient[];
+  return responseJson.recipients as DetailedRecipient[];
 };
 
 export const RecipientsProvider = ({
   children,
   chapterId,
 }: ChaptersProviderProps) => {
-  const [recipients, setRecipients] = useState<Recipient[]>([]);
+  const [recipients, setRecipients] = useState<DetailedRecipient[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -68,7 +68,7 @@ export const RecipientsProvider = ({
     setRecipients(filteredRecipients);
   };
 
-  const upsertRecipient = (data: Recipient) => {
+  const upsertRecipient = (data: DetailedRecipient) => {
     // Check if existing recipient
     const recipientIndex = recipients.findIndex((x) => x.id === data.id);
     const newRecipients = [...recipients];
