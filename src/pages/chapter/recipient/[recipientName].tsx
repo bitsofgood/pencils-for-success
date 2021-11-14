@@ -7,11 +7,13 @@ import {
   Tr,
   Th,
   Td,
-  Box,
   Flex,
   IconButton,
   Text,
   Tooltip,
+  VStack,
+  Box,
+  Button,
 } from '@chakra-ui/react';
 import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons';
 import { useTable, usePagination, ColumnWithLooseAccessor } from 'react-table';
@@ -35,19 +37,15 @@ interface CustomTableProps {
 function CustomTable({ columns, data }: CustomTableProps) {
   // Use the state and functions returned from useTable to build your UI
   const {
-    getTableProps,
-    getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
+    page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
+    gotoPage,
     nextPage,
     previousPage,
+    pageCount,
     state: { pageIndex },
   } = useTable(
     {
@@ -61,8 +59,13 @@ function CustomTable({ columns, data }: CustomTableProps) {
   // Render the UI for your table
   return (
     <>
-      <Table {...getTableProps()}>
-        <Thead>
+      <Table borderCollapse="collapse" borderSpacing="0 100px">
+        <Thead
+          textColor="#858585"
+          borderRadius="8px"
+          backgroundColor="#F0F0F0"
+          borderStyle="unset"
+        >
           {headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -71,11 +74,11 @@ function CustomTable({ columns, data }: CustomTableProps) {
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
+        <Tbody>
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <Tr {...row.getRowProps()}>
+              <Tr borderRadius="12px" border="2px solid #AEAEAE">
                 {row.cells.map((cell) => (
                   <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                 ))}
@@ -86,32 +89,55 @@ function CustomTable({ columns, data }: CustomTableProps) {
       </Table>
 
       <Flex justifyContent="space-between" m={4} alignItems="center">
+        <Flex alignItems="center">
+          <Text mr={8}>
+            Showing{' '}
+            <Text as="span">
+              {pageIndex * 10 + 1} -{' '}
+              {Math.min((pageIndex + 1) * 10, data.length)}
+            </Text>{' '}
+            of <Text as="span">{data.length}</Text>
+          </Text>
+        </Flex>
         <Flex>
           <Tooltip label="Previous Page">
             <IconButton
+              variant="ghost"
               aria-label="Previous Page"
               onClick={previousPage}
               isDisabled={!canPreviousPage}
               icon={<ChevronLeftIcon h={6} w={6} />}
             />
           </Tooltip>
-        </Flex>
-        <Flex alignItems="center">
-          <Text mr={8}>
-            Page{' '}
-            <Text fontWeight="bold" as="span">
-              {pageIndex + 1}
-            </Text>{' '}
-            of{' '}
-            <Text fontWeight="bold" as="span">
-              {pageOptions.length}
-            </Text>
+          <Tooltip label="First Page">
+            <Button
+              variant="ghost"
+              aria-label="First Page"
+              onClick={() => gotoPage(0)}
+              isDisabled={!canPreviousPage}
+              mr={4}
+            >
+              1
+            </Button>
+          </Tooltip>
+          <Text mr={8} color="#858585" font-size="16px" alignSelf="bottom">
+            {' '}
+            ...{' '}
           </Text>
-        </Flex>
-
-        <Flex>
+          <Tooltip label="Last Page">
+            <Button
+              variant="ghost"
+              aria-label="Last Page"
+              onClick={() => gotoPage(pageCount - 1)}
+              isDisabled={!canNextPage}
+              mr={4}
+            >
+              {pageCount}
+            </Button>
+          </Tooltip>
           <Tooltip label="Next Page">
             <IconButton
+              variant="ghost"
               aria-label="Next Page"
               onClick={nextPage}
               isDisabled={!canNextPage}
@@ -282,17 +308,19 @@ export default function RecipientMapPage({
     [],
   );
   return (
-    <Box borderWidth="1px" borderRadius="lg">
+    <VStack w="full" spacing={10} justifyContent="left">
       <Heading>{recipientName}</Heading>
       <Heading>Supply Requests</Heading>
-      <CustomTable columns={columns} data={data} />;
-    </Box>
+      <Box m={24} w="80%">
+        <CustomTable columns={columns} data={data} />
+      </Box>
+    </VStack>
   );
 }
 
 export async function getStaticPaths() {
   // TODO: Retrieve the data from the database
-  const recipients = ['1', '2', '3'];
+  const recipients = ['Recipient1', 'Recipient2', 'Recipient3'];
 
   const paths = recipients.map((recipientName) => ({
     params: { recipientName },
