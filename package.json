@@ -33,6 +33,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@chakra-ui/icons": "1.0.17",
     "@chakra-ui/react": "1.6.7",
     "@emotion/react": "11.4.1",
     "@emotion/styled": "11.3.0",
@@ -40,6 +41,7 @@
     "@types/bcryptjs": "2.4.2",
     "@types/prop-types": "15.7.4",
     "@types/react-map-gl": "6.1.1",
+    "@types/react-table": "7.7.7",
     "bcryptjs": "2.4.3",
     "framer-motion": "4.1.17",
     "next": "11.1.2",
@@ -48,7 +50,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "7.15.4",
-    "react-map-gl": "6.1.17"
+    "react-table": "7.7.0"
   },
   "devDependencies": {
     "@bitwarden/cli": "1.18.0",
