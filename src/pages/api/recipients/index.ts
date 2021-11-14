@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Prisma, Recipient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { getPasswordHash } from '@/utils/password';
@@ -8,6 +8,7 @@ import {
   validateRecipientInput,
 } from '@/utils/prisma-validation';
 import { SessionChapterUser } from '../chapters/login';
+import { DetailedRecipient } from '../chapters/[chapterId]/recipients';
 
 export type NewRecipientInputBody = {
   recipient: Prisma.RecipientCreateInput;
@@ -15,7 +16,7 @@ export type NewRecipientInputBody = {
 };
 
 export type PostRecipientResponse = {
-  recipient: Recipient;
+  recipient: DetailedRecipient;
 };
 
 async function handler(
@@ -88,8 +89,22 @@ async function handler(
           data,
         });
 
+        const detailedRecipient = (await prisma.recipient.findUnique({
+          where: {
+            id: createdRecipient.id,
+          },
+          include: {
+            recipientUser: {
+              include: {
+                user: true,
+              },
+            },
+            supplyRequests: true,
+          },
+        })) as DetailedRecipient;
+
         return res.status(200).json({
-          recipient: createdRecipient,
+          recipient: detailedRecipient,
         });
       } catch (e) {
         return serverErrorHandler(e, res);

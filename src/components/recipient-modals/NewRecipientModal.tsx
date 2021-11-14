@@ -97,6 +97,7 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<NewRecipientFormBody>({});
 
@@ -106,6 +107,7 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
     try {
       const newRecipient = await createNewRecipient(data);
       upsertRecipient(newRecipient);
+      reset();
       onClose();
       alert(`Successfully added new recipient: ${newRecipient.id}`);
     } catch (e) {
@@ -113,8 +115,13 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
     }
   };
 
+  const closeModal = () => {
+    reset();
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+    <Modal isOpen={isOpen} onClose={closeModal} isCentered size="xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create New Recipient</ModalHeader>
@@ -364,7 +371,7 @@ const NewRecipientModal = ({ isOpen, onClose }: NewRecipientModalProps) => {
               </Button>
               <Button
                 isLoading={isSubmitting}
-                onClick={onClose}
+                onClick={closeModal}
                 disabled={isSubmitting}
                 variant="ghost"
               >
