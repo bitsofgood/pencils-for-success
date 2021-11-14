@@ -39,20 +39,27 @@ model RecipientUser {
 }
 
 model Recipient {
-  id             Int             @id @default(autoincrement())
-  name           String          @unique
-  email          String
-  phoneNumber    String
-  location       String
-  chapterId      Int
-  chapter        Chapter         @relation(fields: [chapterId], references: [id])
-  recipientUser  RecipientUser?
-  supplyRequests SupplyRequest[]
+  id                     Int             @id @default(autoincrement())
+  name                   String          @unique
+  contactName            String
+  email                  String
+  phoneNumber            String
+  chapterId              Int
+  chapter                Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  recipientUser          RecipientUser?
+  supplyRequests         SupplyRequest[]
+  primaryStreetAddress   String
+  secondaryStreetAddress String?
+  city                   String
+  state                  String
+  country                String
+  postalCode             String
 }
 
 model Chapter {
   id          Int          @id @default(autoincrement())
   chapterName String       @unique
+  chapterSlug String       @unique
   contactName String
   email       String
   phoneNumber String?
@@ -73,7 +80,7 @@ model SupplyRequest {
   created     DateTime            @default(now())
   note        String
   recipientId Int
-  recipient   Recipient           @relation(fields: [recipientId], references: [id])
+  recipient   Recipient           @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   items       Item[]
 }
 

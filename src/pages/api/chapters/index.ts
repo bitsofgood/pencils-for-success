@@ -9,6 +9,7 @@ import {
   validateNewUserInput,
 } from '@/utils/prisma-validation';
 import { ChapterDetails } from './[chapterId]';
+import { generateChapterSlug } from '@/utils/slug';
 
 export type GetChapterResponse = {
   chapters: Chapter[];
@@ -74,6 +75,8 @@ async function handler(
         } as Prisma.UserCreateInput;
 
         const passwordHash = await getPasswordHash(hash);
+
+        chapter.chapterSlug = generateChapterSlug(chapter.chapterName);
 
         // Add Prisma records
         const prisma = new PrismaClient();
