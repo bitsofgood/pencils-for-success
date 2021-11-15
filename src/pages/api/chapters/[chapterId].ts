@@ -1,4 +1,10 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import {
+  PrismaClient,
+  Prisma,
+  Chapter,
+  ChapterUser,
+  User,
+} from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
 import { SessionChapterUser } from './login';
@@ -8,14 +14,27 @@ import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
 import { validateChapterInput } from '@/utils/prisma-validation';
+import { generateChapterSlug } from '@/utils/slug';
 
 interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
 }
 
+export type ChapterDetails = Chapter & {
+  chapterUser:
+    | (ChapterUser & {
+        user: User;
+      })
+    | null;
+};
+
+export type ChapterResponse = {
+  chapter: Chapter | ChapterDetails | null;
+};
+
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse>,
+  res: NextApiResponse<ErrorResponse | ChapterResponse>,
 ) {
   const { chapterId } = req.query;
 
@@ -31,14 +50,14 @@ async function handler(
 
   const parsedChapterId = Number(chapterId);
 
-  // Check if admin or if the current chapter user match the chapter they want to update
-  const isUpdateAuthorized =
+  // Check if admin or if the current chapter user match the chapter they want to access
+  const isAuthorizedUser =
     user.admin !== undefined ||
     (user.chapterUser && user.chapterUser.chapterId === parsedChapterId);
 
   switch (req.method) {
     case 'PUT':
-      if (!isUpdateAuthorized) {
+      if (!isAuthorizedUser) {
         return res.status(401).json({
           message: 'Please login as an authorized user to access the resource',
           error: true,
@@ -50,6 +69,13 @@ async function handler(
         const chapterToUpdate = await prisma.chapter.findUnique({
           where: {
             id: parsedChapterId,
+          },
+          include: {
+            chapterUser: {
+              include: {
+                user: true,
+              },
+            },
           },
         });
 
@@ -79,8 +105,16 @@ async function handler(
           });
         }
 
+        const { contactName, chapterName, email, phoneNumber } = updatedChapter;
+
+        const chapterSlug = generateChapterSlug(chapterName);
+
         const data = {
-          ...updatedChapter,
+          contactName,
+          chapterName,
+          chapterSlug,
+          email,
+          phoneNumber,
         };
 
         await prisma.chapter.update({
@@ -90,9 +124,13 @@ async function handler(
           data,
         });
 
+        const returnChapter = {
+          ...chapterToUpdate,
+          ...data,
+        };
+
         return res.status(200).json({
-          message: 'Successfully updated the chapter',
-          error: false,
+          chapter: returnChapter as ChapterDetails,
         });
       } catch (e) {
         // console.error(e);
@@ -162,8 +200,47 @@ async function handler(
         return serverErrorHandler(e, res);
       }
 
+    case 'GET':
+      try {
+        // Check if the provided chapter user exists
+        const prisma = new PrismaClient();
+
+        // checks to see if the user is part of the chapter
+        if (isAuthorizedUser) {
+          const existingChapter = await prisma.chapter.findUnique({
+            where: {
+              id: parsedChapterId,
+            },
+            include: {
+              chapterUser: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          });
+
+          // check if chapter exists
+          if (!existingChapter) {
+            return res.status(400).json({
+              message: 'A chapter with that id does not exist',
+              error: true,
+            });
+          }
+
+          return res.status(200).json({
+            chapter: existingChapter,
+          });
+        }
+        return res.status(400).json({
+          message: 'Please login as an authorized user to access the resource',
+          error: true,
+        });
+      } catch (e) {
+        return serverErrorHandler(e, res);
+      }
     default:
-      res.setHeader('Allow', ['PUT', 'DELETE']);
+      res.setHeader('Allow', ['PUT', 'DELETE', 'GET']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });

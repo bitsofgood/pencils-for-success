@@ -6,12 +6,17 @@ import { SessionAdminUser } from '../admin/login';
 import { getPasswordHash } from '@/utils/password';
 import {
   validateChapterInput,
-  validateNewChapterUserInput,
   validateNewUserInput,
 } from '@/utils/prisma-validation';
+import { ChapterDetails } from './[chapterId]';
+import { generateChapterSlug } from '@/utils/slug';
 
-type DataResponse = {
+export type GetChapterResponse = {
   chapters: Chapter[];
+};
+
+export type PostChapterResponse = {
+  chapter: ChapterDetails | null;
 };
 
 export type NewChapterInputBody = {
@@ -21,7 +26,9 @@ export type NewChapterInputBody = {
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<DataResponse | ErrorResponse>,
+  res: NextApiResponse<
+    GetChapterResponse | PostChapterResponse | ErrorResponse
+  >,
 ) {
   switch (req.method) {
     case 'GET':
@@ -51,7 +58,6 @@ async function handler(
 
         try {
           validateChapterInput(chapter);
-          validateNewChapterUserInput(newUser);
           validateNewUserInput(newUser);
         } catch (e) {
           const { message } = e as Error;
@@ -61,13 +67,7 @@ async function handler(
           });
         }
 
-        const { username, hash, name, email, phoneNumber } = newUser;
-
-        const chapterUser = {
-          name,
-          email,
-          phoneNumber,
-        } as Prisma.ChapterUserCreateInput;
+        const { username, hash } = newUser;
 
         const user = {
           username,
@@ -76,6 +76,8 @@ async function handler(
 
         const passwordHash = await getPasswordHash(hash);
 
+        chapter.chapterSlug = generateChapterSlug(chapter.chapterName);
+
         // Add Prisma records
         const prisma = new PrismaClient();
 
@@ -83,7 +85,6 @@ async function handler(
           ...chapter,
           chapterUser: {
             create: {
-              ...chapterUser,
               user: {
                 create: {
                   ...user,
@@ -98,9 +99,23 @@ async function handler(
           data,
         });
 
+        // We cannot retrieve newly created records - https://github.com/prisma/prisma/discussions/2367#discussioncomment-9059
+        // As a workaround, query the details for newly created chapter to get information for chapter user and user
+        const chapterWithUser = await prisma.chapter.findUnique({
+          where: {
+            id: createdChapter.id,
+          },
+          include: {
+            chapterUser: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+
         return res.status(200).json({
-          error: false,
-          message: `Successfully created a chapter: ${createdChapter.id}`,
+          chapter: chapterWithUser,
         });
       } catch (e) {
         return serverErrorHandler(e, res);

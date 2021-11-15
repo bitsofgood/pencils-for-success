@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SupplyRequestStatus } from '@prisma/client';
+import { generateChapterSlug } from '../src/utils/slug';
 import { getPasswordHash } from '../src/utils/password';
 
 const prisma = new PrismaClient();
 
 // List of passwords for initial User accounts
 const PASSWORDS = {
-  basicUser: 'bitsofgood',
   adminUser: 'bog_admin',
   chapterUser: 'bog_chapter',
   recipientUser: 'bog_recipient',
@@ -13,17 +13,6 @@ const PASSWORDS = {
 
 // Create basic models and relations
 async function main() {
-  // Basic User
-  const basicUserPassword = await getPasswordHash(PASSWORDS.basicUser);
-  await prisma.user.upsert({
-    where: { username: 'panda' },
-    update: {},
-    create: {
-      username: 'panda',
-      hash: basicUserPassword,
-    },
-  });
-
   // Admin User only
   const adminUserPassword = await getPasswordHash(PASSWORDS.adminUser);
   await prisma.user.upsert({
@@ -40,27 +29,30 @@ async function main() {
 
   // Chapter only
   await prisma.chapter.upsert({
-    where: { email: 'texas@pfs.org' },
+    where: { chapterName: 'Texas' },
     update: {},
     create: {
       chapterName: 'Texas',
+      chapterSlug: generateChapterSlug('Texas'),
+      contactName: 'Texas Chapter User',
       email: 'texas@pfs.org',
+      phoneNumber: '4048888888',
     },
   });
 
   // Chapter with a chapter user
   const chapterUserPassword = await getPasswordHash(PASSWORDS.chapterUser);
   const chapter = await prisma.chapter.upsert({
-    where: { email: 'georgia@pfs.org' },
+    where: { chapterName: 'Georgia' },
     update: {},
     create: {
       chapterName: 'Georgia',
+      chapterSlug: generateChapterSlug('Georgia'),
       email: 'georgia@pfs.org',
+      contactName: 'Georgia Chapter User',
+      phoneNumber: '4041110000',
       chapterUser: {
         create: {
-          name: 'Georgia Chapter User',
-          email: 'georgia_user@pfs.org',
-          phoneNumber: '4041110000',
           user: {
             create: {
               username: 'georgia_chapter',
@@ -78,9 +70,14 @@ async function main() {
     update: {},
     create: {
       name: 'Recipient Only',
+      contactName: 'George Burdell',
       email: 'recipient_only@pfs.org',
       phoneNumber: '5555555555',
-      location: 'Atlanta',
+      primaryStreetAddress: '350 Ferst Drive',
+      city: 'Atlanta',
+      state: 'Georgia',
+      country: 'USA',
+      postalCode: '30332',
       chapter: {
         connect: {
           id: chapter.id,
@@ -90,6 +87,30 @@ async function main() {
   });
 
   // Recipient User with Recipient
+  const recipient = await prisma.recipient.upsert({
+    where: {
+      name: 'Recipient with User',
+    },
+    update: {},
+    create: {
+      name: 'Recipient with User',
+      contactName: 'Mr. Pringles',
+      email: 'recipient_user@pfs.org',
+      phoneNumber: '4444444444',
+      primaryStreetAddress: '460 4th St NW',
+      secondaryStreetAddress: 'Room 420',
+      city: 'Atlanta',
+      state: 'Georgia',
+      country: 'USA',
+      postalCode: '30313',
+      chapter: {
+        connect: {
+          id: chapter.id,
+        },
+      },
+    },
+  });
+
   const recipientUserPassword = await getPasswordHash(PASSWORDS.recipientUser);
   await prisma.user.upsert({
     where: { username: 'recipient_user' },
@@ -100,19 +121,56 @@ async function main() {
       recipient: {
         create: {
           recipient: {
-            create: {
-              name: 'Recipient User',
-              email: 'recipient_user@pfs.org',
-              phoneNumber: '4444444444',
-              location: 'Savannah',
-              chapter: {
-                connect: {
-                  id: chapter.id,
-                },
-              },
+            connect: {
+              id: recipient.id,
             },
           },
         },
+      },
+    },
+  });
+
+  // Add items
+  const items = ['computers', 'pencils', 'pens', 'erasers', 'markers', 'paper'];
+  await Promise.all(
+    items.map((item) =>
+      prisma.item.upsert({
+        where: {
+          name: item,
+        },
+        update: {},
+        create: {
+          name: item,
+        },
+      }),
+    ),
+  );
+
+  // Insert supply requests
+  await prisma.supplyRequest.create({
+    data: {
+      quantity: 5,
+      status: SupplyRequestStatus.PENDING,
+      note: 'extra details about the supply request',
+      recipient: { connect: { id: recipient.id } },
+      items: {
+        connect: [{ id: 3 }, { id: 4 }],
+      },
+    },
+  });
+
+  await prisma.supplyRequest.create({
+    data: {
+      quantity: 10,
+      status: SupplyRequestStatus.COMPLETE,
+      note: 'supply request has been completed',
+      recipient: {
+        connect: {
+          id: recipient.id,
+        },
+      },
+      items: {
+        connect: [{ id: 1 }, { id: 2 }],
       },
     },
   });

@@ -14,6 +14,10 @@ import {
 import { useForm } from 'react-hook-form';
 import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { emailRegex } from '@/utils/prisma-validation';
+import { ChaptersContext } from '@/providers/ChaptersProvider';
+import { PostChapterResponse } from '@/pages/api/chapters';
+import { ErrorResponse } from '@/utils/error';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 interface NewChapterFormBody {
   chapterName: string;
@@ -28,12 +32,9 @@ const createNewChapter = async (data: NewChapterFormBody) => {
   const { chapterName, username, password, contactName, email, phoneNumber } =
     data;
 
-  const chapter = { email, chapterName };
+  const chapter = { chapterName, contactName, email, phoneNumber };
 
   const newUser = {
-    name: contactName,
-    email,
-    phoneNumber,
     username,
     hash: password,
   };
@@ -49,7 +50,8 @@ const createNewChapter = async (data: NewChapterFormBody) => {
     },
   });
 
-  const responseJson = await response.json();
+  const responseJson = (await response.json()) as PostChapterResponse &
+    ErrorResponse;
   if (response.status !== 200) {
     throw Error(responseJson.message);
   }
@@ -58,7 +60,7 @@ const createNewChapter = async (data: NewChapterFormBody) => {
     throw Error(responseJson.message);
   }
 
-  return responseJson;
+  return responseJson.chapter as ChapterDetails;
 };
 
 const NewChapterModal = () => {
@@ -69,12 +71,14 @@ const NewChapterModal = () => {
   } = useForm();
 
   const { onClose } = useContext(ChapterModalContext);
+  const { upsertChapter } = useContext(ChaptersContext);
 
   const onSubmit = async (x: NewChapterFormBody) => {
     try {
-      const response = await createNewChapter(x);
+      const newChapter = await createNewChapter(x);
+      upsertChapter(newChapter);
       onClose();
-      alert(response.message);
+      alert(`Sucessfully added new chapter: ${newChapter.id}`);
     } catch (e) {
       alert(e);
     }
@@ -87,6 +91,7 @@ const NewChapterModal = () => {
       <ModalBody pb="5">
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
+            isRequired
             isInvalid={errors.chapterName}
             mt={2}
             mb={2}
@@ -104,13 +109,15 @@ const NewChapterModal = () => {
               {errors.chapterName && errors.chapterName.message}
             </FormErrorMessage>
           </FormControl>
-
-          <FormLabel htmlFor="credentials">Credentials</FormLabel>
+          <FormControl isRequired>
+            <FormLabel>Credentials</FormLabel>
+          </FormControl>
           <FormControl
+            isRequired
             isInvalid={errors.username}
             mt={2}
             mb={2}
-            id="chapterName"
+            id="username"
           >
             <Input
               placeholder="Username"
@@ -124,7 +131,12 @@ const NewChapterModal = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={errors.password} mb={2} id="password">
+          <FormControl
+            isRequired
+            isInvalid={errors.password}
+            mb={2}
+            id="password"
+          >
             <Input
               placeholder="Password"
               type="password"
@@ -142,8 +154,11 @@ const NewChapterModal = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <FormLabel htmlFor="contact">Contact Info</FormLabel>
+          <FormControl isRequired>
+            <FormLabel>Contact Info</FormLabel>
+          </FormControl>
           <FormControl
+            isRequired
             isInvalid={errors.contactName}
             mt={2}
             mb={2}
@@ -162,7 +177,7 @@ const NewChapterModal = () => {
           </FormControl>
 
           <SimpleGrid columns={[1, null, 2]} spacing={[0, null, 5]}>
-            <FormControl isInvalid={errors.email} mb={2} id="email">
+            <FormControl isRequired isInvalid={errors.email} mb={2} id="email">
               <Input
                 placeholder="Email"
                 type="email"
@@ -182,11 +197,9 @@ const NewChapterModal = () => {
 
             <FormControl isInvalid={errors.phoneNumber} mb={2} id="phoneNumber">
               <Input
-                placeholder="Phone Number"
+                placeholder="Phone Number (Optional)"
                 type="number"
-                {...register('phoneNumber', {
-                  required: 'Phone number is required',
-                })}
+                {...register('phoneNumber')}
                 borderColor="black"
               />
               <FormErrorMessage>
