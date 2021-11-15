@@ -1,5 +1,22 @@
-import { Heading, Text, Flex, Box } from '@chakra-ui/react';
+import {
+  Heading,
+  Text,
+  Flex,
+  Box,
+  Spacer,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  Stack,
+  Divider,
+} from '@chakra-ui/react';
 import React, { useContext } from 'react';
+import {
+  BsFillTrashFill,
+  BsPencilFill,
+  BsThreeDotsVertical,
+} from 'react-icons/bs';
 import {
   ChapterModalContext,
   ModalState,
@@ -15,6 +32,11 @@ interface ChapterFieldProps {
   text: string;
 }
 
+interface ContextMenuProps {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
 function ChapterCardField({ label, text }: ChapterFieldProps) {
   return (
     <Box pt="2" d="flex">
@@ -26,19 +48,53 @@ function ChapterCardField({ label, text }: ChapterFieldProps) {
   );
 }
 
-function ChapterCard({ chapter }: ChapterCardProps) {
-  // const { onOpen, setModalState, setActiveChapter } =
-  //   useContext(ChapterModalContext);
+function ChapterContextMenu({ onEdit, onDelete }: ContextMenuProps) {
+  return (
+    <Popover placement="bottom-end">
+      <PopoverTrigger>
+        <Box>
+          <BsThreeDotsVertical />
+        </Box>
+      </PopoverTrigger>
+      <PopoverContent width="200px">
+        <PopoverBody width="200px">
+          <Stack>
+            <Flex color="gray.700" onClick={onEdit}>
+              <BsPencilFill />
+              <Text ml="3">Edit Chapter</Text>
+            </Flex>
 
-  // const onChapterClick = () => {
-  //   setActiveChapter(chapter.id);
-  //   setModalState(ModalState.ViewChapter);
-  //   onOpen();
-  // };
+            <Divider />
+
+            <Flex color="red" onClick={onDelete}>
+              <BsFillTrashFill />
+              <Text ml="3">Delete Chapter</Text>
+            </Flex>
+          </Stack>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function ChapterCard({ chapter }: ChapterCardProps) {
+  const { onOpen, setModalState, setActiveChapter } =
+    useContext(ChapterModalContext);
+
+  const onEditChapter = () => {
+    setActiveChapter(chapter.id);
+    setModalState(ModalState.EditChapter);
+    onOpen();
+  };
+
+  const onDeleteChapter = () => {
+    setActiveChapter(chapter.id);
+    setModalState(ModalState.DeleteChapter);
+    onOpen();
+  };
 
   return (
     <Flex
-      // onClick={() => onChapterClick()}
       boxShadow="lg"
       borderRadius="lg"
       borderWidth="1px"
@@ -47,9 +103,14 @@ function ChapterCard({ chapter }: ChapterCardProps) {
       alignItems="baseline"
       padding="5"
     >
-      <Heading size="md" mb="2">
-        {chapter.chapterName}
-      </Heading>
+      <Flex w="100%">
+        <Heading size="md" mb="2">
+          {chapter.chapterName}
+        </Heading>
+        <Spacer />
+        <ChapterContextMenu onEdit={onEditChapter} onDelete={onDeleteChapter} />
+      </Flex>
+
       <ChapterCardField label="Name" text={chapter.contactName} />
       <ChapterCardField
         label="Username"
