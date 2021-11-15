@@ -4,7 +4,6 @@ import { createContext, useState } from 'react';
 // eslint-disable-next-line no-shadow
 export enum ModalState {
   NewChapter,
-  ViewChapter,
   EditChapter,
   DeleteChapter,
 }

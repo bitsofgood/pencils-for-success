@@ -86,8 +86,7 @@ const UserInformation = ({ chapter }: ChapterDetailsProps) => (
 );
 
 const ViewChapterModal = () => {
-  const { onClose, activeChapter, setModalState } =
-    useContext(ChapterModalContext);
+  const { activeChapter, setModalState } = useContext(ChapterModalContext);
   const { chapters, upsertChapter } = useContext(ChaptersContext);
 
   const [loading, setLoading] = useState(true);

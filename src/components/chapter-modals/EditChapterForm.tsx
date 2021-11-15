@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Button,
-  Divider,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -13,10 +12,7 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  ChapterModalContext,
-  ModalState,
-} from '@/providers/ChapterModalProvider';
+import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { emailRegex, validateChapterInput } from '@/utils/prisma-validation';
 import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
@@ -52,7 +48,8 @@ const editChapter = async (id: number, updatedChapter: Chapter) => {
 const ChapterInformationForm = ({
   chapterToEdit,
 }: ChapterInformationFormProps) => {
-  const { activeChapter, setModalState } = useContext(ChapterModalContext);
+  const { activeChapter, onClose: closePrimaryModal } =
+    useContext(ChapterModalContext);
   const { upsertChapter } = useContext(ChaptersContext);
 
   const [editedChapter, setEditedChapter] = useState<Chapter>(chapterToEdit);
@@ -76,7 +73,7 @@ const ChapterInformationForm = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onCancel = () => {
-    setModalState(ModalState.ViewChapter);
+    closePrimaryModal();
   };
 
   const onSubmit = async (data: Chapter) => {
@@ -90,7 +87,7 @@ const ChapterInformationForm = ({
     editChapter(activeChapter, editedChapter)
       .then((newChapter) => {
         upsertChapter(newChapter);
-        setModalState(ModalState.ViewChapter);
+        closePrimaryModal();
       })
       .catch((err) => {
         alert(err);

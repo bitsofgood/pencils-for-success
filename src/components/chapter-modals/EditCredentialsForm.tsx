@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { User } from '@prisma/client';
 import {
   Button,
@@ -12,10 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
-import {
-  ChapterModalContext,
-  ModalState,
-} from '@/providers/ChapterModalProvider';
+import { ChapterModalContext } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 import EditConfirmationModal from './EditConfirmationModal';
 
@@ -59,7 +56,7 @@ const updateCredentials = async (
 };
 
 const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
-  const { setModalState } = useContext(ChapterModalContext);
+  const { onClose: closePrimaryModal } = useContext(ChapterModalContext);
   const { upsertChapter } = useContext(ChaptersContext);
 
   const userToEdit = chapterToEdit?.chapterUser?.user || null;
@@ -82,7 +79,7 @@ const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onCancel = () => {
-    setModalState(ModalState.ViewChapter);
+    closePrimaryModal();
   };
 
   const onSubmit = async (data: User) => {
@@ -99,7 +96,7 @@ const EditCredentialsForm = ({ chapterToEdit }: EditCredentialsForm) => {
           updatedChapter.chapterUser.user.username = data.username;
         }
         upsertChapter(updatedChapter);
-        setModalState(ModalState.ViewChapter);
+        closePrimaryModal();
       })
       .catch((err) => alert(err))
       .finally(() => setLoading(false));

@@ -53,7 +53,7 @@ const DeleteChapterModal = () => {
       })
       .catch((err) => {
         alert(err);
-        setModalState(ModalState.ViewChapter);
+        onClose();
       })
       .finally(() => {
         setLoading(false);
@@ -63,7 +63,7 @@ const DeleteChapterModal = () => {
   const chapterToDelete = chapters[activeChapter];
 
   const onCancel = () => {
-    setModalState(ModalState.ViewChapter);
+    onClose();
   };
 
   return (
