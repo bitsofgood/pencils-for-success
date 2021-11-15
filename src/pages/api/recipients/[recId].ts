@@ -1,42 +1,58 @@
 import { NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Recipient } from '@prisma/client';
 import { NextIronRequest } from '@/utils/session';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
 import { SessionChapterUser } from '../chapters/login';
 import { SessionRecipientUser } from './login';
 
+export interface GetRecipientResponse {
+  recipient: Recipient & {
+    username: string;
+  };
+}
+
+async function getRecipientById(prisma: PrismaClient, id: number) {
+  return prisma.recipient.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      recipientUser: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+}
+
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse>,
+  res: NextApiResponse<ErrorResponse | GetRecipientResponse>,
 ) {
   const { recId } = req.query;
 
   const user = req.session.get('user') as SessionChapterUser &
     SessionRecipientUser;
 
+  if (!user || !user.isLoggedIn) {
+    return res.status(401).json({
+      error: true,
+      message:
+        'Please login as an authorized user to access /recipients endpoint',
+    });
+  }
+
   switch (req.method) {
     case 'DELETE':
       try {
         const prisma = new PrismaClient();
 
-        if (!user || !user.isLoggedIn) {
-          return res.status(401).json({
-            error: true,
-            message: 'Please login as a chapter user to delete recipient',
-          });
-        }
+        const parsedId = Number(recId);
 
         // get the recipient to be deleted
-        const existRecipient = await prisma.recipient.findUnique({
-          where: {
-            id: Number(recId),
-          },
-          select: {
-            chapterId: true,
-            recipientUser: true,
-          },
-        });
+        const existRecipient = await getRecipientById(prisma, parsedId);
 
         if (!existRecipient) {
           return res.status(401).json({
@@ -52,7 +68,8 @@ async function handler(
         if (!isAuthorizedChapterUser) {
           return res.status(401).json({
             error: true,
-            message: "You don't have access to this chapter resource",
+            message:
+              'Please login as an authorized user to access /recipients endpoint',
           });
         }
 
@@ -75,7 +92,7 @@ async function handler(
 
         const deleteRecipient = prisma.recipient.delete({
           where: {
-            id: Number(recId),
+            id: parsedId,
           },
         });
 
@@ -91,8 +108,50 @@ async function handler(
         return serverErrorHandler(e, res);
       }
 
+    case 'GET': {
+      const prisma = new PrismaClient();
+
+      const parsedId = Number(recId);
+
+      // Check if the provided recipient exists
+      const existRecipient = await getRecipientById(prisma, parsedId);
+      if (!existRecipient) {
+        return res.status(401).json({
+          error: true,
+          message: `Recipient of id ${recId} does not exist`,
+        });
+      }
+
+      // Check if the user is authorized to view the details
+      const isAuthorizedChapterUser =
+        user.chapterUser &&
+        user.chapterUser.chapterId === existRecipient.chapterId;
+
+      const isAuthorizedRecipient =
+        user.recipient && user.recipient.recipientId === parsedId;
+
+      const isAuthorizedUser = isAuthorizedChapterUser || isAuthorizedRecipient;
+
+      if (!isAuthorizedUser) {
+        return res.status(401).json({
+          error: true,
+          message:
+            'Please login as an authorized user to access /recipients endpoint',
+        });
+      }
+
+      const parsedRecipient = {
+        ...existRecipient,
+        username: existRecipient.recipientUser?.user?.username || '',
+      };
+
+      return res.status(200).json({
+        recipient: parsedRecipient,
+      });
+    }
+
     default:
-      res.setHeader('Allow', ['DELETE']);
+      res.setHeader('Allow', ['GET', 'DELETE']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });
