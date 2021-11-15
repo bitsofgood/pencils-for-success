@@ -67,7 +67,6 @@ export default function AdminDashboardPage({
         <Box p="10" textAlign="center">
           <Heading>Admin Dashboard</Heading>
           <Divider my={3} />
-          <Text>Admin Id: {user.admin.id}</Text>
 
           <Flex>
             <Heading>Chapters</Heading>

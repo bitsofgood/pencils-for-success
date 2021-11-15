@@ -60,7 +60,6 @@ export default function DonorNavBar() {
               </MenuList>
             </Menu>
 
-            {/* <HStack as="nav" spacing={2} display={{ base: 'none', md: 'flex' }}> */}
             <Link
               borderWidth={3}
               borderColor="white"
