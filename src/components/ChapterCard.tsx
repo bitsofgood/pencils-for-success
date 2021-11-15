@@ -1,31 +1,44 @@
-// This is a dummy card to test functionality to view/edit/delete chapter.
-
-import { Heading, Image, Text, Flex } from '@chakra-ui/react';
+import { Heading, Text, Flex, Box } from '@chakra-ui/react';
 import React, { useContext } from 'react';
-import { Chapter } from '@prisma/client';
 import {
   ChapterModalContext,
   ModalState,
 } from '@/providers/ChapterModalProvider';
+import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
 interface ChapterCardProps {
-  chapter: Chapter;
+  chapter: ChapterDetails;
 }
 
-// Issue #42 handles the adding chapter cards to match the mockups
-function ChapterCard({ chapter }: ChapterCardProps) {
-  const { onOpen, setModalState, setActiveChapter } =
-    useContext(ChapterModalContext);
+interface ChapterFieldProps {
+  label: string;
+  text: string;
+}
 
-  const onChapterClick = () => {
-    setActiveChapter(chapter.id);
-    setModalState(ModalState.ViewChapter);
-    onOpen();
-  };
+function ChapterCardField({ label, text }: ChapterFieldProps) {
+  return (
+    <Box pt="2" d="flex">
+      <Text mr="1" fontWeight="bold">
+        {label}:
+      </Text>
+      <Text>{text}</Text>
+    </Box>
+  );
+}
+
+function ChapterCard({ chapter }: ChapterCardProps) {
+  // const { onOpen, setModalState, setActiveChapter } =
+  //   useContext(ChapterModalContext);
+
+  // const onChapterClick = () => {
+  //   setActiveChapter(chapter.id);
+  //   setModalState(ModalState.ViewChapter);
+  //   onOpen();
+  // };
 
   return (
     <Flex
-      onClick={() => onChapterClick()}
+      // onClick={() => onChapterClick()}
       boxShadow="lg"
       borderRadius="lg"
       borderWidth="1px"
@@ -34,20 +47,16 @@ function ChapterCard({ chapter }: ChapterCardProps) {
       alignItems="baseline"
       padding="5"
     >
-      <Heading size="md" paddingBottom="5">
+      <Heading size="md" mb="2">
         {chapter.chapterName}
       </Heading>
-      <Image
-        src="https://picsum.photos/200"
-        alt=""
-        w="100%"
-        maxH="250px"
-        alignSelf="center"
-        borderRadius="xl"
+      <ChapterCardField label="Name" text={chapter.contactName} />
+      <ChapterCardField
+        label="Username"
+        text={chapter.chapterUser?.user?.username || ''}
       />
-      <Text paddingTop="2">{chapter.contactName}</Text>
-      <Text paddingTop="2">{chapter.email}</Text>
-      <Text paddingTop="2">{chapter.phoneNumber}</Text>
+      <ChapterCardField label="Email" text={chapter.email} />
+      <ChapterCardField label="Phone Number" text={chapter.phoneNumber || ''} />
     </Flex>
   );
 }
