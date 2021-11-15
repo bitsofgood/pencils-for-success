@@ -14,31 +14,27 @@ import { useRouter } from 'next/router';
 
 type LoginProps = {
   apiURL: string;
-  replaceURL: string;
+  directURL: string;
   title: string;
 };
 
-const Login = ({ apiURL, replaceURL, title }: LoginProps) => {
+const Login = ({ apiURL, directURL, title }: LoginProps) => {
   const router = useRouter();
 
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-    getValues,
   } = useForm();
-
-  let inputs: any;
 
   const onSubmit = () => {
     fetch(apiURL, {
       method: 'POST',
-      body: JSON.stringify(inputs),
       headers: {
         'Content-Type': 'application/json',
       },
     })
-      .then(() => router.replace(replaceURL))
+      .then(() => router.replace(directURL))
       // eslint-disable-next-line no-alert
       .catch((error) => window.alert(error.message));
   };
@@ -86,9 +82,6 @@ const Login = ({ apiURL, replaceURL, title }: LoginProps) => {
           isLoading={isSubmitting}
           type="submit"
           borderColor="black"
-          onClick={() => {
-            inputs = getValues(['username', 'password']);
-          }}
         >
           Submit
         </Button>
@@ -99,7 +92,7 @@ const Login = ({ apiURL, replaceURL, title }: LoginProps) => {
 
 Login.propTypes = {
   apiURL: PropTypes.string.isRequired,
-  replaceURL: PropTypes.string.isRequired,
+  directURL: PropTypes.string,
   title: PropTypes.string.isRequired,
 };
 
