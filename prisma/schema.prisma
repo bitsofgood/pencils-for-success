@@ -78,7 +78,7 @@ model SupplyRequest {
   status      SupplyRequestStatus
   lastUpdated DateTime            @default(now())
   created     DateTime            @default(now())
-  note        String
+  note        String?
   recipientId Int
   recipient   Recipient           @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   itemId      Int
