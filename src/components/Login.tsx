@@ -10,18 +10,65 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 
 type LoginProps = {
-  onSubmit: () => void;
+  apiURL: string;
+  directURL: string;
   title: string;
 };
 
-const Login = ({ onSubmit, title }: LoginProps) => {
+const postCredentials = async (
+  apiURL: string,
+  username: string,
+  password: string,
+) => {
+  const response = await fetch(apiURL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  return responseJson;
+};
+
+const Login = ({ apiURL, directURL, title }: LoginProps) => {
+  const router = useRouter();
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const onSubmit = ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) => {
+    postCredentials(apiURL, username, password)
+      .then(() => {
+        router.replace(directURL);
+      })
+      // eslint-disable-next-line no-alert
+      .catch((error) => window.alert(error.message));
+  };
 
   return (
     <Box
@@ -75,7 +122,8 @@ const Login = ({ onSubmit, title }: LoginProps) => {
 };
 
 Login.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  apiURL: PropTypes.string.isRequired,
+  directURL: PropTypes.string,
   title: PropTypes.string.isRequired,
 };
 
