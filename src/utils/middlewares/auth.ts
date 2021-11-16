@@ -8,6 +8,7 @@ import {
   NextIronServerSideContext,
   withSession,
 } from '../session';
+import { SessionRecipientUser } from '@/pages/api/recipients/login';
 
 // Helper function for protecting API routes, returns 401 response if not authed
 export function withAuthedRequestSession(
@@ -72,6 +73,25 @@ export function withChapterAuthPage(handler: NextIronContextHandler) {
 
     if (!user || !user.isLoggedIn || !user.chapterUser) {
       res.setHeader('location', '/chapter/login');
+      res.statusCode = 302;
+      res.end();
+      // Even if redirecting to a different location, getServerSideProps expects valid return
+      return {
+        props: {},
+      };
+    }
+
+    return handler(ctx, null);
+  });
+}
+
+export function withRecipientAuthPage(handler: NextIronContextHandler) {
+  return withSession((ctx: NextIronServerSideContext) => {
+    const { req, res } = ctx;
+    const user = req.session.get('user') as SessionRecipientUser;
+
+    if (!user || !user.isLoggedIn || !user.recipient) {
+      res.setHeader('location', '/recipient/login');
       res.statusCode = 302;
       res.end();
       // Even if redirecting to a different location, getServerSideProps expects valid return

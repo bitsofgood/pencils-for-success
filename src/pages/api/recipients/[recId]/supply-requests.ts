@@ -1,19 +1,29 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, SupplyRequest } from '@prisma/client';
+import { PrismaClient, SupplyRequestStatus } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionRecipientUser } from '../login';
 import { validateNewSupplyRequest } from '@/utils/prisma-validation';
-import { NewSupplyRequestInputBody } from '@/utils/api-types';
+import { NewSupplyRequestInputBody } from '@/utils/api';
 
-export type SupplyResponse = {
-  items: Omit<SupplyRequest, 'recipientId'>[];
-};
+export interface DetailedSupplyRequest {
+  id: number;
+  quantity: number;
+  status: SupplyRequestStatus;
+  lastUpdated: Date;
+  created: Date;
+  note: string;
+  itemName: string;
+}
+
+export interface GetSupplyRequestsResponse {
+  items: DetailedSupplyRequest[];
+}
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse | SupplyResponse>,
+  res: NextApiResponse<ErrorResponse | GetSupplyRequestsResponse>,
 ) {
   const { recId } = req.query;
 
@@ -76,11 +86,26 @@ async function handler(
               lastUpdated: true,
               created: true,
               note: true,
+              item: {
+                select: {
+                  name: true,
+                },
+              },
             },
           });
 
           return res.status(200).json({
-            items: supplyRequests,
+            items: supplyRequests.map<DetailedSupplyRequest>(
+              (supplyRequest) => ({
+                id: supplyRequest.id,
+                quantity: supplyRequest.quantity,
+                status: supplyRequest.status,
+                lastUpdated: supplyRequest.lastUpdated,
+                created: supplyRequest.created,
+                note: supplyRequest.note,
+                itemName: supplyRequest.item.name,
+              }),
+            ),
           });
         }
         return res.status(401).json({
@@ -122,7 +147,7 @@ async function handler(
               quantity: newSupplyRequest.quantity,
               status: newSupplyRequest.status,
               note: newSupplyRequest.note,
-              items: { connect: newSupplyRequest.items },
+              item: { connect: newSupplyRequest.item },
               recipient: { connect: { id: Number(recId) } },
             },
           });

@@ -1,5 +1,5 @@
 import { Prisma, SupplyRequestStatus } from '@prisma/client';
-import { NewSupplyRequestInputBody } from './api-types';
+import { NewSupplyRequestInputBody } from './api';
 
 export const emailRegex =
   /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
@@ -152,8 +152,7 @@ export function validateNewSupplyRequest(
 
     const validNote = supplyRequest.note && supplyRequest.note !== '';
 
-    const validateItems =
-      Array.isArray(supplyRequest.items) && supplyRequest.items.length > 0;
+    const validateItems = supplyRequest.item && supplyRequest.item.id != null;
 
     if (
       supplyRequest.quantity < 0 ||

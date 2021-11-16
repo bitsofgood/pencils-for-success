@@ -81,7 +81,8 @@ model SupplyRequest {
   note        String
   recipientId Int
   recipient   Recipient           @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  items       Item[]
+  itemId      Int
+  item        Item                @relation(fields: [itemId], references: [id])
 }
 
 model Item {
