@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { IoIosSchool } from 'react-icons/io';
 import { RecipientsContext } from '@/providers/RecipientsProvider';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
+import SupplyRequestList from './SupplyRequestList';
 
 interface RecipientDetailsProps {
   recipientId: number;
@@ -47,13 +48,7 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
   return (
     <Box bg="white" minH="500px" boxShadow="lg" borderRadius="lg" p="5">
       <Heading>Supply Requests</Heading>
-      {activeRecipient.name}
-
-      <Stack my="5">
-        {activeRecipient.supplyRequests.map((x) => (
-          <Box key={x.id}>{JSON.stringify(x, null, 4)}</Box>
-        ))}
-      </Stack>
+      <SupplyRequestList data={activeRecipient.supplyRequests} />
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, SupplyRequestStatus } from '@prisma/client';
+import { PrismaClient, Item, SupplyRequest } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
@@ -7,15 +7,9 @@ import { SessionRecipientUser } from '../login';
 import { validateNewSupplyRequest } from '@/utils/prisma-validation';
 import { NewSupplyRequestInputBody } from '@/utils/api';
 
-export interface DetailedSupplyRequest {
-  id: number;
-  quantity: number;
-  status: SupplyRequestStatus;
-  lastUpdated: Date;
-  created: Date;
-  note: string;
-  itemName: string;
-}
+export type DetailedSupplyRequest = SupplyRequest & {
+  item: Item;
+};
 
 export interface GetSupplyRequestsResponse {
   items: DetailedSupplyRequest[];
@@ -79,33 +73,13 @@ async function handler(
             where: {
               recipientId: Number(recId),
             },
-            select: {
-              id: true,
-              quantity: true,
-              status: true,
-              lastUpdated: true,
-              created: true,
-              note: true,
-              item: {
-                select: {
-                  name: true,
-                },
-              },
+            include: {
+              item: true,
             },
           });
 
           return res.status(200).json({
-            items: supplyRequests.map<DetailedSupplyRequest>(
-              (supplyRequest) => ({
-                id: supplyRequest.id,
-                quantity: supplyRequest.quantity,
-                status: supplyRequest.status,
-                lastUpdated: supplyRequest.lastUpdated,
-                created: supplyRequest.created,
-                note: supplyRequest.note,
-                itemName: supplyRequest.item.name,
-              }),
-            ),
+            items: supplyRequests,
           });
         }
         return res.status(401).json({
