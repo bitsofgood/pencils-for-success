@@ -46,8 +46,15 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
   }
 
   return (
-    <Box bg="white" minH="500px" boxShadow="lg" borderRadius="lg" p="5">
-      <Heading>Supply Requests</Heading>
+    <Box
+      bg="white"
+      minH="500px"
+      boxShadow="lg"
+      borderRadius="lg"
+      px={10}
+      py={6}
+    >
+      <Heading mb={8}>Supply Requests</Heading>
       <SupplyRequestList data={activeRecipient.supplyRequests} />
     </Box>
   );
