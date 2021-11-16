@@ -30,7 +30,7 @@
     ]
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed-demo-day.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "1.6.7",
