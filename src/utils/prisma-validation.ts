@@ -152,8 +152,7 @@ export function validateNewSupplyRequest(
 
     const validNote = supplyRequest.note && supplyRequest.note !== '';
 
-    const validateItems =
-      Array.isArray(supplyRequest.items) && supplyRequest.items.length > 0;
+    const validateItems = supplyRequest.item && supplyRequest.item.id != null;
 
     if (
       supplyRequest.quantity < 0 ||

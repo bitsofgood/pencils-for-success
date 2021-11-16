@@ -153,8 +153,10 @@ async function main() {
       status: SupplyRequestStatus.PENDING,
       note: 'extra details about the supply request',
       recipient: { connect: { id: recipient.id } },
-      items: {
-        connect: [{ id: 3 }, { id: 4 }],
+      item: {
+        connect: {
+          id: 3,
+        },
       },
     },
   });
@@ -169,8 +171,10 @@ async function main() {
           id: recipient.id,
         },
       },
-      items: {
-        connect: [{ id: 1 }, { id: 2 }],
+      item: {
+        connect: {
+          id: 1,
+        },
       },
     },
   });

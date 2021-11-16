@@ -24,10 +24,10 @@ interface SupplyRequestListProps {
 export default function SupplyRequestList({ data }: SupplyRequestListProps) {
   const columns = useMemo<Column<DetailedSupplyRequest>[]>(
     () => [
-      // {
-      //   Header: 'Item Name',
-      //   accessor: 'itemName',
-      // },
+      {
+        Header: 'Item Name',
+        accessor: 'itemName',
+      },
       {
         Header: 'Quantity',
         accessor: 'quantity',
@@ -74,7 +74,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
   // Render the UI for your table
   return (
     <>
-      <Table borderCollapse="collapse" borderSpacing="0 100px">
+      <Table bordercollapse="collapse" borderSpacing="0 100px">
         <Thead
           textColor="#858585"
           borderRadius="8px"
@@ -135,7 +135,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
               1
             </Button>
           </Tooltip>
-          <Text mr={8} color="#858585" font-size="16px" alignSelf="bottom">
+          <Text mr={8} color="#858585" fontSize="16px" alignSelf="bottom">
             {' '}
             ...{' '}
           </Text>

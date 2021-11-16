@@ -8,7 +8,7 @@ export type NewSupplyRequestInputBody = {
   quantity: number;
   note: string;
   status: SupplyRequestStatus;
-  items: SupplyRequestItem[];
+  item: SupplyRequestItem;
 };
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());

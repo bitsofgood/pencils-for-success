@@ -14,6 +14,7 @@ export interface DetailedSupplyRequest {
   lastUpdated: Date;
   created: Date;
   note: string;
+  itemName: string;
 }
 
 export interface GetSupplyRequestsResponse {
@@ -85,11 +86,26 @@ async function handler(
               lastUpdated: true,
               created: true,
               note: true,
+              item: {
+                select: {
+                  name: true,
+                },
+              },
             },
           });
 
           return res.status(200).json({
-            items: supplyRequests,
+            items: supplyRequests.map<DetailedSupplyRequest>(
+              (supplyRequest) => ({
+                id: supplyRequest.id,
+                quantity: supplyRequest.quantity,
+                status: supplyRequest.status,
+                lastUpdated: supplyRequest.lastUpdated,
+                created: supplyRequest.created,
+                note: supplyRequest.note,
+                itemName: supplyRequest.item.name,
+              }),
+            ),
           });
         }
         return res.status(401).json({
@@ -131,7 +147,7 @@ async function handler(
               quantity: newSupplyRequest.quantity,
               status: newSupplyRequest.status,
               note: newSupplyRequest.note,
-              items: { connect: newSupplyRequest.items },
+              item: { connect: newSupplyRequest.item },
               recipient: { connect: { id: Number(recId) } },
             },
           });

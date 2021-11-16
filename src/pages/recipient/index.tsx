@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import useSWR from 'swr';
-import { Heading, VStack, Box, Spinner } from '@chakra-ui/react';
+import { Heading, VStack, Box, Spinner, Text, Center } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { PrismaClient, Recipient } from '@prisma/client';
@@ -20,17 +20,23 @@ export default function RecipientMapPage({
   recipient,
   recipientError,
 }: RecipientDashboardProps) {
-  // TODO: handle recipientError
   const { data, error } = useSWR<GetSupplyRequestsResponse>(
-    `/api/recipients/${recipient.id}/supply-requests`,
+    recipient ? `/api/recipients/${recipient.id}/supply-requests` : null,
   );
   const isLoading = !data;
 
   return (
     <VStack w="full" spacing={10} justifyContent="left">
       <Heading>Supply Requests</Heading>
+      {recipientError && <Text>{recipientError}</Text>}
       <Box m={24} w="80%">
-        {isLoading ? <Spinner /> : <SupplyRequestList data={data.items} />}
+        {isLoading ? (
+          <Center>
+            <Spinner />
+          </Center>
+        ) : (
+          <SupplyRequestList data={data.items} />
+        )}
       </Box>
     </VStack>
   );
