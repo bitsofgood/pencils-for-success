@@ -26,7 +26,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
     () => [
       {
         Header: 'Item Name',
-        accessor: 'itemName',
+        accessor: (row) => row.item.name,
       },
       {
         Header: 'Quantity',

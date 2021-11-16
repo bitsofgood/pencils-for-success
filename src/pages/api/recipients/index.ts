@@ -99,7 +99,11 @@ async function handler(
                 user: true,
               },
             },
-            supplyRequests: true,
+            supplyRequests: {
+              include: {
+                item: true,
+              },
+            },
           },
         })) as DetailedRecipient;
 

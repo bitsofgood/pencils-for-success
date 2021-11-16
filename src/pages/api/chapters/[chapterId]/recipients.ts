@@ -9,9 +9,10 @@ import {
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../login';
+import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
 
 export type DetailedRecipient = Recipient & {
-  supplyRequests: SupplyRequest[];
+  supplyRequests: DetailedSupplyRequest[];
   recipientUser:
     | (RecipientUser & {
         user: User;
@@ -65,7 +66,11 @@ async function handler(
                 user: true,
               },
             },
-            supplyRequests: true,
+            supplyRequests: {
+              include: {
+                item: true,
+              },
+            },
           },
         });
 
