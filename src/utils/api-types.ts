@@ -1,4 +1,4 @@
-import { SupplyRequestStatus } from '.prisma/client';
+import { SupplyRequestStatus } from '@prisma/client';
 
 type SupplyRequestItem = {
   id: number;
