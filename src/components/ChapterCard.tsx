@@ -4,12 +4,11 @@ import {
   Flex,
   Box,
   Spacer,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Stack,
-  Divider,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
+  IconButton,
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import {
@@ -50,30 +49,22 @@ function ChapterCardField({ label, text }: ChapterFieldProps) {
 
 function ChapterContextMenu({ onEdit, onDelete }: ContextMenuProps) {
   return (
-    <Popover placement="bottom-end">
-      <PopoverTrigger>
-        <Box>
-          <BsThreeDotsVertical />
-        </Box>
-      </PopoverTrigger>
-      <PopoverContent width="200px">
-        <PopoverBody width="200px">
-          <Stack>
-            <Flex color="gray.700" onClick={onEdit}>
-              <BsPencilFill />
-              <Text ml="3">Edit Chapter</Text>
-            </Flex>
-
-            <Divider />
-
-            <Flex color="red" onClick={onDelete}>
-              <BsFillTrashFill />
-              <Text ml="3">Delete Chapter</Text>
-            </Flex>
-          </Stack>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        aria-label="Chapter Actions"
+        icon={<BsThreeDotsVertical />}
+        variant="ghost"
+      />
+      <MenuList>
+        <MenuItem color="gray.700" icon={<BsPencilFill />} onClick={onEdit}>
+          Edit Chapter
+        </MenuItem>
+        <MenuItem color="red" icon={<BsFillTrashFill />} onClick={onDelete}>
+          Delete Chapter
+        </MenuItem>
+      </MenuList>
+    </Menu>
   );
 }
 
