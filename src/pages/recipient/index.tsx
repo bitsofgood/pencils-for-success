@@ -16,8 +16,19 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import { GetServerSideProps } from 'next';
 import { useTable, usePagination, ColumnWithLooseAccessor } from 'react-table';
 import React from 'react';
+import { NextIronServerSideContext } from '@/utils/session';
+import { withRecipientAuthPage } from '@/utils/middlewares/auth';
+import { SessionRecipientUser } from '../api/recipients/login';
+import { PrismaClient, Recipient } from '.prisma/client';
+
+interface RecipientDashboardProps {
+  user: SessionRecipientUser;
+  recipient: Recipient;
+  recipientError?: string;
+}
 
 interface CustomTableProps {
   columns: ColumnWithLooseAccessor[];
@@ -304,3 +315,30 @@ export default function RecipientMapPage() {
     </VStack>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<RecipientDashboardProps> =
+  withRecipientAuthPage(async ({ req }: NextIronServerSideContext) => {
+    const user = req.session.get('user') as SessionRecipientUser;
+
+    let recipient: Recipient | null;
+    let recipientError = '';
+    try {
+      const prisma = new PrismaClient();
+      recipient = await prisma.recipient.findUnique({
+        where: {
+          id: user.recipient.recipientId,
+        },
+      });
+      if (!recipient) {
+        recipientError = 'No recipient found';
+      }
+    } catch (e) {
+      recipient = null;
+      recipientError =
+        'Failed to retrieve the recipient. Please try again later';
+    }
+
+    return {
+      props: { user, recipient, recipientError },
+    };
+  });
