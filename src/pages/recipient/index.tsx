@@ -9,6 +9,7 @@ import { withRecipientAuthPage } from '@/utils/middlewares/auth';
 import { SessionRecipientUser } from '../api/recipients/login';
 import SupplyRequestList from '@/components/SupplyRequestList';
 import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requests';
+import RecipientNavbar from '@/components/navbars/RecipientNavbar';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
@@ -26,19 +27,22 @@ export default function RecipientMapPage({
   const isLoading = !data;
 
   return (
-    <VStack w="full" spacing={10} justifyContent="left">
-      <Heading>Supply Requests</Heading>
-      {recipientError && <Text>{recipientError}</Text>}
-      <Box m={24} w="80%">
-        {isLoading ? (
-          <Center>
-            <Spinner />
-          </Center>
-        ) : (
-          <SupplyRequestList data={data.items} />
-        )}
-      </Box>
-    </VStack>
+    <>
+      <RecipientNavbar recipientName={recipient.name} />
+      <VStack w="full" spacing={10} justifyContent="left">
+        <Heading>Supply Requests</Heading>
+        {recipientError && <Text>{recipientError}</Text>}
+        <Box m={24} w="80%">
+          {isLoading ? (
+            <Center>
+              <Spinner />
+            </Center>
+          ) : (
+            <SupplyRequestList data={data.items} />
+          )}
+        </Box>
+      </VStack>
+    </>
   );
 }
 

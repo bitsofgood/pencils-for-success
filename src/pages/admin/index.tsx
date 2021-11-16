@@ -26,6 +26,7 @@ import {
   ChaptersProvider,
 } from '@/providers/ChaptersProvider';
 import { ChapterDetails } from '../api/chapters/[chapterId]';
+import AdminNavbar from '@/components/navbars/AdminNavbar';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -61,26 +62,29 @@ export default function AdminDashboardPage({
   chapterError,
 }: AdminDashboardProps) {
   return (
-    <ChaptersProvider initChapters={chapters}>
-      <ChapterModalProvider>
-        <Box p="10" textAlign="center">
-          <Heading>Admin Dashboard</Heading>
-          <Divider my={3} />
+    <>
+      <AdminNavbar />
+      <ChaptersProvider initChapters={chapters}>
+        <ChapterModalProvider>
+          <Box p="10" textAlign="center">
+            <Heading>Admin Dashboard</Heading>
+            <Divider my={3} />
 
-          <Flex>
-            <Heading>Chapters</Heading>
-            <Spacer />
-            <AddNewChapterButton />
-          </Flex>
+            <Flex>
+              <Heading>Chapters</Heading>
+              <Spacer />
+              <AddNewChapterButton />
+            </Flex>
 
-          {chapterError && <Text>{chapterError}</Text>}
+            {chapterError && <Text>{chapterError}</Text>}
 
-          <ChapterCardsGrid />
+            <ChapterCardsGrid />
 
-          <ChapterModalController />
-        </Box>
-      </ChapterModalProvider>
-    </ChaptersProvider>
+            <ChapterModalController />
+          </Box>
+        </ChapterModalProvider>
+      </ChaptersProvider>
+    </>
   );
 }
 
