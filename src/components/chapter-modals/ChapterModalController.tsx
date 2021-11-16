@@ -12,7 +12,6 @@ import {
   ModalState,
 } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
-import ViewChapterModal from './ViewChapterModal';
 import DeleteChapterModal from './DeleteChapterModal';
 import EditChapterModal from './EditChapterModal';
 
@@ -24,8 +23,6 @@ const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
   switch (state) {
     case ModalState.NewChapter:
       return <NewChapterModal />;
-    case ModalState.ViewChapter:
-      return <ViewChapterModal />;
     case ModalState.EditChapter:
       return <EditChapterModal />;
     case ModalState.DeleteChapter:

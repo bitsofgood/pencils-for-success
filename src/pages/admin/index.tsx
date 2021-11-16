@@ -48,7 +48,7 @@ function ChapterCardsGrid() {
   const { chapters } = useContext(ChaptersContext);
 
   return (
-    <SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} my="5" spacing="5">
+    <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} my="5" spacing="5">
       {Object.values(chapters).map((x) => (
         <ChapterCard chapter={x} key={x.id} />
       ))}
@@ -57,7 +57,6 @@ function ChapterCardsGrid() {
 }
 
 export default function AdminDashboardPage({
-  user,
   chapters,
   chapterError,
 }: AdminDashboardProps) {
@@ -67,7 +66,6 @@ export default function AdminDashboardPage({
         <Box p="10" textAlign="center">
           <Heading>Admin Dashboard</Heading>
           <Divider my={3} />
-          <Text>Admin Id: {user.admin.id}</Text>
 
           <Flex>
             <Heading>Chapters</Heading>
