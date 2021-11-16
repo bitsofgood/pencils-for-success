@@ -18,6 +18,34 @@ type LoginProps = {
   title: string;
 };
 
+const postCredentials = async (
+  apiURL: string,
+  username: string,
+  password: string,
+) => {
+  const response = await fetch(apiURL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  return responseJson;
+};
+
 const Login = ({ apiURL, directURL, title }: LoginProps) => {
   const router = useRouter();
 
@@ -27,14 +55,17 @@ const Login = ({ apiURL, directURL, title }: LoginProps) => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const onSubmit = () => {
-    fetch(apiURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(() => router.replace(directURL))
+  const onSubmit = ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) => {
+    postCredentials(apiURL, username, password)
+      .then(() => {
+        router.replace(directURL);
+      })
       // eslint-disable-next-line no-alert
       .catch((error) => window.alert(error.message));
   };
