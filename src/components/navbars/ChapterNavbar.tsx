@@ -23,8 +23,8 @@ ChapterNavbarProps) {
 
   return (
     <NavbarContainer>
-      <HStack spacing="15px">
-        <Text>{chapterName}</Text>
+      <HStack spacing="20px">
+        <Text fontWeight="bold">{chapterName}</Text>
         <Button size="sm" variant="outline">
           View Chapter Info
         </Button>

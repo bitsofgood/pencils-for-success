@@ -14,7 +14,7 @@ export default function AdminNavbar() {
 
   return (
     <NavbarContainer>
-      <HStack spacing="15px">
+      <HStack spacing="20px">
         <Button size="sm" variant="outline">
           View Admin Info
         </Button>
