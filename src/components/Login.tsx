@@ -76,7 +76,7 @@ const Login = ({ apiURL, directURL, title }: LoginProps) => {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      mt={8}
+      pt={8}
     >
       <Heading mb={4}>{title} Login</Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
