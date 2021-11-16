@@ -1,5 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import Image from 'next/image';
+import { NAVBAR_HEIGHT } from '@/styles/theme';
 
 interface NavbarContainerProps {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ export default function NavbarContainer({
       wrap="wrap"
       w="100%"
       px={8}
-      h="55px"
+      h={NAVBAR_HEIGHT}
       bgColor="#0A5093"
       color="white"
       overflow="hidden"
