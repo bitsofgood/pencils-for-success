@@ -146,20 +146,9 @@ export function validateNewSupplyRequest(
   supplyRequest: NewSupplyRequestInputBody,
 ) {
   if (supplyRequest) {
-    const validStatus =
-      supplyRequest.status === SupplyRequestStatus.PENDING ||
-      supplyRequest.status === SupplyRequestStatus.COMPLETE;
-
-    const validNote = supplyRequest.note && supplyRequest.note !== '';
-
     const validateItems = supplyRequest.item && supplyRequest.item.id != null;
 
-    if (
-      supplyRequest.quantity < 0 ||
-      !validStatus ||
-      !validNote ||
-      !validateItems
-    ) {
+    if (supplyRequest.quantity < 0 || !validateItems) {
       throw Error('Please provide valid input fields for the supply request');
     }
   } else {

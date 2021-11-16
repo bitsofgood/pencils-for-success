@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Button,
   FormControl,
@@ -11,12 +11,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   SimpleGrid,
   Textarea,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import useSWR, { mutate } from 'swr';
 import { ErrorResponse } from '@/utils/error';
 import { NewSupplyRequestInputBody } from '@/utils/api';
+import { GetItemsResponse } from '@/pages/api/items';
 
 interface NewSupplyRequestModalProps {
   isOpen: boolean;
@@ -47,6 +50,7 @@ const createNewSupplyRequest = async (
   if (response.status !== 200 || responseJson.error) {
     throw Error(responseJson.message);
   }
+  mutate(`/api/recipients/${recipientId}/supply-requests`);
 
   return responseJson;
 };
@@ -56,6 +60,8 @@ const NewSupplyRequestModal = ({
   onClose,
   recipientId,
 }: NewSupplyRequestModalProps) => {
+  // TODO: handle error
+  const { data: itemsData, error } = useSWR<GetItemsResponse>('/api/items');
   const {
     handleSubmit,
     register,
@@ -63,10 +69,22 @@ const NewSupplyRequestModal = ({
     formState: { errors, isSubmitting },
   } = useForm<NewSupplyRequestInputBody>({});
 
-  const onSubmit = async (data: NewSupplyRequestInputBody) => {
+  const onSubmit = async (formData: {
+    quantity: number;
+    note: string;
+    item: string;
+  }) => {
     try {
-      console.log(data);
-      // await createNewSupplyRequest(data, recipientId);
+      await createNewSupplyRequest(
+        {
+          quantity: formData.quantity,
+          note: formData.note,
+          item: {
+            id: Number(formData.item),
+          },
+        },
+        recipientId,
+      );
       reset();
       onClose();
       alert(`Successfully added new supply request`);
@@ -88,6 +106,31 @@ const NewSupplyRequestModal = ({
         <ModalCloseButton />
         <ModalBody pb="5">
           <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl
+              isRequired
+              isInvalid={errors.item !== undefined}
+              mt={2}
+              mb={2}
+              id="item"
+            >
+              <FormLabel htmlFor="item">Item</FormLabel>
+              <Select
+                placeholder="Select Item Type"
+                {...register('item', {
+                  required: 'Supply Request item type is required',
+                })}
+              >
+                {itemsData &&
+                  itemsData.items.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+              </Select>
+              <FormErrorMessage>
+                {errors.item && errors.item.id}
+              </FormErrorMessage>
+            </FormControl>
             <FormControl
               isRequired
               isInvalid={errors.quantity !== undefined}

@@ -27,7 +27,7 @@ import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
-  recipient: Recipient;
+  recipient?: Recipient;
   recipientError?: string;
 }
 
@@ -36,6 +36,7 @@ export default function RecipientMapPage({
   recipientError,
 }: RecipientDashboardProps) {
   // TODO: handle error
+  // TODO: properly handle recipient null case
   const { data, error } = useSWR<GetSupplyRequestsResponse>(
     recipient ? `/api/recipients/${recipient.id}/supply-requests` : null,
   );
@@ -45,7 +46,7 @@ export default function RecipientMapPage({
 
   return (
     <>
-      <RecipientNavbar recipientName={recipient.name} />
+      <RecipientNavbar recipientName={recipient?.name || ''} />
       <Box
         p="10"
         background="gray.100"
@@ -84,17 +85,19 @@ export default function RecipientMapPage({
           </Stack>
         </Grid>
       </Box>
-      <NewSupplyRequestModal
-        recipientId={recipient.id}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
+      {recipient && (
+        <NewSupplyRequestModal
+          recipientId={recipient.id}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      )}
     </>
   );
 }
 
 export const getServerSideProps: GetServerSideProps<RecipientDashboardProps> =
-  withRecipientAuthPage(async ({ req }: NextIronServerSideContext) => {
+  withRecipientAuthPage(async ({ req, res }: NextIronServerSideContext) => {
     const user = req.session.get('user') as SessionRecipientUser;
 
     let recipient: Recipient | null;
