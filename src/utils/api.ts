@@ -1,5 +1,3 @@
-import { SupplyRequestStatus } from '@prisma/client';
-
 type SupplyRequestItem = {
   id: number;
 };
@@ -7,7 +5,6 @@ type SupplyRequestItem = {
 export type NewSupplyRequestInputBody = {
   quantity: number;
   note: string;
-  status: SupplyRequestStatus;
   item: SupplyRequestItem;
 };
 

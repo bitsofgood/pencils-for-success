@@ -1,5 +1,10 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Item, SupplyRequest } from '@prisma/client';
+import {
+  PrismaClient,
+  Item,
+  SupplyRequest,
+  SupplyRequestStatus,
+} from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
@@ -119,7 +124,7 @@ async function handler(
           await prisma.supplyRequest.create({
             data: {
               quantity: newSupplyRequest.quantity,
-              status: newSupplyRequest.status,
+              status: SupplyRequestStatus.PENDING,
               note: newSupplyRequest.note,
               item: { connect: newSupplyRequest.item },
               recipient: { connect: { id: Number(recId) } },
