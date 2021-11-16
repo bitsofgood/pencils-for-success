@@ -80,15 +80,7 @@ export default function ChapterDashboardPage({
     <>
       <ChapterNavbar chapterName={chapter.chapterName} />
       <RecipientsProvider chapterId={chapterId}>
-        <Box
-          p="10"
-          background="gray.100"
-          position="absolute"
-          top={NAVBAR_HEIGHT}
-          bottom="0"
-          right="0"
-          left="0"
-        >
+        <Box p="10" background="gray.100">
           <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>
 
           {chapterError && <Text>{chapterError}</Text>}
