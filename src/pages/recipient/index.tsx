@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-key */
-import { Heading, VStack, Box } from '@chakra-ui/react';
+import useSWR from 'swr';
+import { Heading, VStack, Box, Spinner } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import { PrismaClient, Recipient } from '@prisma/client';
@@ -7,6 +8,7 @@ import { NextIronServerSideContext } from '@/utils/session';
 import { withRecipientAuthPage } from '@/utils/middlewares/auth';
 import { SessionRecipientUser } from '../api/recipients/login';
 import SupplyRequestList from '@/components/SupplyRequestList';
+import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requests';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
@@ -14,137 +16,21 @@ interface RecipientDashboardProps {
   recipientError?: string;
 }
 
-export default function RecipientMapPage() {
-  const data = React.useMemo(
-    () => [
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-      {
-        itemName: 'Pencils',
-        quantity: 25,
-        status: 'Pending',
-        lastUpdated: '11/6/21',
-        created: '11/6/21',
-        notes: 'Notes',
-      },
-    ],
-    [],
+export default function RecipientMapPage({
+  recipient,
+  recipientError,
+}: RecipientDashboardProps) {
+  // TODO: handle recipientError
+  const { data, error } = useSWR<GetSupplyRequestsResponse>(
+    `/api/recipients/${recipient.id}/supply-requests`,
   );
+  const isLoading = !data;
+
   return (
     <VStack w="full" spacing={10} justifyContent="left">
       <Heading>Supply Requests</Heading>
       <Box m={24} w="80%">
-        <SupplyRequestList data={data} />
+        {isLoading ? <Spinner /> : <SupplyRequestList data={data.items} />}
       </Box>
     </VStack>
   );

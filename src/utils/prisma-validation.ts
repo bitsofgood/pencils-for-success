@@ -1,5 +1,5 @@
 import { Prisma, SupplyRequestStatus } from '@prisma/client';
-import { NewSupplyRequestInputBody } from './api-types';
+import { NewSupplyRequestInputBody } from './api';
 
 export const emailRegex =
   /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;

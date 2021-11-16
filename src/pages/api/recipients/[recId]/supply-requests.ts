@@ -1,19 +1,28 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, SupplyRequest } from '@prisma/client';
+import { PrismaClient, SupplyRequestStatus } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionRecipientUser } from '../login';
 import { validateNewSupplyRequest } from '@/utils/prisma-validation';
-import { NewSupplyRequestInputBody } from '@/utils/api-types';
+import { NewSupplyRequestInputBody } from '@/utils/api';
 
-export type SupplyResponse = {
-  items: Omit<SupplyRequest, 'recipientId'>[];
-};
+export interface DetailedSupplyRequest {
+  id: number;
+  quantity: number;
+  status: SupplyRequestStatus;
+  lastUpdated: Date;
+  created: Date;
+  note: string;
+}
+
+export interface GetSupplyRequestsResponse {
+  items: DetailedSupplyRequest[];
+}
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse | SupplyResponse>,
+  res: NextApiResponse<ErrorResponse | GetSupplyRequestsResponse>,
 ) {
   const { recId } = req.query;
 

@@ -10,3 +10,5 @@ export type NewSupplyRequestInputBody = {
   status: SupplyRequestStatus;
   items: SupplyRequestItem[];
 };
+
+export const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -13,20 +13,21 @@ import {
   Tooltip,
   Button,
 } from '@chakra-ui/react';
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination, Column } from 'react-table';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
 
-interface CustomTableProps {
-  data: any[];
+interface SupplyRequestListProps {
+  data: DetailedSupplyRequest[];
 }
 
-export default function SupplyRequestList({ data }: CustomTableProps) {
-  const columns = useMemo(
+export default function SupplyRequestList({ data }: SupplyRequestListProps) {
+  const columns = useMemo<Column<DetailedSupplyRequest>[]>(
     () => [
-      {
-        Header: 'Item Name',
-        accessor: 'itemName',
-      },
+      // {
+      //   Header: 'Item Name',
+      //   accessor: 'itemName',
+      // },
       {
         Header: 'Quantity',
         accessor: 'quantity',
@@ -45,7 +46,7 @@ export default function SupplyRequestList({ data }: CustomTableProps) {
       },
       {
         Header: 'Notes',
-        accessor: 'notes',
+        accessor: 'note',
       },
     ],
     [],
@@ -61,7 +62,7 @@ export default function SupplyRequestList({ data }: CustomTableProps) {
     previousPage,
     pageCount,
     state: { pageIndex },
-  } = useTable(
+  } = useTable<DetailedSupplyRequest>(
     {
       columns,
       data,

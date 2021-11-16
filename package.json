@@ -51,7 +51,8 @@
     "react-hook-form": "7.15.4",
     "react-icons": "4.3.1",
     "react-map-gl": "6.1.17",
-    "react-table": "7.7.0"
+    "react-table": "7.7.0",
+    "swr": "1.0.1"
   },
   "devDependencies": {
     "@bitwarden/cli": "1.18.0",
