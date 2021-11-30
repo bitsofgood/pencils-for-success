@@ -1,10 +1,4 @@
-import {
-  PrismaClient,
-  Prisma,
-  Chapter,
-  ChapterUser,
-  User,
-} from '@prisma/client';
+import { Prisma, Chapter, ChapterUser, User } from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
 import { SessionChapterUser } from './login';
@@ -15,6 +9,7 @@ import { NextIronRequest } from '@/utils/session';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
 import { validateChapterInput } from '@/utils/prisma-validation';
 import { generateChapterSlug } from '@/utils/slug';
+import prisma from '@/prisma-client';
 
 interface ChapterUpdateBody {
   updatedChapter: Prisma.ChapterCreateInput;
@@ -65,7 +60,6 @@ async function handler(
       }
 
       try {
-        const prisma = new PrismaClient();
         const chapterToUpdate = await prisma.chapter.findUnique({
           where: {
             id: parsedChapterId,
@@ -144,8 +138,6 @@ async function handler(
         });
       }
       try {
-        const prisma = new PrismaClient();
-
         const chapterToDelete = await prisma.chapter.findUnique({
           where: {
             id: parsedChapterId,
@@ -203,7 +195,6 @@ async function handler(
     case 'GET':
       try {
         // Check if the provided chapter user exists
-        const prisma = new PrismaClient();
 
         // checks to see if the user is part of the chapter
         if (isAuthorizedUser) {

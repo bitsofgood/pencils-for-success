@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { Chapter, PrismaClient, Prisma } from '@prisma/client';
+import { Chapter, Prisma } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionAdminUser } from '../admin/login';
@@ -10,6 +10,7 @@ import {
 } from '@/utils/prisma-validation';
 import { ChapterDetails } from './[chapterId]';
 import { generateChapterSlug } from '@/utils/slug';
+import prisma from '@/prisma-client';
 
 export type GetChapterResponse = {
   chapters: Chapter[];
@@ -33,7 +34,6 @@ async function handler(
   switch (req.method) {
     case 'GET':
       try {
-        const prisma = new PrismaClient();
         const chapters = await prisma.chapter.findMany();
 
         return res.status(200).json({ chapters });
@@ -79,8 +79,6 @@ async function handler(
         chapter.chapterSlug = generateChapterSlug(chapter.chapterName);
 
         // Add Prisma records
-        const prisma = new PrismaClient();
-
         const data = {
           ...chapter,
           chapterUser: {

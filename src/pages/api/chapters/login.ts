@@ -1,8 +1,9 @@
 import type { NextApiResponse } from 'next';
-import { ChapterUser, PrismaClient } from '@prisma/client';
+import { ChapterUser } from '@prisma/client';
 import { withSession, NextIronRequest } from '@/utils/session';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { isMatchingHash } from '@/utils/password';
+import prisma from '@/prisma-client';
 
 export type SessionChapterUser = {
   isLoggedIn: boolean;
@@ -18,8 +19,6 @@ async function handler(
     case 'POST':
       try {
         const { username, password } = req.body;
-        const prisma = new PrismaClient();
-
         if (username == null || password == null) {
           return res.status(400).json({
             error: true,

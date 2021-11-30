@@ -1,15 +1,10 @@
 import type { NextApiResponse } from 'next';
-import {
-  PrismaClient,
-  Recipient,
-  RecipientUser,
-  SupplyRequest,
-  User,
-} from '@prisma/client';
+import { Recipient, RecipientUser, User } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '../login';
 import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
+import prisma from '@/prisma-client';
 
 export type DetailedRecipient = Recipient & {
   supplyRequests: DetailedSupplyRequest[];
@@ -31,8 +26,6 @@ async function handler(
   switch (req.method) {
     case 'GET':
       try {
-        const prisma = new PrismaClient();
-
         const currentUser = req.session.get('user') as SessionChapterUser;
 
         // Check if requesting user is logged in and is an chapter

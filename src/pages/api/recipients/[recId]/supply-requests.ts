@@ -1,16 +1,12 @@
 import type { NextApiResponse } from 'next';
-import {
-  PrismaClient,
-  Item,
-  SupplyRequest,
-  SupplyRequestStatus,
-} from '@prisma/client';
+import { Item, SupplyRequest, SupplyRequestStatus } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { SessionChapterUser } from '@/pages/api/chapters/login';
 import { SessionRecipientUser } from '../login';
 import { validateNewSupplyRequest } from '@/utils/prisma-validation';
 import { NewSupplyRequestInputBody } from '@/utils/api';
+import prisma from '@/prisma-client';
 
 export type DetailedSupplyRequest = SupplyRequest & {
   item: Item;
@@ -52,7 +48,6 @@ async function handler(
     case 'GET':
       try {
         // gets existing recipient user
-        const prisma = new PrismaClient();
         const existRecipient = await prisma.recipient.findUnique({
           where: {
             id: Number(recId),
@@ -102,7 +97,7 @@ async function handler(
             message: `Please login as an authorized recipient user to access this resource`,
           });
         }
-        const prisma = new PrismaClient();
+
         const recipientAddSupply = await prisma.recipient.findUnique({
           where: {
             id: Number(recId),

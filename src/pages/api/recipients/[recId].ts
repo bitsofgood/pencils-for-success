@@ -1,10 +1,11 @@
 import { NextApiResponse } from 'next';
-import { PrismaClient, Recipient } from '@prisma/client';
+import { Recipient } from '@prisma/client';
 import { NextIronRequest } from '@/utils/session';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
 import { SessionChapterUser } from '../chapters/login';
 import { SessionRecipientUser } from './login';
+import prisma from '@/prisma-client';
 
 export interface GetRecipientResponse {
   recipient: Recipient & {
@@ -12,7 +13,7 @@ export interface GetRecipientResponse {
   };
 }
 
-async function getRecipientById(prisma: PrismaClient, id: number) {
+async function getRecipientById(id: number) {
   return prisma.recipient.findUnique({
     where: {
       id,
@@ -47,12 +48,10 @@ async function handler(
   switch (req.method) {
     case 'DELETE':
       try {
-        const prisma = new PrismaClient();
-
         const parsedId = Number(recId);
 
         // get the recipient to be deleted
-        const existRecipient = await getRecipientById(prisma, parsedId);
+        const existRecipient = await getRecipientById(parsedId);
 
         if (!existRecipient) {
           return res.status(401).json({
@@ -109,12 +108,10 @@ async function handler(
       }
 
     case 'GET': {
-      const prisma = new PrismaClient();
-
       const parsedId = Number(recId);
 
       // Check if the provided recipient exists
-      const existRecipient = await getRecipientById(prisma, parsedId);
+      const existRecipient = await getRecipientById(parsedId);
       if (!existRecipient) {
         return res.status(401).json({
           error: true,

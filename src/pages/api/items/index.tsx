@@ -1,6 +1,7 @@
-import { Item, PrismaClient } from '@prisma/client';
+import { Item } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
+import prisma from '@/prisma-client';
 
 export interface GetItemsResponse {
   items: Item[];
@@ -13,7 +14,6 @@ export default async function handler(
   switch (req.method) {
     case 'GET':
       try {
-        const prisma = new PrismaClient();
         const items = await prisma.item.findMany();
 
         return res.status(200).json({ items });
