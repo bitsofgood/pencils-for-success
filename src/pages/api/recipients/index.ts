@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import { getPasswordHash } from '@/utils/password';
@@ -9,6 +9,7 @@ import {
 } from '@/utils/prisma-validation';
 import { SessionChapterUser } from '../chapters/login';
 import { DetailedRecipient } from '../chapters/[chapterId]/recipients';
+import prisma from '@/prisma-client';
 
 export type NewRecipientInputBody = {
   recipient: Prisma.RecipientCreateInput;
@@ -64,8 +65,6 @@ async function handler(
         const passwordHash = await getPasswordHash(hash);
 
         // Add Prisma records
-        const prisma = new PrismaClient();
-
         const data = {
           ...recipient,
           chapter: {

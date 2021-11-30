@@ -1,5 +1,5 @@
 import type { NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/prisma-client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
 import { getPasswordHash } from '@/utils/password';
@@ -19,8 +19,6 @@ async function handler(
     case 'PUT':
       try {
         // Check if the provided chapter user exists
-        const prisma = new PrismaClient();
-
         const { userId } = req.query;
         const existingChapterUser = await prisma.chapterUser.findUnique({
           where: {

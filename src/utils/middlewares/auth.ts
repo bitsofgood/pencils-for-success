@@ -14,16 +14,15 @@ import { SessionRecipientUser } from '@/pages/api/recipients/login';
 export function withAuthedRequestSession(
   handler: Handler<NextIronRequest, NextApiResponse>,
 ) {
-  return withSession((req: NextIronRequest, res: NextApiResponse) => {
+  return withSession(async (req: NextIronRequest, res: NextApiResponse) => {
     const user = req.session.get('user');
     if (user) {
-      handler(req, res);
-    } else {
-      res.status(401).json({
-        isLoggedIn: false,
-        message: 'Not Authenticated',
-      });
+      return handler(req, res);
     }
+    return res.status(401).json({
+      isLoggedIn: false,
+      message: 'Not Authenticated',
+    });
   });
 }
 

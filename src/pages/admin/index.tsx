@@ -10,7 +10,7 @@ import {
   Flex,
   Spacer,
 } from '@chakra-ui/react';
-import { Chapter, PrismaClient } from '@prisma/client';
+import { Chapter } from '@prisma/client';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
@@ -27,6 +27,7 @@ import {
 } from '@/providers/ChaptersProvider';
 import { ChapterDetails } from '../api/chapters/[chapterId]';
 import AdminNavbar from '@/components/navbars/AdminNavbar';
+import prisma from '@/prisma-client';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -95,7 +96,6 @@ export const getServerSideProps: GetServerSideProps<AdminDashboardProps> =
     let chapters: Chapter[] = [];
     let chapterError = '';
     try {
-      const prisma = new PrismaClient();
       chapters = await prisma.chapter.findMany({
         include: {
           chapterUser: {

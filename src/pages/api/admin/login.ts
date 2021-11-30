@@ -1,8 +1,9 @@
 import type { NextApiResponse } from 'next';
-import { AdminUser, PrismaClient } from '@prisma/client';
+import { AdminUser } from '@prisma/client';
 import { withSession, NextIronRequest } from '@/utils/session';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { isMatchingHash } from '@/utils/password';
+import prisma from '@/prisma-client';
 
 export type SessionAdminUser = {
   isLoggedIn: boolean;
@@ -18,7 +19,6 @@ async function handler(
     case 'POST':
       try {
         const { username, password } = req.body;
-        const prisma = new PrismaClient();
 
         if (username == null || password == null) {
           return res.status(400).json({

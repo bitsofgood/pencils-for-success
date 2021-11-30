@@ -15,7 +15,7 @@ import {
 import { BsPlus } from 'react-icons/bs';
 import { GetServerSideProps } from 'next';
 import React from 'react';
-import { PrismaClient, Recipient } from '@prisma/client';
+import { Recipient } from '@prisma/client';
 import { NextIronServerSideContext } from '@/utils/session';
 import { withRecipientAuthPage } from '@/utils/middlewares/auth';
 import { SessionRecipientUser } from '../api/recipients/login';
@@ -24,6 +24,7 @@ import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requ
 import RecipientNavbar from '@/components/navbars/RecipientNavbar';
 import { NAVBAR_HEIGHT } from '@/styles/theme';
 import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
+import prisma from '@/prisma-client';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
@@ -103,7 +104,6 @@ export const getServerSideProps: GetServerSideProps<RecipientDashboardProps> =
     let recipient: Recipient | null;
     let recipientError = '';
     try {
-      const prisma = new PrismaClient();
       recipient = await prisma.recipient.findUnique({
         where: {
           id: user.recipient.recipientId,

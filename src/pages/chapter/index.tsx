@@ -12,7 +12,7 @@ import {
   Grid,
   Stack,
 } from '@chakra-ui/react';
-import { Chapter, PrismaClient } from '@prisma/client';
+import { Chapter } from '@prisma/client';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
 import { NextIronServerSideContext } from '@/utils/session';
 import { SessionChapterUser } from '../api/chapters/login';
@@ -24,7 +24,7 @@ import RecipientCard from '@/components/RecipientCard';
 import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
 import RecipientDetails from '@/components/RecipientDetails';
 import ChapterNavbar from '@/components/navbars/ChapterNavbar';
-import { NAVBAR_HEIGHT } from '@/styles/theme';
+import prisma from '@/prisma-client';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
@@ -124,7 +124,6 @@ export const getServerSideProps: GetServerSideProps<ChapterDashboardProps> =
     let chapter: Chapter | null;
     let chapterError = '';
     try {
-      const prisma = new PrismaClient();
       chapter = await prisma.chapter.findUnique({
         where: {
           id: user.chapterUser.chapterId,
