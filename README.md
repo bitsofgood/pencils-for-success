@@ -25,9 +25,9 @@ Start development server with `npm run dev`
 
 ### NPM Scripts
 
-- `lint`: Runs eslint on all source files
-- `format`: Autoformats all sources files
-- `db:generate`: Generates Prisma client assets based on `prisma/schema.prisma` ([more info here](https://www.prisma.io/docs/reference/api-reference/command-reference#generate))
-- `db:push`: "Pushes" state of prisma schema to connected database, updating tables etc. ([more info here](https://www.prisma.io/docs/reference/api-reference/command-reference#db-push))
-- `dev`: Starts NextJS development server
-- `secrets`: Runs series of scripts to sync cloud environment variables to `.env`
+- **`lint`**: Runs eslint on all source files
+- **`format`**: Autoformats all sources files
+- **`db:generate`**: Generates Prisma client assets based on `prisma/schema.prisma` ([more info here](https://www.prisma.io/docs/reference/api-reference/command-reference#generate))
+- **`db:push`**: "Pushes" state of prisma schema to connected database, updating tables etc. ([more info here](https://www.prisma.io/docs/reference/api-reference/command-reference#db-push))
+- **`dev`**: Starts NextJS development server
+- **`secrets`**: Runs series of scripts to sync cloud environment variables to `.env`
