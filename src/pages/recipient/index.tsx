@@ -9,6 +9,8 @@ import {
   Center,
   Flex,
   Stack,
+  HStack,
+  VStack,
   Button,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -24,6 +26,7 @@ import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requ
 import RecipientNavbar from '@/components/navbars/RecipientNavbar';
 import { NAVBAR_HEIGHT } from '@/styles/theme';
 import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
+import RecipientSidePanel from '@/components/RecipientSidePanel';
 import prisma from '@/prisma-client';
 
 interface RecipientDashboardProps {
@@ -57,8 +60,8 @@ export default function RecipientMapPage({
         right="0"
         left="0"
       >
-        <Grid templateColumns="300px 1fr" my="5" gap="4">
-          <Box />
+        <Grid templateColumns="300px 1fr" my="5" gap="10">
+          <RecipientSidePanel />
           <Stack
             bgColor="white"
             py={8}
