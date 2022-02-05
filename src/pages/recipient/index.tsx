@@ -9,8 +9,6 @@ import {
   Center,
   Flex,
   Stack,
-  HStack,
-  VStack,
   Button,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -61,7 +59,16 @@ export default function RecipientMapPage({
         left="0"
       >
         <Grid templateColumns="300px 1fr" my="5" gap="10">
-          <RecipientSidePanel />
+          <RecipientSidePanel
+            recipientName={recipient?.name || ''}
+            contactName={recipient?.contactName || ''}
+            email={recipient?.email || ''}
+            phoneNumber={recipient?.phoneNumber || ''}
+            streetAddress={recipient?.primaryStreetAddress || ''}
+            city={recipient?.city || ''}
+            state={recipient?.state || ''}
+            postalCode={recipient?.postalCode || ''}
+          />
           <Stack
             bgColor="white"
             py={8}
