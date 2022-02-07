@@ -13,7 +13,6 @@ import {
   PopoverBody,
   PopoverArrow,
   Stack,
-  Divider,
   useControllableState,
 } from '@chakra-ui/react';
 import { useTable, usePagination, Column } from 'react-table';
@@ -51,7 +50,7 @@ function RowContextMenu() {
               color="gray.700"
               alignItems="center"
               justifyContent="flex-start"
-              onClick={() => console.log('Edit status')}
+              onClick={() => console.log('Edit supply request.')}
             >
               <BsPencilFill />
               <Text ml="3">Edit Supply Request</Text>
@@ -63,7 +62,7 @@ function RowContextMenu() {
               color="red"
               alignItems="center"
               justifyContent="flex-start"
-              onClick={() => console.log('Delete status')}
+              onClick={() => console.log('Delete supply request.')}
             >
               <BsTrashFill />
               <Text ml="3">Delete Supply Request</Text>
@@ -76,7 +75,6 @@ function RowContextMenu() {
 }
 
 function NotesContextMenu(note: string) {
-  const [isOpen, setIsOpen] = useControllableState({ defaultValue: false });
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
@@ -87,17 +85,17 @@ function NotesContextMenu(note: string) {
           cursor="pointer"
           fontWeight="normal"
           onClick={() => {
-            setIsOpen(true);
+            // setIsOpen(true);
           }}
         >
-          <BsCaretDownFill transform={isOpen ? 'rotate(180)' : 'rotate(0)'} />
+          <BsCaretDownFill />
           <Text marginLeft={1.5}>Notes</Text>
         </Button>
       </PopoverTrigger>
       <PopoverContent
         width="auto"
         onBlur={() => {
-          setIsOpen(false);
+          // setIsOpen(false);
         }}
       >
         <PopoverArrow />
@@ -111,7 +109,6 @@ function NotesContextMenu(note: string) {
 
 function StatusContextMenu(currentStatus: string) {
   const status: string = currentStatus;
-  const [isOpen, setIsOpen] = useControllableState({ defaultValue: false });
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
@@ -131,11 +128,11 @@ function StatusContextMenu(currentStatus: string) {
           }}
           transitionDuration="0.2s"
           onClick={() => {
-            setIsOpen(true);
+            // setIsOpen(true);
           }}
         >
           <Box marginRight={2}>
-            <BsCaretDownFill transform={isOpen ? 'rotate(180)' : 'rotate(0)'} />
+            <BsCaretDownFill />
           </Box>
           {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
         </Flex>
@@ -143,10 +140,36 @@ function StatusContextMenu(currentStatus: string) {
       <PopoverContent
         width="auto"
         onBlur={() => {
-          setIsOpen(false);
+          // setIsOpen(false);
         }}
       >
         <PopoverBody width="auto">
+          <Box
+            backgroundColor={status === 'PENDING' ? '#FFF8E7' : '#E0F0FF'}
+            color={status === 'PENDING' ? '#CA9000' : '#0A5093'}
+            paddingLeft="3"
+            paddingRight="3"
+            paddingTop="2"
+            paddingBottom="2"
+            fontWeight="bold"
+            borderRadius="8"
+            cursor="pointer"
+            marginBottom={2}
+            textAlign="center"
+            onClick={() =>
+              console.log(
+                `Change to supply request to ${
+                  status === 'PENDING' ? 'Pending' : 'Complete'
+                }.`,
+              )
+            }
+            _hover={{
+              backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+            }}
+            transitionDuration="0.2s"
+          >
+            {status === 'PENDING' ? 'Pending' : 'Complete'}
+          </Box>
           <Box
             backgroundColor={status === 'PENDING' ? '#E0F0FF' : '#FFF8E7'}
             color={status === 'PENDING' ? '#0A5093' : '#CA9000'}
@@ -156,10 +179,13 @@ function StatusContextMenu(currentStatus: string) {
             paddingBottom="2"
             fontWeight="bold"
             borderRadius="8"
+            textAlign="center"
             cursor="pointer"
             onClick={() =>
               console.log(
-                `Change to ${status === 'PENDING' ? 'Complete' : 'Pending'}`,
+                `Change to supply request to ${
+                  status === 'PENDING' ? 'Complete' : 'Pending'
+                }.`,
               )
             }
             _hover={{
@@ -303,7 +329,6 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
                   const day = fullDate.substring(8, 10);
                   cellBody = `${month}/${day}/${year}`;
                 } else if (cell.column.Header === 'Notes') {
-                  console.log(cell.value);
                   if (cell.value === '') {
                     cellBody = <></>;
                   } else {
