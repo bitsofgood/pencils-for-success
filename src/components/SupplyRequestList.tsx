@@ -29,7 +29,7 @@ interface SupplyRequestListProps {
   data: DetailedSupplyRequest[];
 }
 
-function RowContextMenu(rowId: number) {
+function RowContextMenu() {
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -73,7 +73,7 @@ function RowContextMenu(rowId: number) {
   );
 }
 
-function NotesContextMenu(note: string, rowId: number) {
+function NotesContextMenu(note: string) {
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
@@ -106,7 +106,7 @@ function NotesContextMenu(note: string, rowId: number) {
   );
 }
 
-function StatusContextMenu(currentStatus: string, rowId: number) {
+function StatusContextMenu(currentStatus: string) {
   const status: string = currentStatus;
   return (
     <Popover placement="bottom-start">
