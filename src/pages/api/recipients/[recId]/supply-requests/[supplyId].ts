@@ -80,17 +80,15 @@ async function handler(
             message: `The provided supply-request does not match with the provided recipient`,
           });
         }
-
-        const transactionQueries = [];
-
-        const deleteSupplyRequest = prisma.supplyRequest.delete({
-          where: {
-            id: existSupplyRequest.id,
-          },
-        });
-
-        transactionQueries.push(deleteSupplyRequest);
-        await prisma.$transaction(transactionQueries);
+        try {
+          await prisma.supplyRequest.delete({
+            where: {
+              id: existSupplyRequest.id,
+            },
+          });
+        } catch (e) {
+          return serverErrorHandler(e, res);
+        }
 
         return res.status(200).json({
           error: false,
