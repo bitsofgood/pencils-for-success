@@ -80,15 +80,11 @@ async function handler(
             message: `The provided supply-request does not match with the provided recipient`,
           });
         }
-        try {
-          await prisma.supplyRequest.delete({
-            where: {
-              id: existSupplyRequest.id,
-            },
-          });
-        } catch (e) {
-          return serverErrorHandler(e, res);
-        }
+        await prisma.supplyRequest.delete({
+          where: {
+            id: existSupplyRequest.id,
+          },
+        });
 
         return res.status(200).json({
           error: false,
