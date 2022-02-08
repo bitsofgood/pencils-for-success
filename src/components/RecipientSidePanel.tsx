@@ -1,7 +1,13 @@
-import { Heading, Flex, Spacer, Box, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
-import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
+import {
+  Heading,
+  Flex,
+  Spacer,
+  Box,
+  VStack,
+  Stack,
+  Button,
+  Image,
+} from '@chakra-ui/react';
 
 interface RecipientDetailsProps {
   recipientName: string;
@@ -36,7 +42,16 @@ function RecipientSidePanel({
       spacing={8}
     >
       <Flex>
-        <VStack alignItems="start">
+        <VStack alignItems="start" spacing="12px">
+          <Image
+            borderRadius="md"
+            boxSize="220px"
+            objectFit="cover"
+            src=".../public/logo.png"
+            fallbackSrc="https://via.placeholder.com/150"
+            // src='https://bit.ly/dan-abramov'
+            alt="School Image"
+          />
           <Heading size="md" mb="32px">
             {recipientName}
           </Heading>
@@ -59,6 +74,17 @@ function RecipientSidePanel({
           </Heading>
         </VStack>
         <Spacer />
+        <Stack position="absolute" bottom="80px" align="center">
+          <Button
+            ml="50px"
+            colorScheme="blue"
+            size="lg"
+            variant="outline"
+            border="2px"
+          >
+            Edit Info
+          </Button>
+        </Stack>
       </Flex>
     </Box>
   );
