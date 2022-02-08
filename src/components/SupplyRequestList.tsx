@@ -13,7 +13,6 @@ import {
   PopoverBody,
   PopoverArrow,
   Stack,
-  useControllableState,
 } from '@chakra-ui/react';
 import { useTable, usePagination, Column } from 'react-table';
 import {
@@ -30,7 +29,7 @@ interface SupplyRequestListProps {
   data: DetailedSupplyRequest[];
 }
 
-function RowContextMenu() {
+function RowContextMenu(rowId: number) {
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -74,7 +73,7 @@ function RowContextMenu() {
   );
 }
 
-function NotesContextMenu(note: string) {
+function NotesContextMenu(note: string, rowId: number) {
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
@@ -107,12 +106,12 @@ function NotesContextMenu(note: string) {
   );
 }
 
-function StatusContextMenu(currentStatus: string) {
+function StatusContextMenu(currentStatus: string, rowId: number) {
   const status: string = currentStatus;
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
-        <Flex
+        <Button
           backgroundColor={status === 'PENDING' ? '#FFF8E7' : '#E0F0FF'}
           color={status === 'PENDING' ? '#CA9000' : '#0A5093'}
           paddingLeft="3"
@@ -126,21 +125,29 @@ function StatusContextMenu(currentStatus: string) {
           _hover={{
             backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
           }}
+          _active={{
+            backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+          }}
           transitionDuration="0.2s"
           onClick={() => {
-            // setIsOpen(true);
+            // setFocused(true);
           }}
         >
           <Box marginRight={2}>
-            <BsCaretDownFill />
+            <BsCaretDownFill
+              style={{
+                // transform: `${focused ? 'rotate(180deg)' : 'rotate(0deg)'}`,
+                transition: 'all 0.2s',
+              }}
+            />
           </Box>
           {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
-        </Flex>
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         width="auto"
         onBlur={() => {
-          // setIsOpen(false);
+          // setFocused(false);
         }}
       >
         <PopoverBody width="auto">
@@ -297,7 +304,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
       </Box>
 
       <Box width="100%" display="flex" flexDirection="column">
-        {page.map((row, i) => {
+        {page.map((row) => {
           prepareRow(row);
           return (
             <Box
@@ -311,6 +318,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
               paddingLeft={6}
               paddingRight={6}
               marginBottom={6}
+              key={row.id}
             >
               {row.cells.map((cell, index) => {
                 let cellBody;
