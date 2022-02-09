@@ -37,6 +37,10 @@ function RowContextMenu() {
           variant="ghost"
           aria-label="Edit Supply Request"
           icon={<BsThreeDots />}
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
         />
       </PopoverTrigger>
       <PopoverContent width="auto">
@@ -83,6 +87,10 @@ function NotesContextMenu(note: string) {
           alignItems="center"
           cursor="pointer"
           fontWeight="normal"
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
           onClick={() => {
             // setIsOpen(true);
           }}
@@ -127,6 +135,10 @@ function StatusContextMenu(currentStatus: string) {
           }}
           _active={{
             backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+          }}
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
           }}
           transitionDuration="0.2s"
           onClick={() => {
@@ -206,6 +218,35 @@ function StatusContextMenu(currentStatus: string) {
       </PopoverContent>
     </Popover>
   );
+}
+
+// renders a cell
+function Cell(cell: any) {
+  const cellInfo = cell;
+  // render status cell
+  if (cellInfo.column.Header === 'Status') {
+    return StatusContextMenu(cell.value);
+  }
+  // render date cells
+  if (
+    cellInfo.column.Header === 'Last Updated' ||
+    cellInfo.column.Header === 'Created'
+  ) {
+    const fullDate = cell.value.substring(0, 10);
+    const year = fullDate.substring(0, 4);
+    const month = fullDate.substring(5, 7);
+    const day = fullDate.substring(8, 10);
+    return `${month}/${day}/${year}`;
+  }
+  if (cellInfo.column.Header === 'Notes') {
+    if (cell.value === '') {
+      return <></>;
+    }
+    return NotesContextMenu(cell.value);
+  }
+  // render default cells
+
+  return cellInfo.render('Cell');
 }
 
 export default function SupplyRequestList({ data }: SupplyRequestListProps) {
@@ -320,47 +361,22 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
               marginBottom={6}
               key={row.id}
             >
-              {row.cells.map((cell, index) => {
-                let cellBody;
-                // render status cell
-                if (cell.column.Header === 'Status') {
-                  cellBody = StatusContextMenu(cell.value);
-                }
-                // render date cells
-                else if (
-                  cell.column.Header === 'Last Updated' ||
-                  cell.column.Header === 'Created'
-                ) {
-                  const fullDate = cell.value.substring(0, 10);
-                  const year = fullDate.substring(0, 4);
-                  const month = fullDate.substring(5, 7);
-                  const day = fullDate.substring(8, 10);
-                  cellBody = `${month}/${day}/${year}`;
-                } else if (cell.column.Header === 'Notes') {
-                  if (cell.value === '') {
-                    cellBody = <></>;
-                  } else {
-                    cellBody = NotesContextMenu(cell.value);
-                  }
-                }
-                // render default cells
-                else {
-                  cellBody = cell.render('Cell');
-                }
-                return (
-                  <Box
-                    display="flex"
-                    fontSize="16px"
-                    width={columnWidths[index]}
-                    alignItems="center"
-                    marginLeft={1}
-                    marginRight={1}
-                    {...cell.getCellProps()}
-                  >
-                    {cellBody}
-                  </Box>
-                );
-              })}
+              {row.cells.map((cell, index) => (
+                <Box
+                  display="flex"
+                  fontSize="16px"
+                  width={columnWidths[index]}
+                  alignItems="center"
+                  marginLeft={1}
+                  marginRight={1}
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  {...cell.getCellProps()}
+                >
+                  {Cell(cell)}
+                </Box>
+              ))}
               <Box
                 display="flex"
                 fontSize="16px"
