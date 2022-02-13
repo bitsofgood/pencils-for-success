@@ -21,10 +21,16 @@ import {
   RecipientsProvider,
 } from '@/providers/RecipientsProvider';
 import RecipientCard from '@/components/RecipientCard';
+import {
+  RecipientModalContext,
+  RecipientModalProvider,
+  ModalState,
+} from '@/providers/RecipientModalProvider';
 import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
 import RecipientDetails from '@/components/RecipientDetails';
 import ChapterNavbar from '@/components/navbars/ChapterNavbar';
 import prisma from '@/prisma-client';
+import RecipientModalController from '@/components/recipient-modals/RecipientModalController';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
@@ -80,38 +86,41 @@ export default function ChapterDashboardPage({
     <>
       <ChapterNavbar chapterName={chapter.chapterName} />
       <RecipientsProvider chapterId={chapterId}>
-        <Box p="10" background="gray.100">
-          <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>
+        <RecipientModalProvider>
+          <Box p="10" background="gray.100">
+            <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>
 
-          {chapterError && <Text>{chapterError}</Text>}
+            {chapterError && <Text>{chapterError}</Text>}
 
-          <Grid templateColumns="300px 1fr" my="5" gap="4">
-            <Stack spacing="5">
-              <Flex
-                boxShadow="lg"
-                borderRadius="lg"
-                borderWidth="1px"
-                alignItems="baseline"
-                background="white"
-                padding="3"
-              >
-                <Heading size="md">Recipients</Heading>
-                <Spacer />
-                <Button onClick={onOpen} colorScheme="blue" width="60px">
-                  +
-                </Button>
-              </Flex>
-              <RecipientsCardsList
-                activeRecipientId={activeRecipientId}
-                onRecipientClick={setActiveRecipientId}
-              />
-            </Stack>
+            <Grid templateColumns="300px 1fr" my="5" gap="4">
+              <Stack spacing="5">
+                <Flex
+                  boxShadow="lg"
+                  borderRadius="lg"
+                  borderWidth="1px"
+                  alignItems="baseline"
+                  background="white"
+                  padding="3"
+                >
+                  <Heading size="md">Recipients</Heading>
+                  <Spacer />
+                  <Button onClick={onOpen} colorScheme="blue" width="60px">
+                    +
+                  </Button>
+                </Flex>
+                <RecipientsCardsList
+                  activeRecipientId={activeRecipientId}
+                  onRecipientClick={setActiveRecipientId}
+                />
+                <RecipientModalController />
+              </Stack>
 
-            <RecipientDetails recipientId={activeRecipientId} />
-          </Grid>
+              <RecipientDetails recipientId={activeRecipientId} />
+            </Grid>
 
-          <NewRecipientModal isOpen={isOpen} onClose={onClose} />
-        </Box>
+            <NewRecipientModal isOpen={isOpen} onClose={onClose} />
+          </Box>
+        </RecipientModalProvider>
       </RecipientsProvider>
     </>
   );

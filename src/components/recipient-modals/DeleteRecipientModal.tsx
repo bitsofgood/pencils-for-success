@@ -75,7 +75,7 @@ const DeleteRecipientModal = () => {
           Are you sure?
         </Text>
         <Text color="gray.500">This action will delete recipient</Text>
-        <Text fontSize="3xl">{recipientToDelete?.recipientUser}</Text>
+        <Text fontSize="3xl">{recipientToDelete?.name}</Text>
         <Text color="gray.500">This action cannot be undone</Text>
         <Divider my="5" />
         <Flex>

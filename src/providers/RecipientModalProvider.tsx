@@ -40,14 +40,6 @@ export const RecipientModalContext = createContext<RecipientModalContextProps>({
   },
 });
 
-// const setModalState = async (chapterId: number) => {
-//   // TODO somehow we need to implement these methods.
-// };
-
-// const setActiveRecipient = async (chapterId: number) => {
-//   // TODO
-// };
-
 export const RecipientModalProvider = ({
   children,
 }: RecipientModalProviderProps) => {

@@ -11,7 +11,6 @@ import {
   RecipientModalContext,
   ModalState,
 } from '@/providers/RecipientModalProvider';
-import NewRecipientModal from './NewRecipientModal';
 import DeleteRecipientModal from './DeleteRecipientModal';
 // import EditRecipientModal from './EditRecipientModal';
 
@@ -21,8 +20,6 @@ interface RecipientModalContentProps {
 
 const RecipientModalContent = ({ state }: RecipientModalContentProps) => {
   switch (state) {
-    // case ModalState.NewRecipient:
-    //   return <NewRecipientModal />;
     // case ModalState.EditRecipient:
     // return <EditRecipientModal />;
     case ModalState.DeleteRecipient:
