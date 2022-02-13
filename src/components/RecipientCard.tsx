@@ -14,9 +14,13 @@ import {
   Stack,
   Divider,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
+import {
+  RecipientModalContext,
+  ModalState,
+} from '@/providers/RecipientModalProvider';
 
 interface RecipientCardProps {
   recipient: DetailedRecipient;
@@ -71,7 +75,17 @@ function SupplyRequestStatus({ recipient }: RecipientDetailsProps) {
   );
 }
 
-function RecipientContextMenu() {
+function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
+  const { onOpen, setModalState, setActiveRecipient } = useContext(
+    RecipientModalContext,
+  );
+
+  const onDeleteRecipient = () => {
+    setActiveRecipient(recipient.id);
+    setModalState(ModalState.DeleteRecipient);
+    onOpen();
+  };
+
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -92,7 +106,9 @@ function RecipientContextMenu() {
 
             <Flex color="red">
               <BsFillTrashFill />
-              <Text ml="3">Delete Recipient</Text>
+              <Text ml="3" onClick={onDeleteRecipient}>
+                Delete Recipient
+              </Text>
             </Flex>
           </Stack>
         </PopoverBody>
@@ -115,7 +131,7 @@ function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
       <Flex>
         <Heading size="sm">{recipient.name}</Heading>
         <Spacer />
-        <RecipientContextMenu />
+        <RecipientContextMenu recipient={recipient} />
       </Flex>
       <SupplyRequestStatus recipient={recipient} />
 
