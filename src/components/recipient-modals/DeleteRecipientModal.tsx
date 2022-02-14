@@ -16,7 +16,7 @@ import {
 import { RecipientsContext } from '@/providers/RecipientsProvider';
 
 const deleteRecipient = async (id: number) => {
-  const response = await fetch(`/api/recipient/${id}`, {
+  const response = await fetch(`/api/recipients/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,8 @@ const DeleteRecipientModal = () => {
       });
   };
 
-  const recipientToDelete = recipients[activeRecipient];
+  const recipientIndex = recipients.findIndex((x) => x.id === activeRecipient);
+  const recipientToDelete = recipients[recipientIndex];
 
   const onCancel = () => {
     onClose();
