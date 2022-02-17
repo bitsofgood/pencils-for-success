@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import {
   ChapterModalContext,
-  ModalState,
+  ChapterModalState,
 } from '@/providers/ChapterModalProvider';
 import { ChaptersContext } from '@/providers/ChaptersProvider';
 
@@ -47,7 +47,7 @@ const DeleteChapterModal = () => {
     deleteChapter(activeChapter)
       .then(() => {
         onClose();
-        setModalState(ModalState.NewChapter);
+        setModalState(ChapterModalState.NewChapter);
         removeChapter(activeChapter);
         setActiveChapter(-1);
       })

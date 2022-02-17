@@ -11,7 +11,6 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
-import { validateUsername, validatePassword } from '@/utils/prisma-validation';
 import { AdminModalContext } from '@/providers/AdminModalProvider';
 import EditConfirmationModal from '@/components/admin-modals/EditConfirmationModal';
 
