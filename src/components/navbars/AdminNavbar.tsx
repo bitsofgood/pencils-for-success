@@ -1,6 +1,26 @@
 import { HStack, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import NavbarContainer from './NavbarContainer';
+import {
+  AdminModalContext,
+  AdminModalState,
+} from '@/providers/AdminModalProvider';
+
+function ViewAdminInfoButton() {
+  const { onOpen, setModalState } = useContext(AdminModalContext);
+
+  const onViewAdminInfoClick = () => {
+    setModalState(AdminModalState.ViewAdmin);
+    onOpen();
+  };
+
+  return (
+    <Button size="sm" variant="outline" onClick={onViewAdminInfoClick}>
+      View Admin Info
+    </Button>
+  );
+}
 
 export default function AdminNavbar() {
   const router = useRouter();
@@ -15,9 +35,7 @@ export default function AdminNavbar() {
   return (
     <NavbarContainer>
       <HStack spacing="20px">
-        <Button size="sm" variant="outline">
-          View Admin Info
-        </Button>
+        <ViewAdminInfoButton />
         <Button size="sm" variant="outline" onClick={handleLogout}>
           Logout
         </Button>

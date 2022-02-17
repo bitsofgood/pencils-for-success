@@ -18,7 +18,7 @@ import ChapterModalController from '@/components/chapter-modals/ChapterModalCont
 import {
   ChapterModalContext,
   ChapterModalProvider,
-  ModalState,
+  ChapterModalState,
 } from '@/providers/ChapterModalProvider';
 import ChapterCard from '@/components/ChapterCard';
 import {
@@ -28,6 +28,8 @@ import {
 import { ChapterDetails } from '../api/chapters/[chapterId]';
 import AdminNavbar from '@/components/navbars/AdminNavbar';
 import prisma from '@/prisma-client';
+import { AdminModalProvider } from '@/providers/AdminModalProvider';
+import AdminModalController from '@/components/admin-modals/AdminModalController';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -39,7 +41,7 @@ function AddNewChapterButton() {
   const { onOpen, setModalState } = useContext(ChapterModalContext);
 
   const onNewChapterClick = () => {
-    setModalState(ModalState.NewChapter);
+    setModalState(ChapterModalState.NewChapter);
     onOpen();
   };
 
@@ -64,7 +66,12 @@ export default function AdminDashboardPage({
 }: AdminDashboardProps) {
   return (
     <>
-      <AdminNavbar />
+      <AdminModalProvider>
+        <>
+          <AdminNavbar />
+          <AdminModalController />
+        </>
+      </AdminModalProvider>
       <ChaptersProvider initChapters={chapters}>
         <ChapterModalProvider>
           <Box p="10" textAlign="center">
