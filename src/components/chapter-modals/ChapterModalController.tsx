@@ -9,23 +9,23 @@ import {
 } from '@chakra-ui/react';
 import {
   ChapterModalContext,
-  ModalState,
+  ChapterModalState,
 } from '@/providers/ChapterModalProvider';
 import NewChapterModal from './NewChapterModal';
 import DeleteChapterModal from './DeleteChapterModal';
 import EditChapterModal from './EditChapterModal';
 
 interface ChapterModalContentProps {
-  state: ModalState;
+  state: ChapterModalState;
 }
 
 const ChapterModalContent = ({ state }: ChapterModalContentProps) => {
   switch (state) {
-    case ModalState.NewChapter:
+    case ChapterModalState.NewChapter:
       return <NewChapterModal />;
-    case ModalState.EditChapter:
+    case ChapterModalState.EditChapter:
       return <EditChapterModal />;
-    case ModalState.DeleteChapter:
+    case ChapterModalState.DeleteChapter:
       return <DeleteChapterModal />;
     default:
       return (
