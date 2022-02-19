@@ -20,6 +20,8 @@ import { NextIronServerSideContext } from '@/utils/session';
 import { withRecipientAuthPage } from '@/utils/middlewares/auth';
 import { SessionRecipientUser } from '../api/recipients/login';
 import SupplyRequestList from '@/components/SupplyRequestList';
+import SupplyRequestModalController from '@/components/supply-request-modals/SupplyRequestModalController';
+import { SupplyRequestModalProvider } from '@/providers/SupplyRequestModalProvider';
 import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requests';
 import RecipientNavbar from '@/components/navbars/RecipientNavbar';
 import { NAVBAR_HEIGHT } from '@/styles/theme';
@@ -69,31 +71,36 @@ export default function RecipientMapPage({
             state={recipient?.state || ''}
             postalCode={recipient?.postalCode || ''}
           />
-          <Stack
-            bgColor="white"
-            py={8}
-            px={10}
-            minH="500px"
-            boxShadow="lg"
-            borderRadius="lg"
-            borderWidth="1px"
-            spacing={8}
-          >
-            <Flex align="center" justifyContent="space-between">
-              <Heading>Supply Requests</Heading>
-              <Button leftIcon={<BsPlus />} onClick={onOpen}>
-                Add New
-              </Button>
-            </Flex>
-            {recipientError && <Text>{recipientError}</Text>}
-            {isLoading ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <SupplyRequestList data={data.items} />
-            )}
-          </Stack>
+          <SupplyRequestModalProvider>
+            <Stack
+              bgColor="white"
+              py={8}
+              px={10}
+              minH="500px"
+              boxShadow="lg"
+              borderRadius="lg"
+              borderWidth="1px"
+              spacing={8}
+            >
+              <Flex align="center" justifyContent="space-between">
+                <Heading>Supply Requests</Heading>
+                <Button leftIcon={<BsPlus />} onClick={onOpen}>
+                  Add New
+                </Button>
+              </Flex>
+              {recipientError && <Text>{recipientError}</Text>}
+              {isLoading ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <>
+                  <SupplyRequestModalController />
+                  <SupplyRequestList data={data.items} />
+                </>
+              )}
+            </Stack>
+          </SupplyRequestModalProvider>
         </Grid>
       </Box>
       {recipient && (
