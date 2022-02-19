@@ -41,7 +41,7 @@ const DeleteSupplyRequestModal = () => {
     setModalState,
     setActiveSupplyRequestId,
   } = useContext(SupplyRequestModalContext);
-  const { recipients, upsertRecipient } = useContext(RecipientsContext);
+  const { recipients, upsertRecipient } = useContext(RecipientsContext); // TODO: need to use these functions to update recipient data
   const [loading, setLoading] = useState(false);
 
   const onConfirmation = () => {
