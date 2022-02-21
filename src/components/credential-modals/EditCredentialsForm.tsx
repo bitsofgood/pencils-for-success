@@ -11,11 +11,11 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
-import { AdminModalContext } from '@/providers/AdminModalProvider';
-import EditConfirmationModal from '@/components/admin-modals/EditConfirmationModal';
+import { CredentialsModalContext } from '@/providers/CredentialsModalProvider';
+import CredentialsConfirmationModal from '@/components/credential-modals/CredentialsConfirmationModal';
 
-const AdminInformationForm = () => {
-  const { onClose: closePrimaryModal } = useContext(AdminModalContext);
+const CredentialsInformationForm = () => {
+  const { onClose: closePrimaryModal } = useContext(CredentialsModalContext);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -52,11 +52,11 @@ const AdminInformationForm = () => {
 
   return (
     <>
-      <EditConfirmationModal
+      <CredentialsConfirmationModal
         isOpen={isOpen}
         onClose={onClose}
         onConfirmation={onConfirmation}
-        message="This action will update your admin credentials."
+        message="This action will update your credentials."
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl
@@ -80,7 +80,7 @@ const AdminInformationForm = () => {
                 message: 'Please provide less than 31 characters',
               },
               pattern: {
-                value: /^[a-zA-Z0-9_]$/,
+                value: /^[a-zA-Z0-9_]*$/,
                 message: 'Please provide an alphanumeric username',
               },
             })}
@@ -146,4 +146,4 @@ const AdminInformationForm = () => {
   );
 };
 
-export default AdminInformationForm;
+export default CredentialsInformationForm;

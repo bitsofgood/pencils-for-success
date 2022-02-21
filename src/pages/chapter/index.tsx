@@ -25,6 +25,8 @@ import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
 import RecipientDetails from '@/components/RecipientDetails';
 import ChapterNavbar from '@/components/navbars/ChapterNavbar';
 import prisma from '@/prisma-client';
+import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
+import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
@@ -78,7 +80,12 @@ export default function ChapterDashboardPage({
 
   return (
     <>
-      <ChapterNavbar chapterName={chapter.chapterName} />
+      <CredentialsModalProvider>
+        <>
+          <ChapterNavbar chapterName={chapter.chapterName} />
+          <CredentialsModalController />
+        </>
+      </CredentialsModalProvider>
       <RecipientsProvider chapterId={chapterId}>
         <Box p="10" background="gray.100">
           <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>

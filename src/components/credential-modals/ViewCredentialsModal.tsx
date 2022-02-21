@@ -11,12 +11,12 @@ import {
   Text,
 } from '@chakra-ui/react';
 import {
-  AdminModalContext,
-  AdminModalState,
-} from '@/providers/AdminModalProvider';
+  CredentialsModalContext,
+  CredentialsModalState,
+} from '@/providers/CredentialsModalProvider';
 
-const ViewAdminInfoModal = () => {
-  const { setModalState } = useContext(AdminModalContext);
+const ViewCredentialsModal = () => {
+  const { setModalState } = useContext(CredentialsModalContext);
 
   return (
     <ModalContent>
@@ -34,7 +34,7 @@ const ViewAdminInfoModal = () => {
         </Box>
         <Button
           colorScheme="blue"
-          onClick={() => setModalState(AdminModalState.EditAdmin)}
+          onClick={() => setModalState(CredentialsModalState.EditCredential)}
         >
           Edit Admin
         </Button>
@@ -43,4 +43,4 @@ const ViewAdminInfoModal = () => {
   );
 };
 
-export default ViewAdminInfoModal;
+export default ViewCredentialsModal;

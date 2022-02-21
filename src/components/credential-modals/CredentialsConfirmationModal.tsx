@@ -19,7 +19,7 @@ interface EditConfirmationProps {
   onConfirmation: () => void;
 }
 
-const EditConfirmationModal = ({
+const CredentialsConfirmationModal = ({
   isOpen,
   onClose,
   onConfirmation,
@@ -56,4 +56,4 @@ const EditConfirmationModal = ({
   );
 };
 
-export default EditConfirmationModal;
+export default CredentialsConfirmationModal;

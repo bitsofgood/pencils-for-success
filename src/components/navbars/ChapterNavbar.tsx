@@ -1,11 +1,31 @@
+import { useContext } from 'react';
 import { HStack, Button, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import NavbarContainer from './NavbarContainer';
+import {
+  CredentialsModalContext,
+  CredentialsModalState,
+} from '@/providers/CredentialsModalProvider';
 
 // TODO: add view chapter modal
 interface ChapterNavbarProps {
   chapterName: string;
   // onViewChapterClick: () => void;
+}
+
+function ViewCredentialInfoButton() {
+  const { onOpen, setModalState } = useContext(CredentialsModalContext);
+
+  const onViewCredentialInfoClick = () => {
+    setModalState(CredentialsModalState.ViewCredential);
+    onOpen();
+  };
+
+  return (
+    <Button size="sm" variant="outline" onClick={onViewCredentialInfoClick}>
+      View Chapter Info
+    </Button>
+  );
 }
 
 export default function ChapterNavbar({
@@ -25,9 +45,7 @@ ChapterNavbarProps) {
     <NavbarContainer>
       <HStack spacing="20px">
         <Text fontWeight="bold">{chapterName}</Text>
-        <Button size="sm" variant="outline">
-          View Chapter Info
-        </Button>
+        <ViewCredentialInfoButton />
         <Button size="sm" variant="outline" onClick={handleLogout}>
           Logout
         </Button>

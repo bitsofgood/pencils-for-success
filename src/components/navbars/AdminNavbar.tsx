@@ -3,20 +3,20 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import NavbarContainer from './NavbarContainer';
 import {
-  AdminModalContext,
-  AdminModalState,
-} from '@/providers/AdminModalProvider';
+  CredentialsModalContext,
+  CredentialsModalState,
+} from '@/providers/CredentialsModalProvider';
 
-function ViewAdminInfoButton() {
-  const { onOpen, setModalState } = useContext(AdminModalContext);
+function ViewCredentialInfoButton() {
+  const { onOpen, setModalState } = useContext(CredentialsModalContext);
 
-  const onViewAdminInfoClick = () => {
-    setModalState(AdminModalState.ViewAdmin);
+  const onViewCredentialInfoClick = () => {
+    setModalState(CredentialsModalState.ViewCredential);
     onOpen();
   };
 
   return (
-    <Button size="sm" variant="outline" onClick={onViewAdminInfoClick}>
+    <Button size="sm" variant="outline" onClick={onViewCredentialInfoClick}>
       View Admin Info
     </Button>
   );
@@ -35,7 +35,7 @@ export default function AdminNavbar() {
   return (
     <NavbarContainer>
       <HStack spacing="20px">
-        <ViewAdminInfoButton />
+        <ViewCredentialInfoButton />
         <Button size="sm" variant="outline" onClick={handleLogout}>
           Logout
         </Button>

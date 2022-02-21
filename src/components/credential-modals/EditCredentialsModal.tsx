@@ -4,7 +4,7 @@ import {
   ModalContent,
   ModalHeader,
 } from '@chakra-ui/react';
-import EditAdminForm from './EditAdminForm';
+import EditAdminForm from './EditCredentialsForm';
 
 const EditChapterModal = () => (
   <ModalContent>

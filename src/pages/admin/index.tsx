@@ -28,8 +28,8 @@ import {
 import { ChapterDetails } from '../api/chapters/[chapterId]';
 import AdminNavbar from '@/components/navbars/AdminNavbar';
 import prisma from '@/prisma-client';
-import { AdminModalProvider } from '@/providers/AdminModalProvider';
-import AdminModalController from '@/components/admin-modals/AdminModalController';
+import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
+import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -66,12 +66,12 @@ export default function AdminDashboardPage({
 }: AdminDashboardProps) {
   return (
     <>
-      <AdminModalProvider>
+      <CredentialsModalProvider>
         <>
           <AdminNavbar />
-          <AdminModalController />
+          <CredentialsModalController />
         </>
-      </AdminModalProvider>
+      </CredentialsModalProvider>
       <ChaptersProvider initChapters={chapters}>
         <ChapterModalProvider>
           <Box p="10" textAlign="center">
