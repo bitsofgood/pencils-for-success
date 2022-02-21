@@ -46,6 +46,7 @@ const DeleteSupplyRequestModal = () => {
     setModalState,
     setActiveSupplyRequestId,
   } = useContext(SupplyRequestModalContext);
+  // const recipients = await getRecipients()
   const { recipients, upsertRecipient } = useContext(RecipientsContext); // TODO: need to use these functions to update recipient data
   const [loading, setLoading] = useState(false);
   const onConfirmation = () => {
@@ -70,6 +71,7 @@ const DeleteSupplyRequestModal = () => {
   // TODO: instead of chapterToDelete, find the supply request to delete
   // const supplyRequestToDelete =
   //   recipients[activeRecipientId].supplyRequests[activeSupplyRequestId];
+  // console.log(recipients);
 
   const onCancel = () => {
     onClose();
