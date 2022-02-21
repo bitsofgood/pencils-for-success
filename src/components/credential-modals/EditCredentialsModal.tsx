@@ -4,14 +4,14 @@ import {
   ModalContent,
   ModalHeader,
 } from '@chakra-ui/react';
-import EditAdminForm from './EditCredentialsForm';
+import EditCredentialsForm from './EditCredentialsForm';
 
 const EditChapterModal = () => (
   <ModalContent>
-    <ModalHeader>Edit Admin</ModalHeader>
+    <ModalHeader>Edit Credentials</ModalHeader>
     <ModalCloseButton />
     <ModalBody pb="5" mt="2" textAlign="center">
-      <EditAdminForm />
+      <EditCredentialsForm />
     </ModalBody>
   </ModalContent>
 );

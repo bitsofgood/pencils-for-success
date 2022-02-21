@@ -20,7 +20,7 @@ const ViewCredentialsModal = () => {
 
   return (
     <ModalContent>
-      <ModalHeader>Admin Information</ModalHeader>
+      <ModalHeader>Credentials</ModalHeader>
       <ModalCloseButton />
       <ModalBody pb="5" mt="5" textAlign="left">
         <Box paddingBottom="48px">
@@ -36,7 +36,7 @@ const ViewCredentialsModal = () => {
           colorScheme="blue"
           onClick={() => setModalState(CredentialsModalState.EditCredential)}
         >
-          Edit Admin
+          Edit
         </Button>
       </ModalBody>
     </ModalContent>
