@@ -15,24 +15,29 @@ import {
 } from '@/providers/SupplyRequestModalProvider';
 import { RecipientsContext } from '@/providers/RecipientsProvider';
 
-const deleteSupplyRequest = async (id: number) => {
+const deleteSupplyRequest = async (supplyId: number, recId: number) => {
   // TODO: Change this to call the delete supply request api
   // const response = await fetch(`/api/chapters/${id}`, {
-  //   method: 'DELETE',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // });
-  // const responseJson = await response.json();
-  // if (response.status !== 200) {
-  //   throw Error(responseJson.message);
-  // }
-  // if (responseJson.error) {
-  //   throw Error(responseJson.message);
-  // }
-  // return responseJson;
+  console.log(supplyId);
+  console.log(recId);
+  const response = await fetch(
+    `/api/recipients/${recId}/supply-requests/${supplyId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  const responseJson = await response.json();
+  if (response.status !== 200) {
+    throw Error(responseJson.message);
+  }
+  if (responseJson.error) {
+    throw Error(responseJson.message);
+  }
+  return responseJson;
 };
-
 const DeleteSupplyRequestModal = () => {
   const {
     onClose,
@@ -43,14 +48,14 @@ const DeleteSupplyRequestModal = () => {
   } = useContext(SupplyRequestModalContext);
   const { recipients, upsertRecipient } = useContext(RecipientsContext); // TODO: need to use these functions to update recipient data
   const [loading, setLoading] = useState(false);
-
   const onConfirmation = () => {
     setLoading(true);
-    deleteSupplyRequest(activeSupplyRequestId)
+    deleteSupplyRequest(activeSupplyRequestId, activeRecipientId)
       .then(() => {
         onClose();
         setModalState(ModalState.NewSupplyRequest);
         // TODO: Call upsertRecipient here to update recipient supply request based on recipients and activeRecipientId
+        upsertRecipient(recipients[activeRecipientId]);
         setActiveSupplyRequestId(-1);
       })
       .catch((err) => {
@@ -61,16 +66,14 @@ const DeleteSupplyRequestModal = () => {
         setLoading(false);
       });
   };
-
   // const chapterToDelete = chapters[activeSupplyRequest];
-
   // TODO: instead of chapterToDelete, find the supply request to delete
   // const supplyRequestToDelete =
+  //   recipients[activeRecipientId].supplyRequests[activeSupplyRequestId];
 
   const onCancel = () => {
     onClose();
   };
-
   return (
     <ModalContent>
       <ModalCloseButton />
@@ -81,6 +84,7 @@ const DeleteSupplyRequestModal = () => {
         </Text>
         <Text color="gray.500">This action will delete supply request </Text>
         {/* <Text fontSize="3xl">{chapterToDelete?.chapterName}</Text>  TODO: Need to figure out how to get the name of the supply request */}
+        {/* <Text fontSize="3xl">{supplyRequestToDelete?.item}</Text> */}
         <Text color="gray.500">This action cannot be undone</Text>
         <Divider my="5" />
         <Flex>
@@ -100,5 +104,4 @@ const DeleteSupplyRequestModal = () => {
     </ModalContent>
   );
 };
-
 export default DeleteSupplyRequestModal;

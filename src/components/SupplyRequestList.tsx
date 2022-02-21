@@ -40,7 +40,7 @@ interface SupplyRequestListProps {
   data: DetailedSupplyRequest[];
 }
 
-function RowContextMenu(request: number, recipientId: number) {
+function RowContextMenu(requestId: number, recipientId: number) {
   const {
     onOpen,
     setModalState,
@@ -50,7 +50,7 @@ function RowContextMenu(request: number, recipientId: number) {
 
   const onDeleteSupplyRequest = () => {
     setActiveRecipientId(recipientId);
-    setActiveSupplyRequestId(request);
+    setActiveSupplyRequestId(requestId);
     setModalState(ModalState.DeleteSupplyRequest);
     onOpen();
   };
