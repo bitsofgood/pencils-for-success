@@ -22,8 +22,7 @@ const SupplyRequestModalContent = ({
   state,
 }: SupplyRequestModalContentProps) => {
   switch (state) {
-    // case ModalState.EditSupplyRequest:
-    //   return <EditSupplyRequestModal />;
+    // Add edit case here
     case ModalState.DeleteSupplyRequest:
       return <DeleteSupplyRequestModal />;
     default:
