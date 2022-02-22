@@ -28,6 +28,7 @@ export const RecipientsContext = createContext<RecipientsContextProps>({
 });
 
 const getRecipients = async (chapterId: number) => {
+  // potentially add export
   if (!chapterId || chapterId < 0) {
     throw Error('Please provide a valid chapter id');
   }

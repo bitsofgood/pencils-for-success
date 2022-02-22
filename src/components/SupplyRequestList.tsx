@@ -1,5 +1,12 @@
 /* eslint-disable react/jsx-key */
-import { ReactChild, ReactFragment, ReactPortal, useMemo } from 'react';
+import {
+  ReactChild,
+  ReactFragment,
+  ReactPortal,
+  useMemo,
+  useContext,
+} from 'react';
+
 import {
   Flex,
   IconButton,
@@ -24,12 +31,29 @@ import {
   BsCaretDownFill,
 } from 'react-icons/bs';
 import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
+import {
+  SupplyRequestModalContext,
+  ModalState,
+} from '@/providers/SupplyRequestModalProvider';
 
 interface SupplyRequestListProps {
   data: DetailedSupplyRequest[];
 }
 
-function RowContextMenu() {
+function RowContextMenu(requestId: number, recipientId: number) {
+  const {
+    onOpen,
+    setModalState,
+    setActiveSupplyRequestId,
+    setActiveRecipientId,
+  } = useContext(SupplyRequestModalContext);
+
+  const onDeleteSupplyRequest = () => {
+    setActiveRecipientId(recipientId);
+    setActiveSupplyRequestId(requestId);
+    setModalState(ModalState.DeleteSupplyRequest);
+    onOpen();
+  };
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -65,7 +89,7 @@ function RowContextMenu() {
               color="red"
               alignItems="center"
               justifyContent="flex-start"
-              onClick={() => console.log('Delete supply request.')}
+              onClick={onDeleteSupplyRequest}
             >
               <BsTrashFill />
               <Text ml="3">Delete Supply Request</Text>
@@ -387,7 +411,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
                 marginRight={1}
                 cursor="pointer"
               >
-                <RowContextMenu />
+                {RowContextMenu(row.original.id, row.original.recipientId)}
               </Box>
             </Box>
           );
