@@ -16,10 +16,6 @@ import {
 import { RecipientsContext } from '@/providers/RecipientsProvider';
 
 const deleteSupplyRequest = async (supplyId: number, recId: number) => {
-  // TODO: Change this to call the delete supply request api
-  // const response = await fetch(`/api/chapters/${id}`, {
-  console.log(supplyId);
-  console.log(recId);
   const response = await fetch(
     `/api/recipients/${recId}/supply-requests/${supplyId}`,
     {
@@ -46,8 +42,7 @@ const DeleteSupplyRequestModal = () => {
     setModalState,
     setActiveSupplyRequestId,
   } = useContext(SupplyRequestModalContext);
-  // const recipients = await getRecipients()
-  const { recipients, upsertRecipient } = useContext(RecipientsContext); // TODO: need to use these functions to update recipient data
+  const { recipients, upsertRecipient } = useContext(RecipientsContext);
   const [loading, setLoading] = useState(false);
   const onConfirmation = () => {
     setLoading(true);
@@ -55,7 +50,6 @@ const DeleteSupplyRequestModal = () => {
       .then(() => {
         onClose();
         setModalState(ModalState.NewSupplyRequest);
-        // TODO: Call upsertRecipient here to update recipient supply request based on recipients and activeRecipientId
         upsertRecipient(recipients[activeRecipientId]);
         setActiveSupplyRequestId(-1);
       })
@@ -67,11 +61,6 @@ const DeleteSupplyRequestModal = () => {
         setLoading(false);
       });
   };
-  // const chapterToDelete = chapters[activeSupplyRequest];
-  // TODO: instead of chapterToDelete, find the supply request to delete
-  // const supplyRequestToDelete =
-  //   recipients[activeRecipientId].supplyRequests[activeSupplyRequestId];
-  // console.log(recipients);
 
   const onCancel = () => {
     onClose();
@@ -84,9 +73,9 @@ const DeleteSupplyRequestModal = () => {
         <Text fontSize="4xl" my="5">
           Are you sure?
         </Text>
-        <Text color="gray.500">This action will delete supply request </Text>
-        {/* <Text fontSize="3xl">{chapterToDelete?.chapterName}</Text>  TODO: Need to figure out how to get the name of the supply request */}
-        {/* <Text fontSize="3xl">{supplyRequestToDelete?.item}</Text> */}
+        <Text color="gray.500">
+          This action will delete this supply request
+        </Text>
         <Text color="gray.500">This action cannot be undone</Text>
         <Divider my="5" />
         <Flex>
