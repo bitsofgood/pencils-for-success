@@ -1,24 +1,276 @@
 /* eslint-disable react/jsx-key */
-import { useMemo } from 'react';
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
+  ReactChild,
+  ReactFragment,
+  ReactPortal,
+  useMemo,
+  useContext,
+} from 'react';
+
+import {
   Flex,
   IconButton,
   Text,
   Tooltip,
   Button,
+  Box,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+  Stack,
 } from '@chakra-ui/react';
 import { useTable, usePagination, Column } from 'react-table';
-import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import {
+  BsThreeDots,
+  BsChevronLeft,
+  BsChevronRight,
+  BsPencilFill,
+  BsTrashFill,
+  BsCaretDownFill,
+} from 'react-icons/bs';
 import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
+import {
+  SupplyRequestModalContext,
+  ModalState,
+} from '@/providers/SupplyRequestModalProvider';
 
 interface SupplyRequestListProps {
   data: DetailedSupplyRequest[];
+}
+
+function RowContextMenu(requestId: number, recipientId: number) {
+  const {
+    onOpen,
+    setModalState,
+    setActiveSupplyRequestId,
+    setActiveRecipientId,
+  } = useContext(SupplyRequestModalContext);
+
+  const onDeleteSupplyRequest = () => {
+    setActiveRecipientId(recipientId);
+    setActiveSupplyRequestId(requestId);
+    setModalState(ModalState.DeleteSupplyRequest);
+    onOpen();
+  };
+  return (
+    <Popover placement="bottom-end">
+      <PopoverTrigger>
+        <IconButton
+          variant="ghost"
+          aria-label="Edit Supply Request"
+          icon={<BsThreeDots />}
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
+        />
+      </PopoverTrigger>
+      <PopoverContent width="auto">
+        <PopoverArrow />
+        <PopoverBody width="auto">
+          <Stack>
+            <Button
+              fontWeight="normal"
+              variant="ghost"
+              color="gray.700"
+              alignItems="center"
+              justifyContent="flex-start"
+              onClick={() => console.log('Edit supply request.')}
+            >
+              <BsPencilFill />
+              <Text ml="3">Edit Supply Request</Text>
+            </Button>
+
+            <Button
+              fontWeight="normal"
+              variant="ghost"
+              color="red"
+              alignItems="center"
+              justifyContent="flex-start"
+              onClick={onDeleteSupplyRequest}
+            >
+              <BsTrashFill />
+              <Text ml="3">Delete Supply Request</Text>
+            </Button>
+          </Stack>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function NotesContextMenu(note: string) {
+  return (
+    <Popover placement="bottom-start">
+      <PopoverTrigger>
+        <Button
+          variant="ghost"
+          display="flex"
+          alignItems="center"
+          cursor="pointer"
+          fontWeight="normal"
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
+          onClick={() => {
+            // setIsOpen(true);
+          }}
+        >
+          <BsCaretDownFill />
+          <Text marginLeft={1.5}>Notes</Text>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        width="auto"
+        onBlur={() => {
+          // setIsOpen(false);
+        }}
+      >
+        <PopoverArrow />
+        <PopoverBody width="auto">
+          <Box>{note}</Box>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function StatusContextMenu(currentStatus: string) {
+  const status: string = currentStatus;
+  return (
+    <Popover placement="bottom-start">
+      <PopoverTrigger>
+        <Button
+          backgroundColor={status === 'PENDING' ? '#FFF8E7' : '#E0F0FF'}
+          color={status === 'PENDING' ? '#CA9000' : '#0A5093'}
+          paddingLeft="3"
+          paddingRight="3"
+          paddingTop="2"
+          paddingBottom="2"
+          fontWeight="bold"
+          borderRadius="8"
+          alignItems="center"
+          cursor="pointer"
+          _hover={{
+            backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+          }}
+          _active={{
+            backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+          }}
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
+          transitionDuration="0.2s"
+          onClick={() => {
+            // setFocused(true);
+          }}
+        >
+          <Box marginRight={2}>
+            <BsCaretDownFill
+              style={{
+                // transform: `${focused ? 'rotate(180deg)' : 'rotate(0deg)'}`,
+                transition: 'all 0.2s',
+              }}
+            />
+          </Box>
+          {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        width="auto"
+        onBlur={() => {
+          // setFocused(false);
+        }}
+      >
+        <PopoverBody width="auto">
+          <Box
+            backgroundColor={status === 'PENDING' ? '#FFF8E7' : '#E0F0FF'}
+            color={status === 'PENDING' ? '#CA9000' : '#0A5093'}
+            paddingLeft="3"
+            paddingRight="3"
+            paddingTop="2"
+            paddingBottom="2"
+            fontWeight="bold"
+            borderRadius="8"
+            cursor="pointer"
+            marginBottom={2}
+            textAlign="center"
+            onClick={() =>
+              console.log(
+                `Change to supply request to ${
+                  status === 'PENDING' ? 'Pending' : 'Complete'
+                }.`,
+              )
+            }
+            _hover={{
+              backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+            }}
+            transitionDuration="0.2s"
+          >
+            {status === 'PENDING' ? 'Pending' : 'Complete'}
+          </Box>
+          <Box
+            backgroundColor={status === 'PENDING' ? '#E0F0FF' : '#FFF8E7'}
+            color={status === 'PENDING' ? '#0A5093' : '#CA9000'}
+            paddingLeft="3"
+            paddingRight="3"
+            paddingTop="2"
+            paddingBottom="2"
+            fontWeight="bold"
+            borderRadius="8"
+            textAlign="center"
+            cursor="pointer"
+            onClick={() =>
+              console.log(
+                `Change to supply request to ${
+                  status === 'PENDING' ? 'Complete' : 'Pending'
+                }.`,
+              )
+            }
+            _hover={{
+              backgroundColor: status === 'PENDING' ? '#C7E4FF' : '#FFF0CC',
+            }}
+            transitionDuration="0.2s"
+          >
+            {status === 'PENDING' ? 'Complete' : 'Pending'}
+          </Box>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// renders a cell
+function Cell(cell: any) {
+  const cellInfo = cell;
+  // render status cell
+  if (cellInfo.column.Header === 'Status') {
+    return StatusContextMenu(cell.value);
+  }
+  // render date cells
+  if (
+    cellInfo.column.Header === 'Last Updated' ||
+    cellInfo.column.Header === 'Created'
+  ) {
+    const fullDate = cell.value.substring(0, 10);
+    const year = fullDate.substring(0, 4);
+    const month = fullDate.substring(5, 7);
+    const day = fullDate.substring(8, 10);
+    return `${month}/${day}/${year}`;
+  }
+  if (cellInfo.column.Header === 'Notes') {
+    if (cell.value === '') {
+      return <></>;
+    }
+    return NotesContextMenu(cell.value);
+  }
+  // render default cells
+
+  return cellInfo.render('Cell');
 }
 
 export default function SupplyRequestList({ data }: SupplyRequestListProps) {
@@ -51,6 +303,9 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
     ],
     [],
   );
+
+  const columnWidths = ['20%', '10%', '20%', '12.5%', '12.5%', '15%', '10%'];
+
   const {
     headerGroups,
     prepareRow,
@@ -70,38 +325,98 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
     },
     usePagination,
   );
-
   // Render the UI for your table
   return (
     <>
-      <Table bordercollapse="collapse" borderSpacing="0 100px">
-        <Thead
-          textColor="#858585"
-          borderRadius="8px"
-          backgroundColor="#F0F0F0"
-          borderStyle="unset"
-        >
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
+      <Box width="100%">
+        {headerGroups.map((headerGroup) => (
+          <Box
+            display="flex"
+            flexDirection="row"
+            backgroundColor="#F0F0F0"
+            textColor="#858585"
+            borderRadius="8px"
+            paddingTop={4}
+            paddingBottom={4}
+            paddingLeft={6}
+            paddingRight={6}
+            marginBottom={6}
+            {...headerGroup.getHeaderGroupProps()}
+          >
+            {headerGroup.headers.map((column, index) => (
+              <Box
+                fontSize="16px"
+                fontWeight="bold"
+                width={columnWidths[index]}
+                marginLeft={1}
+                marginRight={1}
+                {...column.getHeaderProps()}
+              >
+                {column.render('Header')}
+              </Box>
+            ))}
+            <Box
+              display="flex"
+              fontSize="16px"
+              width={columnWidths[columnWidths.length - 1]}
+              alignItems="center"
+              justifyContent="flex-end"
+              marginLeft={1}
+              marginRight={1}
+            />
+          </Box>
+        ))}
+      </Box>
+
+      <Box width="100%" display="flex" flexDirection="column">
+        {page.map((row) => {
+          prepareRow(row);
+          return (
+            <Box
+              width="100%"
+              display="flex"
+              flexDirection="row"
+              border="2px solid #AEAEAE"
+              borderRadius="8px"
+              paddingTop={4}
+              paddingBottom={4}
+              paddingLeft={6}
+              paddingRight={6}
+              marginBottom={6}
+              key={row.id}
+            >
+              {row.cells.map((cell, index) => (
+                <Box
+                  display="flex"
+                  fontSize="16px"
+                  width={columnWidths[index]}
+                  alignItems="center"
+                  marginLeft={1}
+                  marginRight={1}
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  {...cell.getCellProps()}
+                >
+                  {Cell(cell)}
+                </Box>
               ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <Tr borderRadius="12px" border="2px solid #AEAEAE">
-                {row.cells.map((cell) => (
-                  <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
-                ))}
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+              <Box
+                display="flex"
+                fontSize="16px"
+                width={columnWidths[columnWidths.length - 1]}
+                alignItems="center"
+                justifyContent="flex-end"
+                marginLeft={1}
+                marginRight={1}
+                cursor="pointer"
+              >
+                {RowContextMenu(row.original.id, row.original.recipientId)}
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
 
       <Flex justifyContent="space-between" m={4} alignItems="center">
         <Flex alignItems="center">

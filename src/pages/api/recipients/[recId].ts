@@ -13,6 +13,10 @@ export interface GetRecipientResponse {
   };
 }
 
+export interface UpdateRecipientResponse {
+  recipient: Recipient;
+}
+
 async function getRecipientById(id: number) {
   return prisma.recipient.findUnique({
     where: {
@@ -30,7 +34,9 @@ async function getRecipientById(id: number) {
 
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<ErrorResponse | GetRecipientResponse>,
+  res: NextApiResponse<
+    ErrorResponse | GetRecipientResponse | UpdateRecipientResponse
+  >,
 ) {
   const { recId } = req.query;
 
@@ -45,21 +51,20 @@ async function handler(
     });
   }
 
+  const parsedId = Number(recId);
+
+  // Check if the provided recipient exists
+  const existRecipient = await getRecipientById(parsedId);
+  if (!existRecipient) {
+    return res.status(401).json({
+      error: true,
+      message: `Recipient of id ${recId} does not exist`,
+    });
+  }
+
   switch (req.method) {
     case 'DELETE':
       try {
-        const parsedId = Number(recId);
-
-        // get the recipient to be deleted
-        const existRecipient = await getRecipientById(parsedId);
-
-        if (!existRecipient) {
-          return res.status(401).json({
-            error: true,
-            message: `Recipient of id ${recId} does not exist`,
-          });
-        }
-
         const isAuthorizedChapterUser =
           user.chapterUser &&
           user.chapterUser.chapterId === existRecipient.chapterId;
@@ -108,17 +113,6 @@ async function handler(
       }
 
     case 'GET': {
-      const parsedId = Number(recId);
-
-      // Check if the provided recipient exists
-      const existRecipient = await getRecipientById(parsedId);
-      if (!existRecipient) {
-        return res.status(401).json({
-          error: true,
-          message: `Recipient of id ${recId} does not exist`,
-        });
-      }
-
       // Check if the user is authorized to view the details
       const isAuthorizedChapterUser =
         user.chapterUser &&
@@ -147,8 +141,42 @@ async function handler(
       });
     }
 
+    case 'PUT': {
+      const isAuthorizedChapterUser =
+        user.chapterUser &&
+        user.chapterUser.chapterId === existRecipient.chapterId;
+
+      const isAuthorizedRecipient =
+        user.recipient && user.recipient.recipientId === parsedId;
+
+      const isAuthorizedUser = isAuthorizedChapterUser || isAuthorizedRecipient;
+
+      if (!isAuthorizedUser) {
+        return res.status(401).json({
+          error: true,
+          message:
+            'Please login as an authorized user to access /recipients endpoint',
+        });
+      }
+
+      try {
+        const updatedRecipient = await prisma.recipient.update({
+          where: {
+            id: parsedId,
+          },
+          data: req.body,
+        });
+
+        return res.status(200).json({
+          recipient: updatedRecipient,
+        });
+      } catch (e) {
+        return serverErrorHandler(e, res);
+      }
+    }
+
     default:
-      res.setHeader('Allow', ['GET', 'DELETE']);
+      res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);
       return res
         .status(405)
         .json({ error: true, message: `Method ${req.method} Not Allowed` });

@@ -2,7 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { createContext, useState } from 'react';
 
 // eslint-disable-next-line no-shadow
-export enum ModalState {
+export enum ChapterModalState {
   NewChapter,
   EditChapter,
   DeleteChapter,
@@ -12,8 +12,8 @@ export interface ChapterModalContextProps {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
-  currentModalState: ModalState;
-  setModalState: (x: ModalState) => void;
+  currentModalState: ChapterModalState;
+  setModalState: (x: ChapterModalState) => void;
   activeChapter: number;
   setActiveChapter: (id: number) => void;
 }
@@ -25,14 +25,14 @@ export interface ChapterModalProviderProps {
 export const ChapterModalContext = createContext<ChapterModalContextProps>({
   isOpen: false,
   activeChapter: -1,
-  currentModalState: ModalState.NewChapter,
+  currentModalState: ChapterModalState.NewChapter,
   onClose: () => {
     throw new Error('Method not implemented');
   },
   onOpen: () => {
     throw new Error('Method not implemented');
   },
-  setModalState: (x: ModalState) => {
+  setModalState: (x: ChapterModalState) => {
     throw new Error('Method not implemented');
   },
   setActiveChapter: (x: number) => {
@@ -45,8 +45,8 @@ export const ChapterModalProvider = ({
 }: ChapterModalProviderProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeChapter, setActiveChapter] = useState<number>(0);
-  const [currentModalState, setModalState] = useState<ModalState>(
-    ModalState.NewChapter,
+  const [currentModalState, setModalState] = useState<ChapterModalState>(
+    ChapterModalState.NewChapter,
   );
 
   return (

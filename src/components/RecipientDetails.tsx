@@ -4,6 +4,8 @@ import { IoIosSchool } from 'react-icons/io';
 import { RecipientsContext } from '@/providers/RecipientsProvider';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 import SupplyRequestList from './SupplyRequestList';
+import SupplyRequestModalController from '@/components/supply-request-modals/SupplyRequestModalController';
+import { SupplyRequestModalProvider } from '@/providers/SupplyRequestModalProvider';
 
 interface RecipientDetailsProps {
   recipientId: number;
@@ -54,8 +56,13 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
       px={10}
       py={6}
     >
-      <Heading mb={8}>Supply Requests</Heading>
-      <SupplyRequestList data={activeRecipient.supplyRequests} />
+      <SupplyRequestModalProvider>
+        <>
+          <SupplyRequestModalController />
+          <Heading mb={8}>Supply Requests</Heading>
+          <SupplyRequestList data={activeRecipient.supplyRequests} />
+        </>
+      </SupplyRequestModalProvider>
     </Box>
   );
 }

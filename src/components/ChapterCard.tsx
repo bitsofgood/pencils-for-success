@@ -18,7 +18,7 @@ import {
 } from 'react-icons/bs';
 import {
   ChapterModalContext,
-  ModalState,
+  ChapterModalState,
 } from '@/providers/ChapterModalProvider';
 import { ChapterDetails } from '@/pages/api/chapters/[chapterId]';
 
@@ -74,13 +74,13 @@ function ChapterCard({ chapter }: ChapterCardProps) {
 
   const onEditChapter = () => {
     setActiveChapter(chapter.id);
-    setModalState(ModalState.EditChapter);
+    setModalState(ChapterModalState.EditChapter);
     onOpen();
   };
 
   const onDeleteChapter = () => {
     setActiveChapter(chapter.id);
-    setModalState(ModalState.DeleteChapter);
+    setModalState(ChapterModalState.DeleteChapter);
     onOpen();
   };
 
