@@ -10,7 +10,7 @@ export interface RecipientsContextProps {
   removeRecipient: (id: number) => void;
 }
 
-export interface ChaptersProviderProps {
+export interface RecipientProviderProps {
   children: JSX.Element;
   chapterId: number;
 }
@@ -51,7 +51,7 @@ const getRecipients = async (chapterId: number) => {
 export const RecipientsProvider = ({
   children,
   chapterId,
-}: ChaptersProviderProps) => {
+}: RecipientProviderProps) => {
   const [recipients, setRecipients] = useState<DetailedRecipient[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

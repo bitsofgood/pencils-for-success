@@ -105,7 +105,7 @@ async function handler(
         await prisma.$transaction(transactionQueries);
 
         return res.status(200).json({
-          error: true,
+          error: false,
           message: 'Successfully deleted recipient',
         });
       } catch (e) {
