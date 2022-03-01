@@ -16,7 +16,7 @@ import {
 } from '@/providers/CredentialsModalProvider';
 
 const ViewCredentialsModal = () => {
-  const { setModalState, username } = useContext(CredentialsModalContext);
+  const { setModalState, data } = useContext(CredentialsModalContext);
 
   return (
     <ModalContent>
@@ -29,7 +29,7 @@ const ViewCredentialsModal = () => {
           </Text>
           <Box display="flex" flexDirection="row">
             <Text paddingRight="8px">Username:</Text>
-            <Text>{username}</Text>
+            <Text>{data.username}</Text>
           </Box>
         </Box>
         <Button

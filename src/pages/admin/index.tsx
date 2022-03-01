@@ -69,18 +69,9 @@ export default function AdminDashboardPage({
   chapters,
   chapterError,
 }: AdminDashboardProps) {
-  const { data, error } = useSWR<GetAdminInfoResponse>(`/api/admin`);
-  if (!data) {
-    return (
-      <Center>
-        <Spinner />
-      </Center>
-    );
-  }
-
   return (
     <>
-      <CredentialsModalProvider name={data.username}>
+      <CredentialsModalProvider>
         <>
           <AdminNavbar />
           <CredentialsModalController />

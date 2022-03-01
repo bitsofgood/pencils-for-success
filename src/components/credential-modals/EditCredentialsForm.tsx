@@ -20,7 +20,7 @@ interface EditedUser {
 }
 
 const CredentialsInformationForm = () => {
-  const { onClose: closePrimaryModal, setUsername } = useContext(
+  const { onClose: closePrimaryModal, mutate } = useContext(
     CredentialsModalContext,
   );
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ const CredentialsInformationForm = () => {
       throw Error(responseJson.message);
     }
 
-    setUsername(username);
+    mutate('/api/admin');
 
     return responseJson;
   };

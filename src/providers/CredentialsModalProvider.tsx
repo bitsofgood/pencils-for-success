@@ -1,6 +1,9 @@
-import { useDisclosure } from '@chakra-ui/react';
+import { Center, Spinner, useDisclosure } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import { createContext, useState } from 'react';
+import useSWR, { useSWRConfig } from 'swr';
+import { GetAdminInfoResponse } from '@/pages/api/admin';
+import { fetcher } from '@/utils/api';
 
 // eslint-disable-next-line no-shadow
 export enum CredentialsModalState {
@@ -14,12 +17,11 @@ export interface CredentialsModalContextProps {
   onOpen: () => void;
   currentModalState: CredentialsModalState;
   setModalState: (x: CredentialsModalState) => void;
-  username: string;
-  setUsername: (x: string) => void;
+  data: any;
+  mutate: any;
 }
 
 export interface CredentialsModalProviderProps {
-  name: string;
   children: JSX.Element;
 }
 
@@ -36,22 +38,28 @@ export const CredentialsModalContext =
     setModalState: (x: CredentialsModalState) => {
       throw new Error('Method not implemented');
     },
-    username: '',
-    setUsername: (x: string) => {
+    data: {},
+    mutate: () => {
       throw new Error('Method not implemented');
     },
   });
 
 export const CredentialsModalProvider = ({
   children,
-  name,
 }: CredentialsModalProviderProps) => {
+  const { data, error } = useSWR<GetAdminInfoResponse>(`/api/admin`, fetcher);
+  const { mutate } = useSWRConfig();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentModalState, setModalState] = useState<CredentialsModalState>(
     CredentialsModalState.ViewCredential,
   );
-  const [username, setUsername] = useState<string>(name);
-
+  if (!data) {
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
+  }
   return (
     <CredentialsModalContext.Provider
       value={{
@@ -60,8 +68,8 @@ export const CredentialsModalProvider = ({
         onClose,
         currentModalState,
         setModalState,
-        username,
-        setUsername,
+        data,
+        mutate,
       }}
     >
       {children}

@@ -87,7 +87,7 @@ export default function ChapterDashboardPage({
 
   return (
     <>
-      <CredentialsModalProvider name={user.name}>
+      <CredentialsModalProvider>
         <>
           <ChapterNavbar chapterName={chapter.chapterName} />
           <CredentialsModalController />
