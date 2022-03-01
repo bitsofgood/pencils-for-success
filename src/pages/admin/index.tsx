@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import {
   SimpleGrid,
@@ -9,6 +9,8 @@ import {
   Box,
   Flex,
   Spacer,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
 import useSWR from 'swr';
@@ -31,6 +33,8 @@ import AdminNavbar from '@/components/navbars/AdminNavbar';
 import prisma from '@/prisma-client';
 import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
 import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
+import { fetcher } from '@/utils/api';
+import { GetAdminInfoResponse } from '../api/admin';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;
@@ -62,18 +66,21 @@ function ChapterCardsGrid() {
 }
 
 export default function AdminDashboardPage({
-  user,
   chapters,
   chapterError,
 }: AdminDashboardProps) {
-  const { data, error } = useSWR(`/api/admin`);
-
-  console.log(user);
-  console.log(data);
+  const { data, error } = useSWR<GetAdminInfoResponse>(`/api/admin`);
+  if (!data) {
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
+  }
 
   return (
     <>
-      <CredentialsModalProvider>
+      <CredentialsModalProvider name={data.username}>
         <>
           <AdminNavbar />
           <CredentialsModalController />

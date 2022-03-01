@@ -82,16 +82,12 @@ export default function ChapterDashboardPage({
   const { chapterId } = user.chapterUser;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  // const { data, error } = useSWR(`/api/admin`);
-
-  // console.log(user);
-  // console.log(data);
 
   const [activeRecipientId, setActiveRecipientId] = useState(-1);
 
   return (
     <>
-      <CredentialsModalProvider>
+      <CredentialsModalProvider name={user.name}>
         <>
           <ChapterNavbar chapterName={chapter.chapterName} />
           <CredentialsModalController />

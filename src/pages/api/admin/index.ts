@@ -50,7 +50,6 @@ async function handler(
     case 'PUT':
       try {
         const { newUsername, newPassword } = req.body;
-
         validateUsername(newUsername);
         validatePassword(newPassword);
 

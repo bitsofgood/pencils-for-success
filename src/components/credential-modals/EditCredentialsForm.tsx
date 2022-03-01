@@ -14,15 +14,24 @@ import {
 import { CredentialsModalContext } from '@/providers/CredentialsModalProvider';
 import CredentialsConfirmationModal from '@/components/credential-modals/CredentialsConfirmationModal';
 
+interface EditedUser {
+  username: string;
+  hash: string;
+}
+
 const CredentialsInformationForm = () => {
-  const { onClose: closePrimaryModal } = useContext(CredentialsModalContext);
+  const { onClose: closePrimaryModal, setUsername } = useContext(
+    CredentialsModalContext,
+  );
   const [loading, setLoading] = useState(false);
+  const [editedUsername, setEditedUsername] = useState<string>('');
+  const [editedPassword, setEditedPassword] = useState<string>('');
 
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm<User>({
+  } = useForm({
     reValidateMode: 'onChange',
   });
 
@@ -33,14 +42,39 @@ const CredentialsInformationForm = () => {
     closePrimaryModal();
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: EditedUser) => {
     // If valid inputs, open confirmfation modal
+    setEditedUsername(data.username);
+    setEditedPassword(data.hash);
     onOpen();
+  };
+
+  const editAdmin = async (username: string, password: string) => {
+    const response = await fetch(`/api/admin`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ newUsername: username, newPassword: password }),
+    });
+
+    const responseJson = await response.json();
+    if (response.status !== 200) {
+      throw Error(responseJson.message);
+    }
+
+    if (responseJson.error) {
+      throw Error(responseJson.message);
+    }
+
+    setUsername(username);
+
+    return responseJson;
   };
 
   const onConfirmation = async () => {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    editAdmin(editedUsername, editedPassword)
       .then(() => {
         closePrimaryModal();
       })
