@@ -11,6 +11,7 @@ import {
   Spacer,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
+import useSWR from 'swr';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
@@ -61,9 +62,15 @@ function ChapterCardsGrid() {
 }
 
 export default function AdminDashboardPage({
+  user,
   chapters,
   chapterError,
 }: AdminDashboardProps) {
+  const { data, error } = useSWR(`/api/admin`);
+
+  console.log(user);
+  console.log(data);
+
   return (
     <>
       <CredentialsModalProvider>
@@ -97,7 +104,7 @@ export default function AdminDashboardPage({
 }
 
 export const getServerSideProps: GetServerSideProps<AdminDashboardProps> =
-  withAdminAuthPage(async ({ req }: NextIronServerSideContext) => {
+  withAdminAuthPage(async ({ req, res }: NextIronServerSideContext) => {
     const user = req.session.get('user') as SessionAdminUser;
 
     let chapters: Chapter[] = [];

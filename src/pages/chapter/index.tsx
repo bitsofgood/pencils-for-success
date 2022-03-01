@@ -13,6 +13,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
+import useSWR from 'swr';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
 import { NextIronServerSideContext } from '@/utils/session';
 import { SessionChapterUser } from '../api/chapters/login';
@@ -81,6 +82,10 @@ export default function ChapterDashboardPage({
   const { chapterId } = user.chapterUser;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { data, error } = useSWR(`/api/admin`);
+
+  // console.log(user);
+  // console.log(data);
 
   const [activeRecipientId, setActiveRecipientId] = useState(-1);
 
