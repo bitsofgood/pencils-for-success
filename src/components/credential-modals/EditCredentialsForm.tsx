@@ -137,6 +137,7 @@ const CredentialsInformationForm = () => {
         >
           <Input
             placeholder="Min. 8 characters"
+            type="password"
             {...register('hash', {
               required: 'Password is required',
               minLength: {
