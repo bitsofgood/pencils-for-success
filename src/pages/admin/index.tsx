@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { GetServerSideProps } from 'next';
 import {
   SimpleGrid,
@@ -9,11 +9,8 @@ import {
   Box,
   Flex,
   Spacer,
-  Center,
-  Spinner,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
-import useSWR from 'swr';
 import { withAdminAuthPage } from '@/utils/middlewares/auth';
 import { SessionAdminUser } from '../api/admin/login';
 import { NextIronServerSideContext } from '@/utils/session';
@@ -33,8 +30,6 @@ import AdminNavbar from '@/components/navbars/AdminNavbar';
 import prisma from '@/prisma-client';
 import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
 import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
-import { fetcher } from '@/utils/api';
-import { GetAdminInfoResponse } from '../api/admin';
 
 interface AdminDashboardProps {
   user: SessionAdminUser;

@@ -13,7 +13,6 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { Chapter } from '@prisma/client';
-import useSWR from 'swr';
 import { withChapterAuthPage } from '@/utils/middlewares/auth';
 import { NextIronServerSideContext } from '@/utils/session';
 import { SessionChapterUser } from '../api/chapters/login';
