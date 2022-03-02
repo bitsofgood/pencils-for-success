@@ -11,6 +11,7 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useSWRConfig } from 'swr';
 import { CredentialsModalContext } from '@/providers/CredentialsModalProvider';
 import CredentialsConfirmationModal from '@/components/credential-modals/CredentialsConfirmationModal';
 
@@ -20,12 +21,11 @@ interface EditedUser {
 }
 
 const CredentialsInformationForm = () => {
-  const { onClose: closePrimaryModal, mutate } = useContext(
-    CredentialsModalContext,
-  );
+  const { onClose: closePrimaryModal } = useContext(CredentialsModalContext);
   const [loading, setLoading] = useState(false);
   const [editedUsername, setEditedUsername] = useState<string>('');
   const [editedPassword, setEditedPassword] = useState<string>('');
+  const { mutate } = useSWRConfig();
 
   const {
     handleSubmit,
