@@ -1,10 +1,7 @@
-import { HStack, Button, Select } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { Select } from '@chakra-ui/react';
 import { useContext, useEffect } from 'react';
 import { Chapter } from '@prisma/client';
-import { GetChapterResponse } from '@/pages/api/chapters';
-import { DonorContext, DonorProvider } from '@/providers/DonorProvider';
+import { DonorContext } from '@/providers/DonorProvider';
 
 interface DonorNavbarDropDownProps {
   chapters: Chapter[];
@@ -13,7 +10,7 @@ interface DonorNavbarDropDownProps {
 export default function DonorNavbarDropDown({
   chapters,
 }: DonorNavbarDropDownProps) {
-  const { activeChapterId, setActiveChapterId } = useContext(DonorContext);
+  const { setActiveChapterId } = useContext(DonorContext);
 
   useEffect(() => {
     setActiveChapterId(chapters[0].id);
