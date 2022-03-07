@@ -97,7 +97,7 @@ export default function AdminDashboardPage({
 }
 
 export const getServerSideProps: GetServerSideProps<AdminDashboardProps> =
-  withAdminAuthPage(async ({ req }: NextIronServerSideContext) => {
+  withAdminAuthPage(async ({ req, res }: NextIronServerSideContext) => {
     const user = req.session.get('user') as SessionAdminUser;
 
     let chapters: Chapter[] = [];
