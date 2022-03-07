@@ -16,7 +16,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Chapter } from '@prisma/client';
-// import { DonorContext } from '@/providers/DonorProvider';
+import { DonorContext } from '@/providers/DonorProvider';
 import { GetChapterResponse } from '@/pages/api/chapters';
 import DonorMap from './DonorMap';
 

@@ -41,7 +41,6 @@ export const CredentialsModalProvider = ({
   const [currentModalState, setModalState] = useState<CredentialsModalState>(
     CredentialsModalState.ViewCredential,
   );
-
   return (
     <CredentialsModalContext.Provider
       value={{

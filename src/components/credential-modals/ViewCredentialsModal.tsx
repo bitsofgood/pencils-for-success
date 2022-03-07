@@ -10,12 +10,16 @@ import {
   ModalHeader,
   Text,
 } from '@chakra-ui/react';
+import useSWR from 'swr';
 import {
   CredentialsModalContext,
   CredentialsModalState,
 } from '@/providers/CredentialsModalProvider';
+import { fetcher } from '@/utils/api';
+import { GetAdminInfoResponse } from '@/pages/api/admin';
 
 const ViewCredentialsModal = () => {
+  const { data, error } = useSWR<GetAdminInfoResponse>(`/api/admin`, fetcher);
   const { setModalState } = useContext(CredentialsModalContext);
 
   return (
@@ -29,7 +33,7 @@ const ViewCredentialsModal = () => {
           </Text>
           <Box display="flex" flexDirection="row">
             <Text paddingRight="8px">Username:</Text>
-            <Text>username</Text>
+            <Text>{data?.username}</Text>
           </Box>
         </Box>
         <Button
