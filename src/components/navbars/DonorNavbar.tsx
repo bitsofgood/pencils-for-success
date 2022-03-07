@@ -1,12 +1,18 @@
-import { HStack, Button } from '@chakra-ui/react';
+import { HStack, Button, Select } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import NavbarContainer from './NavbarContainer';
+import { GetChapterResponse } from '@/pages/api/chapters';
+import DonorNavbarDropDown from './DonorNavbarDropDown';
 
 export default function DonorNavbar() {
   const router = useRouter();
+  const { data, error } = useSWR<GetChapterResponse>(`/api/chapters`);
+
   return (
     <NavbarContainer>
       <HStack spacing="15px">
+        {data && <DonorNavbarDropDown chapters={data.chapters} />}
         <Button
           size="sm"
           variant="outline"
