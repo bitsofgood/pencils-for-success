@@ -58,7 +58,14 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
           Map View
         </Button>
       </ButtonGroup>
-      {/* TODO: user currentChapter and display its contact info as defined in figma */}
+      <Box pl="55px" pt="60px">
+        <Box fontWeight={900} pt="10px" pb="10px">
+          Want to dontate? Contact:
+        </Box>
+        <Box>{currentChapter?.contactName}</Box>
+        <Box>{currentChapter?.email}</Box>
+        <Box>{currentChapter?.phoneNumber}</Box>
+      </Box>
     </>
   );
 }
