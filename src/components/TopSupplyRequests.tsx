@@ -16,6 +16,7 @@ import useSWR from 'swr';
 import { Chapter } from '@prisma/client';
 import { DonorContext } from '@/providers/DonorProvider';
 import { GetChapterResponse } from '@/pages/api/chapters';
+import { DataResponse } from '@/pages/api/chapters/[chapterId]/supply-requests/top';
 
 interface DonorNavbarDropDownProps {
   chapters: Chapter[];
@@ -24,31 +25,27 @@ interface DonorNavbarDropDownProps {
 export default function TopSupplyRequests({
   chapters,
 }: DonorNavbarDropDownProps) {
-  // TODO: once endpoint is available, get the list of top supplies, and delete the fake supply list
-  // const { data, error } = useSWR<GetChapterResponse>(`/api/chapters`); // change this to have supply request endpoint
-  const fakeSupplyList = [
-    { item: 'Pencils', id: 1 },
-    { item: 'Pens', id: 2 },
-    { item: 'Erasers', id: 3 },
-    { item: 'Markers', id: 4 },
-    { item: 'Crayons', id: 5 },
-    { item: 'Notebooks', id: 6 },
-    { item: 'Binders', id: 7 },
-    { item: 'Pencil Sharpeners', id: 8 },
-  ];
+  const { activeChapterId } = useContext(DonorContext);
+  // Emily's change
+  const { data, error } = useSWR<DataResponse>(
+    `/api/chapters/${activeChapterId}/supply-requests/top`,
+  );
+  const currentChapter = chapters.find(
+    (item) => Number(item.id) === Number(activeChapterId),
+  );
 
   return (
     <Box h="full" p="10%">
       <VStack mr="15%" spacing="10%">
         <Heading size="lg">
-          {/* TODO: get the current chapter, and display the name here */}
-          [Chapter] Chapter Recipients Needs:
+          {currentChapter?.chapterName} Chapter Recipients Needs:
         </Heading>
         <Box w="full" border="2px" borderColor="black">
           <UnorderedList p="5%">
-            {fakeSupplyList.map((item) => (
-              <ListItem key={item.id}>{item.item}</ListItem>
-            ))}
+            {data &&
+              data.supplyRequests.map((item) => (
+                <ListItem key={item.id}>{item.item.name}</ListItem>
+              ))}
           </UnorderedList>
         </Box>
       </VStack>

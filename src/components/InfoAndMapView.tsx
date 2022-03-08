@@ -26,6 +26,10 @@ interface DonorNavbarDropDownProps {
 
 export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
   const [infoView, setInfoView] = useState(true);
+  const { activeChapterId } = useContext(DonorContext);
+  const currentChapter = chapters.find(
+    (item) => Number(item.id) === Number(activeChapterId),
+  );
 
   return (
     <>
@@ -42,7 +46,6 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
         >
           Info View
         </Button>
-        {/* TODO: get the current chapter and display its contact info */}
         <Button
           onClick={() => setInfoView(false)}
           borderRadius="0"
@@ -55,6 +58,7 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
           Map View
         </Button>
       </ButtonGroup>
+      {/* TODO: user currentChapter and display its contact info as defined in figma */}
     </>
   );
 }

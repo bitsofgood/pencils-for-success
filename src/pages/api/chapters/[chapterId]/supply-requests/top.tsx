@@ -4,7 +4,7 @@ import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import prisma from '@/prisma-client';
 
-type DataResponse = {
+export type DataResponse = {
   supplyRequests: (SupplyRequest & {
     item: Item;
   })[];
