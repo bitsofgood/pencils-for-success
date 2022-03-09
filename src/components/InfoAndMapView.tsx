@@ -58,7 +58,7 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
           Map View
         </Button>
       </ButtonGroup>
-      <Box pl="55px" pt="60px">
+      <Box pl="5%" pt="60px">
         <Box fontWeight={900} pt="10px" pb="10px">
           Want to dontate? Contact:
         </Box>

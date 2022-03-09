@@ -29,25 +29,22 @@ export default function Home() {
           <meta name="description" content="Pencils for Success" />
         </Head>
         <DonorNavbar />
-        <HStack h="100vh" pb="3%" top={NAVBAR_HEIGHT}>
+        <HStack
+          h="94vh"
+          top={NAVBAR_HEIGHT}
+          divider={<StackDivider borderWidth="2px" borderColor="black" />}
+          spacing="0px"
+        >
           <Box alignSelf="flex-start">
             {data && <TopSupplyRequests chapters={data.chapters} />}
           </Box>
 
-          <Divider
-            h="full"
-            variant="solid"
-            borderColor="black"
-            borderWidth="2px"
-            orientation="vertical"
-          />
-
           <Box
             position="relative"
             m="0px"
-            alignSelf="flex-start"
             w="full"
             h="full"
+            alignSelf="flex-start"
           >
             {data && <InfoAndMapView chapters={data.chapters} />}
           </Box>

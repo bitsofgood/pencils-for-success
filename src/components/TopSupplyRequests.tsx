@@ -41,7 +41,7 @@ export default function TopSupplyRequests({
           {currentChapter?.chapterName} Chapter Recipients Needs:
         </Heading>
         <Box w="full" border="2px" borderColor="black">
-          <UnorderedList p="5%">
+          <UnorderedList p="5%" spacing="15px">
             {data &&
               data.supplyRequests.map((item) => (
                 <ListItem key={item.id}>{item.item.name}</ListItem>
