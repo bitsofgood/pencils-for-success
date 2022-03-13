@@ -60,7 +60,7 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
       </ButtonGroup>
       <Box pl="5%" pt="60px">
         <Box fontWeight={900} pt="10px" pb="10px">
-          Want to dontate? Contact:
+          Want to donate? Contact:
         </Box>
         <Box>{currentChapter?.contactName}</Box>
         <Box>{currentChapter?.email}</Box>
