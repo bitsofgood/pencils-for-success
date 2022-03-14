@@ -7,12 +7,13 @@ import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-req
 import prisma from '@/prisma-client';
 
 export type DetailedRecipient = Recipient & {
-  supplyRequests: DetailedSupplyRequest[];
+  supplyRequests: DetailedSupplyRequest[] | null | undefined;
   recipientUser:
     | (RecipientUser & {
         user: User;
       })
-    | null;
+    | null
+    | undefined;
 };
 
 type DataResponse = {
