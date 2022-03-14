@@ -69,8 +69,7 @@ const editRecipient = async (
 };
 
 const EditRecipientModal = () => {
-  const { onClose, activeRecipient, setModalState, setActiveRecipient } =
-    useContext(RecipientModalContext);
+  const { onClose, activeRecipient } = useContext(RecipientModalContext);
   const { recipients } = useContext(RecipientsContext);
   const activeRecipientInfo = getActiveRecipient(activeRecipient, recipients);
   const { upsertRecipient } = useContext(RecipientsContext);

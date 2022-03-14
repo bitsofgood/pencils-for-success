@@ -2,8 +2,6 @@ import React, { useContext } from 'react';
 import {
   Box,
   Button,
-  Divider,
-  FormLabel,
   ModalBody,
   ModalCloseButton,
   ModalContent,
