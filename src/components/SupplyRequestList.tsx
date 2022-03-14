@@ -37,7 +37,7 @@ import {
 } from '@/providers/SupplyRequestModalProvider';
 
 interface SupplyRequestListProps {
-  data: DetailedSupplyRequest[];
+  data: DetailedSupplyRequest[] | null | undefined;
 }
 
 function RowContextMenu(requestId: number, recipientId: number) {
@@ -424,9 +424,9 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
             Showing{' '}
             <Text as="span">
               {pageIndex * 10 + 1} -{' '}
-              {Math.min((pageIndex + 1) * 10, data.length)}
+              {Math.min((pageIndex + 1) * 10, data?.length ?? -1)}
             </Text>{' '}
-            of <Text as="span">{data.length}</Text>
+            of <Text as="span">{data?.length}</Text>
           </Text>
         </Flex>
         <Flex>
