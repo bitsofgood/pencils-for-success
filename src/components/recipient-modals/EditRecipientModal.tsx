@@ -98,8 +98,10 @@ const EditRecipientModal = () => {
   const onSubmit = async (editedData: EditRecipientFormBody) => {
     try {
       const editedRecipient = await editRecipient(editedData, activeRecipient);
-      editedRecipient.supplyRequests = activeRecipientInfo?.supplyRequests;
-      editedRecipient.recipientUser = activeRecipientInfo?.recipientUser;
+      editedRecipient.supplyRequests =
+        activeRecipientInfo?.supplyRequests ?? [];
+      editedRecipient.recipientUser =
+        activeRecipientInfo?.recipientUser ?? null;
 
       upsertRecipient(editedRecipient);
       reset();
