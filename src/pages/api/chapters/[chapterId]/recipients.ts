@@ -16,7 +16,7 @@ export type DetailedRecipient = Recipient & {
 };
 
 type DataResponse = {
-  recipients: DetailedRecipient[];
+  recipients: (DetailedRecipient | Recipient)[];
 };
 
 async function handler(
@@ -29,42 +29,32 @@ async function handler(
         const currentUser = req.session.get('user') as SessionChapterUser;
 
         // Check if requesting user is logged in and is an chapter
-        if (
-          !currentUser ||
-          !currentUser.isLoggedIn ||
-          !currentUser.chapterUser
-        ) {
-          return res.status(401).json({
-            error: true,
-            message: 'Please login as a chapter to use this endpoint',
-          });
-        }
-
         const { chapterId } = req.query;
 
-        if (currentUser.chapterUser.chapterId !== Number(chapterId)) {
-          return res.status(401).json({
-            error: true,
-            message: `Must be logged in as a user for this chapter`,
-          });
-        }
+        const isMatchingChapterUser =
+          !!currentUser &&
+          !!currentUser.isLoggedIn &&
+          !!currentUser.chapterUser &&
+          currentUser.chapterUser.chapterId === Number(chapterId);
 
         const recipients = await prisma.recipient.findMany({
           where: {
             chapterId: Number(chapterId),
           },
-          include: {
-            recipientUser: {
-              include: {
-                user: true,
-              },
-            },
-            supplyRequests: {
-              include: {
-                item: true,
-              },
-            },
-          },
+          include: isMatchingChapterUser
+            ? {
+                recipientUser: {
+                  include: {
+                    user: true,
+                  },
+                },
+                supplyRequests: {
+                  include: {
+                    item: true,
+                  },
+                },
+              }
+            : null,
         });
 
         return res.status(200).json({ recipients });
