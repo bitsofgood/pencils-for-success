@@ -33,7 +33,7 @@ export default function InfoAndMapView({ chapters }: DonorNavbarDropDownProps) {
 
   return (
     <>
-      {!infoView && <DonorMap currentChapter={currentChapter} />}
+      {!infoView && <DonorMap />}
       <ButtonGroup p="5%" variant="outline" spacing="0px">
         <Button
           borderRadius="0"

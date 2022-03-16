@@ -1,14 +1,7 @@
 // import { useState } from 'react';
-import MapGL, { GeolocateControl, Marker } from 'react-map-gl';
-import { Box } from '@chakra-ui/react';
-import Image from 'next/image';
-import { useContext, useEffect, useState } from 'react';
-import { Chapter } from '@prisma/client';
-import { DonorContext } from '@/providers/DonorProvider';
+import { Marker } from 'react-map-gl';
+import { useEffect, useState } from 'react';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
-// import recipients from '@/pages/api/recipients';
-// import { PostRecipientResponse } from '@/pages/api/recipients';
-// import { DataResponse } from '@/pages/api/chapters/[chapterId]';
 
 interface DonorNavbarDropDownProps {
   recipient: DetailedRecipient;
@@ -23,7 +16,6 @@ function DonorMapMarker({ recipient }: DonorNavbarDropDownProps) {
   const [recipientCoordinates, setRecipientCoordinates] = useState<Coordinates>(
     { longitude: 0, latitude: 0 },
   );
-  const [active, setActive] = useState(false);
 
   const getCoordinates = async (rec: DetailedRecipient) => {
     const address = `${rec.primaryStreetAddress} ${rec.city} ${rec.state} ${rec.postalCode}`;

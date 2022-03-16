@@ -1,19 +1,10 @@
 // import { useState } from 'react';
-import MapGL, { GeolocateControl, Marker } from 'react-map-gl';
+import MapGL, { GeolocateControl } from 'react-map-gl';
 import { Box } from '@chakra-ui/react';
-import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
-import { Chapter } from '@prisma/client';
 import { DonorContext } from '@/providers/DonorProvider';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 import DonorMapMarker from './DonorMapMarker';
-// import recipients from '@/pages/api/recipients';
-// import { PostRecipientResponse } from '@/pages/api/recipients';
-// import { DataResponse } from '@/pages/api/chapters/[chapterId]';
-
-interface DonorNavbarDropDownProps {
-  currentChapter: Chapter | undefined;
-}
 
 const geolocateStyle = {
   top: 0,
@@ -27,12 +18,9 @@ const initialViewportState = {
   zoom: 12,
 };
 
-function DonorMap({ currentChapter }: DonorNavbarDropDownProps) {
+function DonorMap() {
   const [viewport, setViewport] = useState(initialViewportState);
-  const [infoView, setInfoView] = useState(true);
   const { activeChapterId } = useContext(DonorContext);
-
-  const [recipientCoordinates, setRecipientCoordinates] = useState([]);
   const [recipients, setRecipients] = useState<DetailedRecipient[]>([]);
 
   const getRecipients = async () => {
@@ -52,7 +40,7 @@ function DonorMap({ currentChapter }: DonorNavbarDropDownProps) {
 
   useEffect(() => {
     getRecipients().then((res) => setRecipients(res));
-  }, []);
+  }, [activeChapterId]);
 
   return (
     <Box pos="absolute" top="0" right="0" bottom="0" left="0">
