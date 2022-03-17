@@ -22,6 +22,7 @@ function DonorMap() {
   const [viewport, setViewport] = useState(initialViewportState);
   const { activeChapterId } = useContext(DonorContext);
   const [recipients, setRecipients] = useState<DetailedRecipient[]>([]);
+  const [activeMarkerId, setActiveMarkerId] = useState(-1);
 
   const getRecipients = async () => {
     const res = await fetch(`/api/chapters/${activeChapterId}/recipients`, {
@@ -38,8 +39,13 @@ function DonorMap() {
     return resJson.recipients as DetailedRecipient[];
   };
 
+  const setActiveMarker = (id: number) => {
+    setActiveMarkerId(id);
+  };
+
   useEffect(() => {
     getRecipients().then((res) => setRecipients(res));
+    setActiveMarkerId(-1);
   }, [activeChapterId]);
 
   return (
@@ -59,7 +65,13 @@ function DonorMap() {
           auto
         />
         {recipients.map((recipient) => (
-          <DonorMapMarker key={recipient.id} recipient={recipient} />
+          <DonorMapMarker
+            key={recipient.id}
+            id={recipient.id}
+            recipient={recipient}
+            activeMarkerId={activeMarkerId}
+            setMarkerId={setActiveMarker}
+          />
         ))}
       </MapGL>
     </Box>

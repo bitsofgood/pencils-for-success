@@ -5,6 +5,9 @@ import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
 interface DonorNavbarDropDownProps {
   recipient: DetailedRecipient;
+  activeMarkerId: number;
+  id: number;
+  setMarkerId: (id: number) => void;
 }
 
 type Coordinates = {
@@ -12,7 +15,12 @@ type Coordinates = {
   latitude: number | 0;
 };
 
-function DonorMapMarker({ recipient }: DonorNavbarDropDownProps) {
+function DonorMapMarker({
+  recipient,
+  id,
+  activeMarkerId,
+  setMarkerId,
+}: DonorNavbarDropDownProps) {
   const [recipientCoordinates, setRecipientCoordinates] = useState<Coordinates>(
     { longitude: 0, latitude: 0 },
   );
@@ -34,7 +42,7 @@ function DonorMapMarker({ recipient }: DonorNavbarDropDownProps) {
 
   useEffect(() => {
     getCoordinates(recipient).then((res) => {
-      console.log([res.features[0].center]);
+      console.log([res.features[0]]);
       const coords = {
         longitude: res.features[0].center[0],
         latitude: res.features[0].center[1],
@@ -47,8 +55,13 @@ function DonorMapMarker({ recipient }: DonorNavbarDropDownProps) {
     <Marker
       longitude={recipientCoordinates.longitude}
       latitude={recipientCoordinates.latitude}
+      onClick={() => setMarkerId(id)}
     >
-      <img src="/pin.png" width="41" height="60" />
+      <img
+        src={activeMarkerId === id ? '/pin.png' : '/mark.png'}
+        width="41"
+        height="60"
+      />
     </Marker>
   );
 }
