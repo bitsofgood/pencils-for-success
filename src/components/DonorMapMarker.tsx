@@ -3,14 +3,15 @@ import { Marker } from 'react-map-gl';
 import { useEffect, useState } from 'react';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 
-interface DonorNavbarDropDownProps {
+interface DonorMapMarkerProps {
   recipient: DetailedRecipient;
   activeMarkerId: number;
   id: number;
   setMarkerId: (id: number) => void;
+  addMarkerCoord: (coord: Coordinates) => void;
 }
 
-type Coordinates = {
+export type Coordinates = {
   longitude: number | 0;
   latitude: number | 0;
 };
@@ -20,7 +21,8 @@ function DonorMapMarker({
   id,
   activeMarkerId,
   setMarkerId,
-}: DonorNavbarDropDownProps) {
+  addMarkerCoord,
+}: DonorMapMarkerProps) {
   const [recipientCoordinates, setRecipientCoordinates] = useState<Coordinates>(
     { longitude: 0, latitude: 0 },
   );
@@ -42,12 +44,12 @@ function DonorMapMarker({
 
   useEffect(() => {
     getCoordinates(recipient).then((res) => {
-      console.log([res.features[0]]);
       const coords = {
         longitude: res.features[0].center[0],
         latitude: res.features[0].center[1],
       };
       setRecipientCoordinates(coords);
+      addMarkerCoord(coords);
     });
   }, []);
 

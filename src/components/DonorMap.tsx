@@ -1,10 +1,10 @@
 // import { useState } from 'react';
-import MapGL, { GeolocateControl } from 'react-map-gl';
+import MapGL, { GeolocateControl, WebMercatorViewport } from 'react-map-gl';
 import { Box } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { DonorContext } from '@/providers/DonorProvider';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
-import DonorMapMarker from './DonorMapMarker';
+import DonorMapMarker, { Coordinates } from './DonorMapMarker';
 
 const geolocateStyle = {
   top: 0,
@@ -23,6 +23,7 @@ function DonorMap() {
   const { activeChapterId } = useContext(DonorContext);
   const [recipients, setRecipients] = useState<DetailedRecipient[]>([]);
   const [activeMarkerId, setActiveMarkerId] = useState(-1);
+  const [markerCoordinates, setMarkerCoordinates] = useState<Coordinates[]>([]);
 
   const getRecipients = async () => {
     const res = await fetch(`/api/chapters/${activeChapterId}/recipients`, {
@@ -39,13 +40,17 @@ function DonorMap() {
     return resJson.recipients as DetailedRecipient[];
   };
 
-  const setActiveMarker = (id: number) => {
-    setActiveMarkerId(id);
+  const addMarkerCoordinates = (coords: Coordinates) => {
+    const currentCoords = markerCoordinates;
+    currentCoords.push(coords);
+    setMarkerCoordinates(currentCoords);
+    console.log(currentCoords);
   };
 
   useEffect(() => {
     getRecipients().then((res) => setRecipients(res));
     setActiveMarkerId(-1);
+    setMarkerCoordinates([]);
   }, [activeChapterId]);
 
   return (
@@ -70,7 +75,8 @@ function DonorMap() {
             id={recipient.id}
             recipient={recipient}
             activeMarkerId={activeMarkerId}
-            setMarkerId={setActiveMarker}
+            setMarkerId={setActiveMarkerId}
+            addMarkerCoord={addMarkerCoordinates}
           />
         ))}
       </MapGL>
