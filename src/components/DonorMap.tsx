@@ -48,7 +48,6 @@ function DonorMap() {
 
   const changeViewport = () => {
     if (markerCoordinates.length > 0) {
-      console.log('YOYOYOYO');
       const latArray: number[] = [];
       const longArray: number[] = [];
 
