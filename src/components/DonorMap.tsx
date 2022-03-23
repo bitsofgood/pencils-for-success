@@ -16,6 +16,8 @@ const initialViewportState = {
   latitude: 33.749,
   longitude: -84.38633,
   zoom: 12,
+  width: 400,
+  height: 400,
 };
 
 function DonorMap() {
@@ -41,10 +43,34 @@ function DonorMap() {
   };
 
   const addMarkerCoordinates = (coords: Coordinates) => {
-    const currentCoords = markerCoordinates;
-    currentCoords.push(coords);
-    setMarkerCoordinates(currentCoords);
-    console.log(currentCoords);
+    setMarkerCoordinates((prevList) => [...prevList, coords]);
+  };
+
+  const changeViewport = () => {
+    if (markerCoordinates.length > 0) {
+      console.log('YOYOYOYO');
+      const latArray: number[] = [];
+      const longArray: number[] = [];
+
+      markerCoordinates.forEach((item) => {
+        latArray.push(item.latitude);
+        longArray.push(item.longitude);
+      });
+      const minLat = Math.min(...latArray);
+      const minLong = Math.min(...longArray);
+      const maxLat = Math.max(...latArray);
+      const maxLong = Math.max(...longArray);
+
+      const newViewport = new WebMercatorViewport(viewport).fitBounds(
+        [
+          [minLong, minLat],
+          [maxLong, maxLat],
+        ],
+        { padding: 150 },
+      );
+
+      setViewport(newViewport);
+    }
   };
 
   useEffect(() => {
@@ -52,6 +78,10 @@ function DonorMap() {
     setActiveMarkerId(-1);
     setMarkerCoordinates([]);
   }, [activeChapterId]);
+
+  useEffect(() => {
+    changeViewport();
+  }, [markerCoordinates]);
 
   return (
     <Box pos="absolute" top="0" right="0" bottom="0" left="0">
