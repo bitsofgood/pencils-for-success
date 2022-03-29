@@ -97,9 +97,6 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
-        {/* <Box>
-          <BsThreeDots />
-        </Box> */}
         <IconButton
           variant="ghost"
           aria-label="Edit Supply Request"
