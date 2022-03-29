@@ -15,11 +15,9 @@ interface MarkerCardProps {
   recipient: DetailedRecipient;
   isActive?: boolean;
 }
-
 interface MarkerDetailsProps {
   recipient: DetailedRecipient;
 }
-
 function MarkerDetails({ recipient }: MarkerDetailsProps) {
   return (
     <Box>
@@ -28,7 +26,6 @@ function MarkerDetails({ recipient }: MarkerDetailsProps) {
         <Text>{recipient.email}</Text>
         <Text>{recipient.phoneNumber}</Text>
       </Box>
-
       <Box my="8">
         <Text>{recipient.primaryStreetAddress}</Text>
         {recipient.secondaryStreetAddress && (
@@ -41,7 +38,6 @@ function MarkerDetails({ recipient }: MarkerDetailsProps) {
     </Box>
   );
 }
-
 function MarkerCard({ recipient, isActive }: MarkerCardProps) {
   return (
     <div>
@@ -72,5 +68,4 @@ function MarkerCard({ recipient, isActive }: MarkerCardProps) {
     </div>
   );
 }
-
 export default MarkerCard;

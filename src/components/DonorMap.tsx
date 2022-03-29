@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import MapGL, { GeolocateControl, WebMercatorViewport } from 'react-map-gl';
 import { Box } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
@@ -20,7 +19,6 @@ const initialViewportState = {
   width: 400,
   height: 400,
 };
-
 function DonorMap() {
   const [viewport, setViewport] = useState(initialViewportState);
   const { activeChapterId } = useContext(DonorContext);
@@ -35,7 +33,6 @@ function DonorMap() {
         'Content-Type': 'application/json',
       },
     });
-
     const resJson = await res.json();
     if (res.status !== 200 || resJson.error) {
       throw Error(resJson.message);
@@ -51,7 +48,6 @@ function DonorMap() {
     if (markerCoordinates.length > 0) {
       const latArray: number[] = [];
       const longArray: number[] = [];
-
       markerCoordinates.forEach((item) => {
         latArray.push(item.latitude);
         longArray.push(item.longitude);
@@ -60,15 +56,16 @@ function DonorMap() {
       const minLong = Math.min(...longArray);
       const maxLat = Math.max(...latArray);
       const maxLong = Math.max(...longArray);
-
       const newViewport = new WebMercatorViewport(viewport).fitBounds(
         [
           [minLong, minLat],
           [maxLong, maxLat],
         ],
-        { padding: 150 },
+        {
+          padding: 100,
+          offset: [300, 100],
+        },
       );
-
       setViewport(newViewport);
     }
   };
@@ -78,11 +75,9 @@ function DonorMap() {
     setActiveMarkerId(-1);
     setMarkerCoordinates([]);
   }, [activeChapterId]);
-
   useEffect(() => {
     changeViewport();
   }, [markerCoordinates]);
-
   return (
     <Box pos="absolute" top="0" right="0" bottom="0" left="0">
       <MapGL

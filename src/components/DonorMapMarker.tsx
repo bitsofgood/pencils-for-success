@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import { Marker } from 'react-map-gl';
 import { useEffect, useState } from 'react';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
@@ -11,12 +10,10 @@ interface DonorMapMarkerProps {
   setMarkerId: (id: number) => void;
   addMarkerCoord: (coord: Coordinates) => void;
 }
-
 export type Coordinates = {
   longitude: number | 0;
   latitude: number | 0;
 };
-
 function DonorMapMarker({
   recipient,
   id,
@@ -31,7 +28,6 @@ function DonorMapMarker({
   const getCoordinates = async (rec: DetailedRecipient) => {
     const address = `${rec.primaryStreetAddress} ${rec.city} ${rec.state} ${rec.postalCode}`;
     const encodedAddr = encodeURI(address);
-
     try {
       const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddr}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}&autocomplete=true`;
       const response = await fetch(endpoint);
@@ -73,5 +69,4 @@ function DonorMapMarker({
     </div>
   );
 }
-
 export default DonorMapMarker;
