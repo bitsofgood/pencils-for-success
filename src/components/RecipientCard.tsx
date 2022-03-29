@@ -13,6 +13,8 @@ import {
   PopoverArrow,
   Stack,
   Divider,
+  Button,
+  IconButton,
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
@@ -95,29 +97,52 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
-        <Box>
+        {/* <Box>
           <BsThreeDots />
-        </Box>
+        </Box> */}
+        <IconButton
+          variant="ghost"
+          aria-label="Edit Supply Request"
+          icon={<BsThreeDots />}
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+          }}
+        />
       </PopoverTrigger>
       <PopoverContent width="200px">
         <PopoverArrow />
         <PopoverBody width="200px">
           <Stack>
-            <Flex color="gray.700">
+            <Button
+              fontWeight="normal"
+              variant="ghost"
+              color="gray.700"
+              alignItems="center"
+              justifyContent="flex-start"
+              fontSize="sm"
+              padding="4"
+              onClick={onEditRecipient}
+            >
               <BsPencilFill />
-              <Text ml="3" onClick={onEditRecipient}>
-                Edit Recipient
-              </Text>
-            </Flex>
+              <Text marginLeft={1.5}>Edit Recipient</Text>
+            </Button>
 
             <Divider />
 
-            <Flex color="red">
+            <Button
+              fontWeight="normal"
+              variant="ghost"
+              color="red"
+              alignItems="center"
+              justifyContent="flex-start"
+              fontSize="sm"
+              padding="4"
+              onClick={onDeleteRecipient}
+            >
               <BsFillTrashFill />
-              <Text ml="3" onClick={onDeleteRecipient}>
-                Delete Recipient
-              </Text>
-            </Flex>
+              <Text marginLeft={1.5}>Delete Recipient</Text>
+            </Button>
           </Stack>
         </PopoverBody>
       </PopoverContent>
@@ -137,7 +162,9 @@ function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
       fontSize="sm"
     >
       <Flex>
-        <Heading size="sm">{recipient.name}</Heading>
+        <Heading size="sm" paddingTop="2" marginRight="2">
+          {recipient.name}
+        </Heading>
         <Spacer />
         <RecipientContextMenu recipient={recipient} />
       </Flex>
