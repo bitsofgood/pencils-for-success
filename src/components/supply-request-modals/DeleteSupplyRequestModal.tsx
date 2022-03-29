@@ -50,7 +50,9 @@ const DeleteSupplyRequestModal = () => {
       .then(() => {
         onClose();
         setModalState(ModalState.NewSupplyRequest);
-        upsertRecipient(recipients[activeRecipientId]);
+        upsertRecipient(
+          recipients.find((recipient) => recipient.id === activeRecipientId),
+        );
         setActiveSupplyRequestId(-1);
       })
       .catch((err) => {

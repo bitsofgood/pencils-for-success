@@ -28,6 +28,7 @@ import { NAVBAR_HEIGHT } from '@/styles/theme';
 import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
 import RecipientSidePanel from '@/components/RecipientSidePanel';
 import prisma from '@/prisma-client';
+import { RecipientsProvider } from '@/providers/RecipientsProvider';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
@@ -60,48 +61,50 @@ export default function RecipientMapPage({
         right="0"
         left="0"
       >
-        <Grid templateColumns="300px 1fr" my="5" gap="10">
-          <RecipientSidePanel
-            recipientName={recipient?.name || ''}
-            contactName={recipient?.contactName || ''}
-            email={recipient?.email || ''}
-            phoneNumber={recipient?.phoneNumber || ''}
-            streetAddress={recipient?.primaryStreetAddress || ''}
-            city={recipient?.city || ''}
-            state={recipient?.state || ''}
-            postalCode={recipient?.postalCode || ''}
-          />
-          <SupplyRequestModalProvider>
-            <Stack
-              bgColor="white"
-              py={8}
-              px={10}
-              minH="500px"
-              boxShadow="lg"
-              borderRadius="lg"
-              borderWidth="1px"
-              spacing={8}
-            >
-              <Flex align="center" justifyContent="space-between">
-                <Heading>Supply Requests</Heading>
-                <Button leftIcon={<BsPlus />} onClick={onOpen}>
-                  Add New
-                </Button>
-              </Flex>
-              {recipientError && <Text>{recipientError}</Text>}
-              {isLoading ? (
-                <Center>
-                  <Spinner />
-                </Center>
-              ) : (
-                <>
-                  <SupplyRequestModalController />
-                  <SupplyRequestList data={data.items} />
-                </>
-              )}
-            </Stack>
-          </SupplyRequestModalProvider>
-        </Grid>
+        <RecipientsProvider chapterId={recipient?.chapterId}>
+          <Grid templateColumns="300px 1fr" my="5" gap="10">
+            <RecipientSidePanel
+              recipientName={recipient?.name || ''}
+              contactName={recipient?.contactName || ''}
+              email={recipient?.email || ''}
+              phoneNumber={recipient?.phoneNumber || ''}
+              streetAddress={recipient?.primaryStreetAddress || ''}
+              city={recipient?.city || ''}
+              state={recipient?.state || ''}
+              postalCode={recipient?.postalCode || ''}
+            />
+            <SupplyRequestModalProvider>
+              <Stack
+                bgColor="white"
+                py={8}
+                px={10}
+                minH="500px"
+                boxShadow="lg"
+                borderRadius="lg"
+                borderWidth="1px"
+                spacing={8}
+              >
+                <Flex align="center" justifyContent="space-between">
+                  <Heading>Supply Requests</Heading>
+                  <Button leftIcon={<BsPlus />} onClick={onOpen}>
+                    Add New
+                  </Button>
+                </Flex>
+                {recipientError && <Text>{recipientError}</Text>}
+                {isLoading ? (
+                  <Center>
+                    <Spinner />
+                  </Center>
+                ) : (
+                  <>
+                    <SupplyRequestModalController />
+                    <SupplyRequestList data={data.items} />
+                  </>
+                )}
+              </Stack>
+            </SupplyRequestModalProvider>
+          </Grid>
+        </RecipientsProvider>
       </Box>
       {recipient && (
         <NewSupplyRequestModal

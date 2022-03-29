@@ -6,7 +6,7 @@ export interface RecipientsContextProps {
   chapterId: number;
   loading: boolean;
   error?: string;
-  upsertRecipient: (data: DetailedRecipient) => void;
+  upsertRecipient: (data?: DetailedRecipient) => void;
   removeRecipient: (id: number) => void;
 }
 
@@ -19,10 +19,10 @@ export const RecipientsContext = createContext<RecipientsContextProps>({
   recipients: [],
   chapterId: -1,
   loading: true,
-  removeRecipient: (id: number) => {
+  removeRecipient: () => {
     throw Error('Method not implemented');
   },
-  upsertRecipient: (x: DetailedRecipient) => {
+  upsertRecipient: () => {
     throw Error('Method not implemented');
   },
 });
@@ -69,7 +69,11 @@ export const RecipientsProvider = ({
     setRecipients(filteredRecipients);
   };
 
-  const upsertRecipient = (data: DetailedRecipient) => {
+  const upsertRecipient = (data?: DetailedRecipient) => {
+    if (!data) {
+      return;
+    }
+
     // Check if existing recipient
     const recipientIndex = recipients.findIndex((x) => x.id === data.id);
     const newRecipients = [...recipients];
