@@ -66,7 +66,10 @@ function DonorMap() {
           [minLong, minLat],
           [maxLong, maxLat],
         ],
-        { padding: 150 },
+        {
+          padding: 100,
+          offset: [300, 100],
+        },
       );
 
       setViewport(newViewport);
