@@ -12,7 +12,7 @@ import {
   ModalState,
 } from '@/providers/RecipientModalProvider';
 import DeleteRecipientModal from './DeleteRecipientModal';
-// import EditRecipientModal from './EditRecipientModal';
+import EditRecipientModal from './EditRecipientModal';
 
 interface RecipientModalContentProps {
   state: ModalState;
@@ -20,8 +20,8 @@ interface RecipientModalContentProps {
 
 const RecipientModalContent = ({ state }: RecipientModalContentProps) => {
   switch (state) {
-    // case ModalState.EditRecipient:
-    // return <EditRecipientModal />;
+    case ModalState.EditRecipient:
+      return <EditRecipientModal />;
     case ModalState.DeleteRecipient:
       return <DeleteRecipientModal />;
     default:

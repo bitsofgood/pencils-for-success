@@ -12,7 +12,8 @@ export type DetailedRecipient = Recipient & {
     | (RecipientUser & {
         user: User;
       })
-    | null;
+    | null
+    | undefined;
 };
 
 type DataResponse = {

@@ -1,5 +1,5 @@
 import { NextApiResponse } from 'next';
-import { PrismaClient, Recipient, Prisma, SupplyRequest } from '@prisma/client';
+import { PrismaClient, Prisma, SupplyRequest } from '@prisma/client';
 import { NextIronRequest } from '@/utils/session';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { withAuthedRequestSession } from '@/utils/middlewares/auth';
@@ -39,10 +39,6 @@ async function handler(
   const currentUser = req.session.get('user') as SessionChapterUser &
     SessionRecipientUser;
 
-  const isValidRecipient =
-    currentUser.recipient &&
-    currentUser.recipient.recipientId === Number(recId);
-
   if (!currentUser || !currentUser.isLoggedIn) {
     return res.status(401).json({
       error: true,
@@ -63,8 +59,8 @@ async function handler(
   const recipient = await getRecipientById(prisma, Number(recId));
 
   if (
-    currentUser.chapterUser.chapterId !== recipient?.chapterId &&
-    currentUser.recipient.id !== recipient?.id
+    currentUser.chapterUser?.chapterId !== recipient?.chapterId &&
+    currentUser.recipient?.recipientId !== recipient?.id
   ) {
     return res.status(403).json({
       error: true,
@@ -126,19 +122,8 @@ async function handler(
           });
         }
 
-        const isValidChapter =
-          currentUser.chapterUser &&
-          currentUser.chapterUser.chapterId === existRecipient.chapterId;
-
         const isValidSupplyRequest =
           existSupplyRequest?.recipientId === Number(recId);
-
-        if (!isValidChapter && !isValidRecipient) {
-          return res.status(400).json({
-            error: true,
-            message: `Please login as an authorized user to access this resource`,
-          });
-        }
 
         if (!isValidSupplyRequest) {
           return res.status(400).json({

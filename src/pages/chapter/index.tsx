@@ -21,11 +21,7 @@ import {
   RecipientsProvider,
 } from '@/providers/RecipientsProvider';
 import RecipientCard from '@/components/RecipientCard';
-import {
-  RecipientModalContext,
-  RecipientModalProvider,
-  ModalState,
-} from '@/providers/RecipientModalProvider';
+import { RecipientModalProvider } from '@/providers/RecipientModalProvider';
 import NewRecipientModal from '@/components/recipient-modals/NewRecipientModal';
 import RecipientDetails from '@/components/RecipientDetails';
 import ChapterNavbar from '@/components/navbars/ChapterNavbar';
@@ -33,6 +29,7 @@ import prisma from '@/prisma-client';
 import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
 import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
 import RecipientModalController from '@/components/recipient-modals/RecipientModalController';
+import EditRecipientModal from '@/components/recipient-modals/EditRecipientModal';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;

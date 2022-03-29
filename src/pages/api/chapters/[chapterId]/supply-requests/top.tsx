@@ -1,13 +1,11 @@
 import type { NextApiResponse } from 'next';
-import { Item, SupplyRequest } from '@prisma/client';
+import { Item, SupplyRequest, SupplyRequestStatus } from '@prisma/client';
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest, withSession } from '@/utils/session';
 import prisma from '@/prisma-client';
 
 export type DataResponse = {
-  supplyRequests: (SupplyRequest & {
-    item: Item;
-  })[];
+  topSupplyRequests: string[];
 };
 
 async function handler(
@@ -36,10 +34,36 @@ async function handler(
 
         const supplyRequests = recipients
           .flatMap((recipient) => recipient.supplyRequests)
-          .sort((a, b) => b.quantity - a.quantity)
+          .filter(
+            (supplyRequest) =>
+              supplyRequest.status === SupplyRequestStatus.PENDING,
+          );
+
+        const topItemQuantities: Record<string, number> = {};
+
+        supplyRequests.forEach((supplyRequest) => {
+          if (supplyRequest.item.name in topItemQuantities) {
+            topItemQuantities[supplyRequest.item.name] +=
+              supplyRequest.quantity;
+          } else {
+            topItemQuantities[supplyRequest.item.name] = supplyRequest.quantity;
+          }
+        });
+
+        const topItemsArray: any[] = [];
+        Object.entries(topItemQuantities).forEach((topItem) => {
+          topItemsArray.push([topItem[0], topItem[1]]);
+        });
+
+        topItemsArray.sort((a: any, b: any) => b[1] - a[1]);
+
+        const topSupplyRequests: string[] = topItemsArray
+          .map((item: any) => item[0])
           .slice(0, parseInt(String(limit), 10) || 10);
 
-        return res.status(200).json({ supplyRequests });
+        return res.status(200).json({
+          topSupplyRequests,
+        });
       } catch (e) {
         return serverErrorHandler(e, res);
       }

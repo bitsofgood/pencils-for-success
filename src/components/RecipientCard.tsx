@@ -62,11 +62,11 @@ function RecipientDetails({ recipient }: RecipientDetailsProps) {
 }
 
 function SupplyRequestStatus({ recipient }: RecipientDetailsProps) {
-  const pendingRequests = recipient.supplyRequests.filter(
+  const pendingRequests = recipient.supplyRequests?.filter(
     (x) => x.status === 'PENDING',
   ).length;
 
-  const statusColor = pendingRequests > 0 ? '#CA9000' : '#858585';
+  const statusColor = (pendingRequests ?? 0) > 0 ? '#CA9000' : '#858585';
 
   return (
     <UnorderedList color={statusColor}>
@@ -86,6 +86,12 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
     onOpen();
   };
 
+  const onEditRecipient = () => {
+    setActiveRecipient(recipient.id);
+    setModalState(ModalState.EditRecipient);
+    onOpen();
+  };
+
   return (
     <Popover placement="bottom-end">
       <PopoverTrigger>
@@ -99,7 +105,9 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
           <Stack>
             <Flex color="gray.700">
               <BsPencilFill />
-              <Text ml="3">Edit Recipient</Text>
+              <Text ml="3" onClick={onEditRecipient}>
+                Edit Recipient
+              </Text>
             </Flex>
 
             <Divider />
