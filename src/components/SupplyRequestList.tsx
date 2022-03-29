@@ -426,7 +426,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
               {pageIndex * 10 + 1} -{' '}
               {Math.min((pageIndex + 1) * 10, data.length)}
             </Text>{' '}
-            of <Text as="span">{data.length}</Text>
+            of <Text as="span">{data?.length}</Text>
           </Text>
         </Flex>
         <Flex>

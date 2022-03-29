@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
