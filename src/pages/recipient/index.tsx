@@ -61,7 +61,7 @@ export default function RecipientMapPage({
         right="0"
         left="0"
       >
-        <RecipientsProvider chapterId={recipient?.chapterId}>
+        <RecipientsProvider chapterId={recipient?.chapterId || 0}>
           <Grid templateColumns="300px 1fr" my="5" gap="10">
             <RecipientSidePanel
               recipientName={recipient?.name || ''}
