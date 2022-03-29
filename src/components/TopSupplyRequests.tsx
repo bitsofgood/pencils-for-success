@@ -36,7 +36,7 @@ export default function TopSupplyRequests({
         <Box w="full" border="2px" borderColor="black">
           <UnorderedList p="5%" spacing="15px">
             {data &&
-              data.topSupplyRequests.map((item) => (
+              data.topSupplyRequests?.map((item) => (
                 <ListItem key={item}>{item}</ListItem>
               ))}
           </UnorderedList>
