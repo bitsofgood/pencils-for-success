@@ -50,9 +50,9 @@ async function handler(
           }
         });
 
-        const topItemsArray: any = [];
-        Object.entries(topItemQuantities).forEach((topItem, quantity) => {
-          topItemsArray.push([topItem, quantity]);
+        const topItemsArray: any[] = [];
+        Object.entries(topItemQuantities).forEach((topItem) => {
+          topItemsArray.push([topItem[0], topItem[1]]);
         });
 
         topItemsArray.sort((a: any, b: any) => b[1] - a[1]);
