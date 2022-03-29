@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { DonorContext } from '@/providers/DonorProvider';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 import DonorMapMarker, { Coordinates } from './DonorMapMarker';
+import MarkerInfoCard from './MarkerInfoCard';
 
 const geolocateStyle = {
   top: 0,

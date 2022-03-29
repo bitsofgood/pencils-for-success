@@ -2,6 +2,7 @@
 import { Marker } from 'react-map-gl';
 import { useEffect, useState } from 'react';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
+import MarkerInfoCard from './MarkerInfoCard';
 
 interface DonorMapMarkerProps {
   recipient: DetailedRecipient;
@@ -54,17 +55,22 @@ function DonorMapMarker({
   }, []);
 
   return (
-    <Marker
-      longitude={recipientCoordinates.longitude}
-      latitude={recipientCoordinates.latitude}
-      onClick={() => setMarkerId(id)}
-    >
-      <img
-        src={activeMarkerId === id ? '/pin.png' : '/mark.png'}
-        width="41"
-        height="60"
-      />
-    </Marker>
+    <div>
+      <Marker
+        longitude={recipientCoordinates.longitude}
+        latitude={recipientCoordinates.latitude}
+        onClick={() => setMarkerId(id)}
+      >
+        <img
+          src={activeMarkerId === id ? '/pin.png' : '/mark.png'}
+          width="41"
+          height="60"
+        />
+      </Marker>
+      {activeMarkerId === id && (
+        <MarkerInfoCard recipient={recipient} isActive />
+      )}
+    </div>
   );
 }
 
