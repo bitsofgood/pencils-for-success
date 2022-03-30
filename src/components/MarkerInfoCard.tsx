@@ -41,11 +41,11 @@ function MarkerDetails({ recipient }: MarkerDetailsProps) {
 function MarkerCard({ recipient, isActive }: MarkerCardProps) {
   return (
     <div>
-      <HStack p="14" pt="40">
+      <HStack ml="5%" pt="40">
         <Box
           boxShadow="lg"
           borderRadius="lg"
-          // cursor="pointer"
+          zIndex="1"
           bg="white"
           padding="1"
           fontSize="sm"

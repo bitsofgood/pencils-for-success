@@ -24,6 +24,7 @@ function DonorMapMarker({
   const [recipientCoordinates, setRecipientCoordinates] = useState<Coordinates>(
     { longitude: 0, latitude: 0 },
   );
+  const [clicked, setClicked] = useState(false);
 
   const getCoordinates = async (rec: DetailedRecipient) => {
     const address = `${rec.primaryStreetAddress} ${rec.city} ${rec.state} ${rec.postalCode}`;
@@ -39,6 +40,16 @@ function DonorMapMarker({
     }
   };
 
+  const handleMarkerClick = (markerId: number) => {
+    const prevClicked = clicked;
+    if (prevClicked) {
+      setMarkerId(-1);
+    } else {
+      setMarkerId(markerId);
+    }
+    setClicked(!clicked);
+  };
+
   useEffect(() => {
     getCoordinates(recipient).then((res) => {
       const coords = {
@@ -50,12 +61,19 @@ function DonorMapMarker({
     });
   }, []);
 
+  useEffect(() => {
+    if (activeMarkerId !== id) {
+      setClicked(false);
+    }
+  }, [activeMarkerId]);
+
   return (
-    <div>
+    <>
+      {clicked && <MarkerInfoCard recipient={recipient} isActive />}
       <Marker
         longitude={recipientCoordinates.longitude}
         latitude={recipientCoordinates.latitude}
-        onClick={() => setMarkerId(id)}
+        onClick={() => handleMarkerClick(id)}
       >
         <img
           src={activeMarkerId === id ? '/pin.png' : '/mark.png'}
@@ -63,10 +81,7 @@ function DonorMapMarker({
           height="60"
         />
       </Marker>
-      {activeMarkerId === id && (
-        <MarkerInfoCard recipient={recipient} isActive />
-      )}
-    </div>
+    </>
   );
 }
 export default DonorMapMarker;

@@ -75,9 +75,11 @@ function DonorMap() {
     setActiveMarkerId(-1);
     setMarkerCoordinates([]);
   }, [activeChapterId]);
+
   useEffect(() => {
     changeViewport();
   }, [markerCoordinates]);
+
   return (
     <Box pos="absolute" top="0" right="0" bottom="0" left="0">
       <MapGL
