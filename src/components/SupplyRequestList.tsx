@@ -374,8 +374,6 @@ export default function SupplyRequestList({
     usePagination,
   );
 
-  console.log(page);
-
   // Render the UI for your table
   return (
     <>
