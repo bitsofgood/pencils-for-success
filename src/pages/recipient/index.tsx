@@ -1,12 +1,9 @@
 /* eslint-disable react/jsx-key */
-import useSWR from 'swr';
 import {
   Heading,
   Grid,
   Box,
-  Spinner,
   Text,
-  Center,
   Flex,
   Stack,
   Button,
@@ -22,7 +19,6 @@ import { SessionRecipientUser } from '../api/recipients/login';
 import SupplyRequestList from '@/components/SupplyRequestList';
 import SupplyRequestModalController from '@/components/supply-request-modals/SupplyRequestModalController';
 import { SupplyRequestModalProvider } from '@/providers/SupplyRequestModalProvider';
-import { GetSupplyRequestsResponse } from '../api/recipients/[recId]/supply-requests';
 import RecipientNavbar from '@/components/navbars/RecipientNavbar';
 import { NAVBAR_HEIGHT } from '@/styles/theme';
 import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
@@ -40,14 +36,7 @@ export default function RecipientMapPage({
   recipient,
   recipientError,
 }: RecipientDashboardProps) {
-  // TODO: handle error
-  // TODO: properly handle recipient null case
-  const { data, error } = useSWR<GetSupplyRequestsResponse>(
-    recipient ? `/api/recipients/${recipient.id}/supply-requests` : null,
-  );
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const isLoading = !data;
 
   return (
     <>
@@ -91,16 +80,8 @@ export default function RecipientMapPage({
                   </Button>
                 </Flex>
                 {recipientError && <Text>{recipientError}</Text>}
-                {isLoading ? (
-                  <Center>
-                    <Spinner />
-                  </Center>
-                ) : (
-                  <>
-                    <SupplyRequestModalController />
-                    <SupplyRequestList data={data.items} />
-                  </>
-                )}
+                <SupplyRequestModalController />
+                <SupplyRequestList recipientId={recipient?.id || 0} />
               </Stack>
             </SupplyRequestModalProvider>
           </Grid>

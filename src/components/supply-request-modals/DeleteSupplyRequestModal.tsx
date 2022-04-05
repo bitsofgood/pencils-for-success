@@ -9,11 +9,13 @@ import {
   Spacer,
   Divider,
 } from '@chakra-ui/react';
+import { mutate } from 'swr';
 import {
   SupplyRequestModalContext,
   ModalState,
 } from '@/providers/SupplyRequestModalProvider';
 import { RecipientsContext } from '@/providers/RecipientsProvider';
+import { ErrorResponse } from '@/utils/error';
 
 const deleteSupplyRequest = async (supplyId: number, recId: number) => {
   const response = await fetch(
@@ -25,15 +27,17 @@ const deleteSupplyRequest = async (supplyId: number, recId: number) => {
       },
     },
   );
-  const responseJson = await response.json();
-  if (response.status !== 200) {
+
+  const responseJson = (await response.json()) as ErrorResponse;
+  if (response.status !== 200 || responseJson.error) {
     throw Error(responseJson.message);
   }
-  if (responseJson.error) {
-    throw Error(responseJson.message);
-  }
+
+  mutate(`/api/recipients/${recId}/supply-requests`);
+
   return responseJson;
 };
+
 const DeleteSupplyRequestModal = () => {
   const {
     onClose,
@@ -44,6 +48,7 @@ const DeleteSupplyRequestModal = () => {
   } = useContext(SupplyRequestModalContext);
   const { recipients, upsertRecipient } = useContext(RecipientsContext);
   const [loading, setLoading] = useState(false);
+
   const onConfirmation = () => {
     setLoading(true);
     deleteSupplyRequest(activeSupplyRequestId, activeRecipientId)
