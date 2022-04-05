@@ -60,7 +60,7 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
         <>
           <SupplyRequestModalController />
           <Heading mb={8}>Supply Requests</Heading>
-          <SupplyRequestList data={activeRecipient.supplyRequests ?? []} />
+          <SupplyRequestList recipientId={activeRecipient.id} />
         </>
       </SupplyRequestModalProvider>
     </Box>

@@ -1,11 +1,5 @@
 /* eslint-disable react/jsx-key */
-import {
-  ReactChild,
-  ReactFragment,
-  ReactPortal,
-  useMemo,
-  useContext,
-} from 'react';
+import { useMemo, useContext } from 'react';
 
 import {
   Flex,
@@ -30,14 +24,50 @@ import {
   BsTrashFill,
   BsCaretDownFill,
 } from 'react-icons/bs';
-import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
+import useSWR, { mutate } from 'swr';
+import { SupplyRequestStatus } from '@prisma/client';
+import {
+  DetailedSupplyRequest,
+  GetSupplyRequestsResponse,
+} from '@/pages/api/recipients/[recId]/supply-requests';
 import {
   SupplyRequestModalContext,
   ModalState,
 } from '@/providers/SupplyRequestModalProvider';
+import { ErrorResponse } from '@/utils/error';
+
+const updateSupplyRequestStatus = async (
+  supplyId: number,
+  recId: number,
+  updatedSupplyRequest: any,
+) => {
+  const response = await fetch(
+    `/api/recipients/${recId}/supply-requests/${supplyId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({
+        updatedSupplyRequest: {
+          status: updatedSupplyRequest.status,
+        },
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  const responseJson = (await response.json()) as ErrorResponse;
+  if (response.status !== 200 || responseJson.error) {
+    throw Error(responseJson.message);
+  }
+
+  mutate(`/api/recipients/${recId}/supply-requests`);
+
+  return responseJson;
+};
 
 interface SupplyRequestListProps {
-  data: DetailedSupplyRequest[];
+  recipientId: number;
 }
 
 function RowContextMenu(requestId: number, recipientId: number) {
@@ -138,8 +168,8 @@ function NotesContextMenu(note: string) {
   );
 }
 
-function StatusContextMenu(currentStatus: string) {
-  const status: string = currentStatus;
+function StatusContextMenu(supplyRequest: any) {
+  const { status } = supplyRequest;
   return (
     <Popover placement="bottom-start">
       <PopoverTrigger>
@@ -188,8 +218,8 @@ function StatusContextMenu(currentStatus: string) {
       >
         <PopoverBody width="auto">
           <Box
-            backgroundColor={status === 'PENDING' ? '#FFF8E7' : '#E0F0FF'}
-            color={status === 'PENDING' ? '#CA9000' : '#0A5093'}
+            backgroundColor="#FFF8E7"
+            color="#CA9000"
             paddingLeft="3"
             paddingRight="3"
             paddingTop="2"
@@ -200,22 +230,25 @@ function StatusContextMenu(currentStatus: string) {
             marginBottom={2}
             textAlign="center"
             onClick={() =>
-              console.log(
-                `Change to supply request to ${
-                  status === 'PENDING' ? 'Pending' : 'Complete'
-                }.`,
+              updateSupplyRequestStatus(
+                supplyRequest.id,
+                supplyRequest.recipientId,
+                {
+                  ...supplyRequest,
+                  status: SupplyRequestStatus.PENDING,
+                },
               )
             }
             _hover={{
-              backgroundColor: status === 'PENDING' ? '#FFF0CC' : '#C7E4FF',
+              backgroundColor: '#FFF0CC',
             }}
             transitionDuration="0.2s"
           >
-            {status === 'PENDING' ? 'Pending' : 'Complete'}
+            Pending
           </Box>
           <Box
-            backgroundColor={status === 'PENDING' ? '#E0F0FF' : '#FFF8E7'}
-            color={status === 'PENDING' ? '#0A5093' : '#CA9000'}
+            backgroundColor="#E0F0FF"
+            color="#0A5093"
             paddingLeft="3"
             paddingRight="3"
             paddingTop="2"
@@ -225,18 +258,21 @@ function StatusContextMenu(currentStatus: string) {
             textAlign="center"
             cursor="pointer"
             onClick={() =>
-              console.log(
-                `Change to supply request to ${
-                  status === 'PENDING' ? 'Complete' : 'Pending'
-                }.`,
+              updateSupplyRequestStatus(
+                supplyRequest.id,
+                supplyRequest.recipientId,
+                {
+                  ...supplyRequest,
+                  status: SupplyRequestStatus.COMPLETE,
+                },
               )
             }
             _hover={{
-              backgroundColor: status === 'PENDING' ? '#C7E4FF' : '#FFF0CC',
+              backgroundColor: '#C7E4FF',
             }}
             transitionDuration="0.2s"
           >
-            {status === 'PENDING' ? 'Complete' : 'Pending'}
+            Complete
           </Box>
         </PopoverBody>
       </PopoverContent>
@@ -249,7 +285,7 @@ function Cell(cell: any) {
   const cellInfo = cell;
   // render status cell
   if (cellInfo.column.Header === 'Status') {
-    return StatusContextMenu(cell.value);
+    return StatusContextMenu(cellInfo.row.original);
   }
   // render date cells
   if (
@@ -273,7 +309,15 @@ function Cell(cell: any) {
   return cellInfo.render('Cell');
 }
 
-export default function SupplyRequestList({ data }: SupplyRequestListProps) {
+export default function SupplyRequestList({
+  recipientId,
+}: SupplyRequestListProps) {
+  const { data, error } = useSWR<GetSupplyRequestsResponse>(
+    `/api/recipients/${recipientId}/supply-requests`,
+  );
+
+  const tableData = useMemo(() => data?.items || [], [data?.items]);
+
   const columns = useMemo<Column<DetailedSupplyRequest>[]>(
     () => [
       {
@@ -320,11 +364,16 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
   } = useTable<DetailedSupplyRequest>(
     {
       columns,
-      data,
-      initialState: { pageIndex: 0, pageSize: 10 },
+      data: tableData,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 10,
+        sortBy: [{ id: 'id', desc: true }],
+      },
     },
     usePagination,
   );
+
   // Render the UI for your table
   return (
     <>
@@ -383,7 +432,7 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
               paddingLeft={6}
               paddingRight={6}
               marginBottom={6}
-              key={row.id}
+              key={row.original.id}
             >
               {row.cells.map((cell, index) => (
                 <Box
@@ -424,9 +473,9 @@ export default function SupplyRequestList({ data }: SupplyRequestListProps) {
             Showing{' '}
             <Text as="span">
               {pageIndex * 10 + 1} -{' '}
-              {Math.min((pageIndex + 1) * 10, data.length)}
+              {Math.min((pageIndex + 1) * 10, tableData.length)}
             </Text>{' '}
-            of <Text as="span">{data?.length}</Text>
+            of <Text as="span">{tableData.length}</Text>
           </Text>
         </Flex>
         <Flex>

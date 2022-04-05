@@ -163,16 +163,7 @@ export function validateNewSupplyRequest(
 export function validateUpdatedSupplyRequest(
   supplyRequest: Prisma.SupplyRequestUpdateInput,
 ) {
-  if (supplyRequest) {
-    const validateItems = supplyRequest.item != null;
-
-    if (
-      (supplyRequest.quantity && supplyRequest.quantity < 0) ||
-      !validateItems
-    ) {
-      throw Error('Please provide valid input fields for the supply request');
-    }
-  } else {
+  if (!supplyRequest) {
     throw Error('Please provide valid supply request');
   }
 }

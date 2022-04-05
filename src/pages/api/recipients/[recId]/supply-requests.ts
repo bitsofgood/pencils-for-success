@@ -76,6 +76,9 @@ async function handler(
             include: {
               item: true,
             },
+            orderBy: {
+              created: 'asc',
+            },
           });
 
           return res.status(200).json({
