@@ -32,19 +32,25 @@ export default function Home() {
         <HStack
           h="94vh"
           top={NAVBAR_HEIGHT}
-          divider={<StackDivider borderWidth="2px" borderColor="black" />}
           spacing="0px"
+          background="gray.100"
         >
-          <Box alignSelf="flex-start">
+          <Box
+            alignSelf="flex-start"
+            h="full"
+            w="45%"
+            padding="32px"
+            paddingRight="16px"
+          >
             {data && <TopSupplyRequests chapters={data.chapters} />}
           </Box>
 
           <Box
-            position="relative"
-            m="0px"
+            alignSelf="flex-start"
             w="full"
             h="full"
-            alignSelf="flex-start"
+            padding="32px"
+            paddingLeft="16px"
           >
             {data && <InfoAndMapView chapters={data.chapters} />}
           </Box>

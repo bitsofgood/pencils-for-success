@@ -4,6 +4,7 @@ import {
   Box,
   ListItem,
   UnorderedList,
+  Flex,
 } from '@chakra-ui/react';
 import { useContext } from 'react';
 import useSWR from 'swr';
@@ -28,10 +29,17 @@ export default function TopSupplyRequests({
   );
 
   return (
-    <Box h="full" p="10%">
-      <VStack mr="15%" spacing="10%">
+    <Box
+      boxShadow="lg"
+      borderRadius="lg"
+      borderWidth="1px"
+      background="white"
+      height="100%"
+      padding="32px"
+    >
+      <Flex mr="15%" spacing="10%" direction="column">
         <Heading size="lg">
-          {currentChapter?.chapterName} Chapter Recipients Needs:
+          {currentChapter?.chapterName} Recipients Needs:
         </Heading>
         <Box w="full" border="2px" borderColor="black">
           <UnorderedList p="5%" spacing="15px">
@@ -41,7 +49,7 @@ export default function TopSupplyRequests({
               ))}
           </UnorderedList>
         </Box>
-      </VStack>
+      </Flex>
     </Box>
   );
 }

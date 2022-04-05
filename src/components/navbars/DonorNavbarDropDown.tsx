@@ -21,7 +21,15 @@ export default function DonorNavbarDropDown({
   };
 
   return (
-    <Select onChange={handleSelect} size="sm" variant="outline" w="40%">
+    <Select
+      onChange={handleSelect}
+      size="md"
+      fontWeight="bold"
+      w="fit-content"
+      cursor="pointer"
+      variant="unstyled"
+      textAlign="end"
+    >
       {chapters.map((chapter) => (
         <option value={chapter.id} key={chapter.id}>
           {chapter.chapterName}
