@@ -35,6 +35,11 @@ import {
   ModalState,
 } from '@/providers/SupplyRequestModalProvider';
 import { ErrorResponse } from '@/utils/error';
+import {
+  SelectColumnFilter,
+  NumberRangeColumnFilter,
+  FilterMenu,
+} from './SupplyRequestTableFilters';
 
 const updateSupplyRequestStatus = async (
   supplyId: number,
@@ -323,14 +328,17 @@ export default function SupplyRequestList({
       {
         Header: 'Item Name',
         accessor: (row) => row.item.name,
+        filter: 'fuzzyText',
       },
       {
         Header: 'Quantity',
         accessor: 'quantity',
+        Filter: NumberRangeColumnFilter,
       },
       {
         Header: 'Status',
         accessor: 'status',
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Last Updated',
@@ -407,12 +415,12 @@ export default function SupplyRequestList({
             <Box
               display="flex"
               fontSize="16px"
-              width={columnWidths[columnWidths.length - 1]}
+              width="7%"
               alignItems="center"
               justifyContent="flex-end"
-              marginLeft={1}
               marginRight={1}
             />
+            {/* {FilterMensu()} */}
           </Box>
         ))}
       </Box>
