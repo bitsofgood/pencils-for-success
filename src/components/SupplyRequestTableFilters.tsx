@@ -6,6 +6,11 @@ import {
   PopoverTrigger,
   PopoverBody,
   IconButton,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
   PopoverContent,
   PopoverArrow,
   Stack,
@@ -121,6 +126,7 @@ export function NumberRangeColumnFilter({
     () => getMinMax(preFilteredRows, id),
     [id, preFilteredRows],
   );
+
   const focusedElement = useActiveElement();
   const hasFocus =
     focusedElement &&
@@ -135,37 +141,47 @@ export function NumberRangeColumnFilter({
           paddingTop: 5,
         }}
       >
-        <Input
+        <NumberInput
           id={`${id}_1`}
-          value={filterValue[0] || ''}
-          type="number"
-          onChange={(e) => {
-            const val = e.target.value;
+          onChange={(value) => {
+            const val = value;
             setFilter((old: any[] = []) => [
               val ? parseInt(val, 10) : undefined,
               old[1],
             ]);
           }}
-          placeholder={`Min (${min})`}
-          size="md"
-          w="30%"
-        />
+          size="sm"
+          min={min}
+          max={max}
+        >
+          <NumberInputField placeholder={`Min (${min})`} />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+
         <Text> to </Text>
-        <Input
+
+        <NumberInput
           id={`${id}_2`}
-          value={filterValue[1] || ''}
-          type="number"
-          onChange={(e) => {
-            const val = e.target.value;
+          onChange={(value) => {
+            const val = value;
             setFilter((old: any[] = []) => [
               old[0],
               val ? parseInt(val, 10) : undefined,
             ]);
           }}
-          placeholder={`Max (${max})`}
-          size="md"
-          w="30%"
-        />
+          size="sm"
+          min={min}
+          max={max}
+        >
+          <NumberInputField placeholder={`Max (${max})`} />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
       </HStack>
     </>
   );
