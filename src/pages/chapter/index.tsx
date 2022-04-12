@@ -29,7 +29,6 @@ import prisma from '@/prisma-client';
 import { CredentialsModalProvider } from '@/providers/CredentialsModalProvider';
 import CredentialsModalController from '@/components/credential-modals/CredentialsModalController';
 import RecipientModalController from '@/components/recipient-modals/RecipientModalController';
-import EditRecipientModal from '@/components/recipient-modals/EditRecipientModal';
 
 interface ChapterDashboardProps {
   user: SessionChapterUser;
