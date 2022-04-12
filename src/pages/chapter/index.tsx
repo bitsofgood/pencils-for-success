@@ -78,12 +78,11 @@ export default function ChapterDashboardPage({
   const { chapterId } = user.chapterUser;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const [activeRecipientId, setActiveRecipientId] = useState(-1);
 
   return (
-    <>
-      <CredentialsModalProvider>
+    <Box height="100vh" overflowY="hidden" background="gray.100">
+      <CredentialsModalProvider user={user}>
         <>
           <ChapterNavbar chapterName={chapter.chapterName} />
           <CredentialsModalController />
@@ -92,19 +91,22 @@ export default function ChapterDashboardPage({
       <RecipientsProvider chapterId={chapterId}>
         <RecipientModalProvider>
           <Box p="10" background="gray.100">
-            <Heading textAlign="center">{chapter?.chapterName} Chapter</Heading>
+            <Heading textAlign="center">{chapter?.chapterName}</Heading>
 
             {chapterError && <Text>{chapterError}</Text>}
 
             <Grid templateColumns="300px 1fr" my="5" gap="4">
               <Stack spacing="5">
                 <Flex
-                  boxShadow="lg"
+                  boxShadow="md"
                   borderRadius="lg"
                   borderWidth="1px"
                   alignItems="baseline"
                   background="white"
-                  padding="3"
+                  pt="2"
+                  pb="2"
+                  pl="4"
+                  pr="4"
                 >
                   <Heading size="md">Recipients</Heading>
                   <Spacer />
@@ -126,7 +128,7 @@ export default function ChapterDashboardPage({
           </Box>
         </RecipientModalProvider>
       </RecipientsProvider>
-    </>
+    </Box>
   );
 }
 

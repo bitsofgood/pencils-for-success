@@ -41,17 +41,9 @@ export default function RecipientMapPage({
   return (
     <>
       <RecipientNavbar recipientName={recipient?.name || ''} />
-      <Box
-        p="10"
-        background="gray.100"
-        position="absolute"
-        top={NAVBAR_HEIGHT}
-        bottom="0"
-        right="0"
-        left="0"
-      >
+      <Box p="10" background="gray.100">
         <RecipientsProvider chapterId={recipient?.chapterId || 0}>
-          <Grid templateColumns="300px 1fr" my="5" gap="10">
+          <Grid templateColumns="300px 1fr" my="" gap="10">
             <RecipientSidePanel
               recipientName={recipient?.name || ''}
               contactName={recipient?.contactName || ''}
@@ -71,10 +63,9 @@ export default function RecipientMapPage({
                 boxShadow="lg"
                 borderRadius="lg"
                 borderWidth="1px"
-                spacing={8}
               >
                 <Flex align="center" justifyContent="space-between">
-                  <Heading>Supply Requests</Heading>
+                  <Heading fontSize="24">Supply Requests</Heading>
                   <Button leftIcon={<BsPlus />} onClick={onOpen}>
                     Add New
                   </Button>

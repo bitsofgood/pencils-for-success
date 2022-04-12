@@ -63,10 +63,11 @@ function ChapterCardsGrid() {
 export default function AdminDashboardPage({
   chapters,
   chapterError,
+  user,
 }: AdminDashboardProps) {
   return (
     <>
-      <CredentialsModalProvider>
+      <CredentialsModalProvider user={user}>
         <>
           <AdminNavbar />
           <CredentialsModalController />
