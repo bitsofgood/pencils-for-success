@@ -51,23 +51,6 @@ const getMinMax = (
   return [min, max];
 };
 
-const useActiveElement = () => {
-  const [active, setActive] = useState(document.activeElement);
-
-  const handleFocusIn = () => {
-    setActive(document.activeElement);
-  };
-
-  useEffect(() => {
-    document.addEventListener('focusin', handleFocusIn);
-    return () => {
-      document.removeEventListener('focusin', handleFocusIn);
-    };
-  }, []);
-
-  return active;
-};
-
 export function DefaultColumnFilter({
   column: { filterValue, render, setFilter, preFilteredRows, id },
 }: FilterProps<DetailedSupplyRequest>) {
@@ -75,7 +58,7 @@ export function DefaultColumnFilter({
 
   return (
     <>
-      <Text> {render('Header')}</Text>
+      <Text mb={2}> {render('Header')}</Text>
       <Input
         value={filterValue || ''}
         onChange={(e) => {
@@ -100,7 +83,7 @@ export function SelectColumnFilter({
 
   return (
     <>
-      <Text>{render('Header')}</Text>
+      <Text mb={2}>{render('Header')}</Text>
       <Select
         value={filterValue || ''}
         onChange={(e) => {
@@ -127,13 +110,9 @@ export function NumberRangeColumnFilter({
     [id, preFilteredRows],
   );
 
-  const focusedElement = useActiveElement();
-  const hasFocus =
-    focusedElement &&
-    (focusedElement.id === `${id}_1` || focusedElement.id === `${id}_2`);
   return (
     <>
-      <Text>{render('Header')}</Text>
+      <Text mb={2}>{render('Header')}</Text>
       <HStack
         style={{
           display: 'flex',
@@ -153,6 +132,7 @@ export function NumberRangeColumnFilter({
           size="sm"
           min={min}
           max={max}
+          value={filterValue[0] ? filterValue[0] : ''}
         >
           <NumberInputField placeholder={`Min (${min})`} />
           <NumberInputStepper>
@@ -175,6 +155,7 @@ export function NumberRangeColumnFilter({
           size="sm"
           min={min}
           max={max}
+          value={filterValue[1] ? filterValue[1] : ''}
         >
           <NumberInputField placeholder={`Max (${max})`} />
           <NumberInputStepper>
@@ -197,7 +178,6 @@ export function fuzzyTextFilter<T extends Record<string, unknown>>(
   });
 }
 
-// Let the table remove the filter if the string is empty
 fuzzyTextFilter.autoRemove = (val: any) => !val;
 
 type FilterPageProps<T extends Record<string, unknown>> = {
@@ -214,6 +194,7 @@ export function FilterMenu<T extends Record<string, unknown>>({
   const resetFilters = useCallback(() => {
     setAllFilters([]);
   }, [setAllFilters]);
+  console.log(columns);
 
   return (
     <Popover placement="bottom-end">
@@ -235,8 +216,7 @@ export function FilterMenu<T extends Record<string, unknown>>({
             <HStack justifyContent="space-between">
               <Text> Filters </Text>
               <Button variant="outline" onClick={resetFilters}>
-                {' '}
-                Reset{' '}
+                Reset
               </Button>
             </HStack>
             <Box>
