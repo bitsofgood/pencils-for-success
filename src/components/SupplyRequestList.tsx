@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import { useMemo, useContext } from 'react';
+import { useMemo, useContext, useState, useCallback } from 'react';
 
 import {
   Flex,
@@ -15,7 +15,13 @@ import {
   PopoverArrow,
   Stack,
 } from '@chakra-ui/react';
-import { useTable, usePagination, Column } from 'react-table';
+import {
+  useTable,
+  usePagination,
+  useFilters,
+  useGlobalFilter,
+  Column,
+} from 'react-table';
 import {
   BsThreeDots,
   BsChevronLeft,
@@ -38,7 +44,9 @@ import { ErrorResponse } from '@/utils/error';
 import {
   SelectColumnFilter,
   NumberRangeColumnFilter,
+  fuzzyTextFilter,
   FilterMenu,
+  DefaultColumnFilter,
 } from './SupplyRequestTableFilters';
 
 const updateSupplyRequestStatus = async (
@@ -343,20 +351,34 @@ export default function SupplyRequestList({
       {
         Header: 'Last Updated',
         accessor: 'lastUpdated',
+        disableFilters: true,
       },
       {
         Header: 'Created',
         accessor: 'created',
+        disableFilters: true,
       },
       {
         Header: 'Notes',
         accessor: 'note',
+        disableFilters: true,
       },
     ],
     [],
   );
 
   const columnWidths = ['20%', '10%', '20%', '12.5%', '12.5%', '15%', '10%'];
+
+  const filterTypes = {
+    fuzzyText: fuzzyTextFilter,
+  };
+
+  const defaultColumn = useMemo(
+    () => ({
+      Filter: DefaultColumnFilter,
+    }),
+    [],
+  );
 
   const {
     headerGroups,
@@ -369,6 +391,8 @@ export default function SupplyRequestList({
     previousPage,
     pageCount,
     state: { pageIndex },
+    allColumns,
+    setAllFilters,
   } = useTable<DetailedSupplyRequest>(
     {
       columns,
@@ -378,7 +402,11 @@ export default function SupplyRequestList({
         pageSize: 10,
         sortBy: [{ id: 'id', desc: true }],
       },
+      filterTypes,
+      defaultColumn,
     },
+    useFilters,
+    useGlobalFilter,
     usePagination,
   );
 
@@ -420,7 +448,7 @@ export default function SupplyRequestList({
               justifyContent="flex-end"
               marginRight={1}
             />
-            {/* {FilterMenu()} */}
+            <FilterMenu columns={allColumns} setAllFilters={setAllFilters} />
           </Box>
         ))}
       </Box>

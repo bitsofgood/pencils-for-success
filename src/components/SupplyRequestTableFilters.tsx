@@ -1,6 +1,6 @@
 import {
   Button,
-  MenuItem,
+  Box,
   Input,
   Popover,
   PopoverTrigger,
@@ -9,16 +9,26 @@ import {
   PopoverContent,
   PopoverArrow,
   Stack,
-  Heading,
+  HStack,
+  Select,
+  Text,
 } from '@chakra-ui/react';
+
 import { BsFilter } from 'react-icons/bs';
-import React, { useCallback, useContext, ReactElement } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  ReactElement,
+} from 'react';
 import {
   FilterProps,
   FilterValue,
   IdType,
   Row,
-  TableInstance,
+  Filters,
+  ColumnInstance,
 } from 'react-table';
 import { matchSorter } from 'match-sorter';
 import { DetailedSupplyRequest } from '@/pages/api/recipients/[recId]/supply-requests';
@@ -37,13 +47,13 @@ const getMinMax = (
 };
 
 const useActiveElement = () => {
-  const [active, setActive] = React.useState(document.activeElement);
+  const [active, setActive] = useState(document.activeElement);
 
   const handleFocusIn = () => {
     setActive(document.activeElement);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('focusin', handleFocusIn);
     return () => {
       document.removeEventListener('focusin', handleFocusIn);
@@ -53,10 +63,29 @@ const useActiveElement = () => {
   return active;
 };
 
+export function DefaultColumnFilter({
+  column: { filterValue, render, setFilter, preFilteredRows, id },
+}: FilterProps<DetailedSupplyRequest>) {
+  const count = preFilteredRows.length;
+
+  return (
+    <>
+      <Text> {render('Header')}</Text>
+      <Input
+        value={filterValue || ''}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined);
+        }}
+        placeholder={`Search ${count} records...`}
+      />
+    </>
+  );
+}
+
 export function SelectColumnFilter({
   column: { filterValue, render, setFilter, preFilteredRows, id },
 }: FilterProps<DetailedSupplyRequest>) {
-  const options = React.useMemo(() => {
+  const options = useMemo(() => {
     const opts = new Set<any>();
     preFilteredRows.forEach((row) => {
       opts.add(row.values[id]);
@@ -65,23 +94,23 @@ export function SelectColumnFilter({
   }, [id, preFilteredRows]);
 
   return (
-    <Input
-      select
-      type="text"
-      label={render('Header')}
-      value={filterValue || ''}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <MenuItem value="">All</MenuItem>
-      {options.map((option, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <MenuItem key={i} value={option}>
-          {option}
-        </MenuItem>
-      ))}
-    </Input>
+    <>
+      <Text>{render('Header')}</Text>
+      <Select
+        value={filterValue || ''}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined);
+        }}
+      >
+        <option value=""> All </option>
+        {options.map((option, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <option key={i} value={option}>
+            {option}
+          </option>
+        ))}
+      </Select>
+    </>
   );
 }
 
@@ -98,13 +127,10 @@ export function NumberRangeColumnFilter({
     (focusedElement.id === `${id}_1` || focusedElement.id === `${id}_2`);
   return (
     <>
-      {/* <Text htmlFor={id} shrink focused={!!hasFocus}>
-        {render('Header')}
-      </Text> */}
-      <div
+      <Text>{render('Header')}</Text>
+      <HStack
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'baseline',
           paddingTop: 5,
         }}
@@ -121,12 +147,10 @@ export function NumberRangeColumnFilter({
             ]);
           }}
           placeholder={`Min (${min})`}
-          style={{
-            width: '70px',
-            marginRight: '0.5rem',
-          }}
+          size="md"
+          w="30%"
         />
-        to
+        <Text> to </Text>
         <Input
           id={`${id}_2`}
           value={filterValue[1] || ''}
@@ -139,12 +163,10 @@ export function NumberRangeColumnFilter({
             ]);
           }}
           placeholder={`Max (${max})`}
-          style={{
-            width: '70px',
-            marginLeft: '0.5rem',
-          }}
+          size="md"
+          w="30%"
         />
-      </div>
+      </HStack>
     </>
   );
 }
@@ -163,20 +185,16 @@ export function fuzzyTextFilter<T extends Record<string, unknown>>(
 fuzzyTextFilter.autoRemove = (val: any) => !val;
 
 type FilterPageProps<T extends Record<string, unknown>> = {
-  instance: TableInstance<T>;
-  anchorEl?: Element;
-  onClose: () => void;
-  show: boolean;
+  columns: ColumnInstance<T>[];
+  setAllFilters: (
+    updater: Filters<T> | ((filters: Filters<T>) => Filters<T>),
+  ) => void;
 };
 
 export function FilterMenu<T extends Record<string, unknown>>({
-  instance,
-  anchorEl,
-  onClose,
-  show,
+  columns,
+  setAllFilters,
 }: FilterPageProps<T>): ReactElement {
-  const { allColumns, setAllFilters } = instance;
-
   const resetFilters = useCallback(() => {
     setAllFilters([]);
   }, [setAllFilters]);
@@ -186,7 +204,7 @@ export function FilterMenu<T extends Record<string, unknown>>({
       <PopoverTrigger>
         <IconButton
           variant="ghost"
-          aria-label="Edit Supply Request"
+          aria-label="Filters"
           icon={<BsFilter />}
           _focus={{
             outline: 'none',
@@ -196,78 +214,27 @@ export function FilterMenu<T extends Record<string, unknown>>({
       </PopoverTrigger>
       <PopoverContent width="auto">
         <PopoverArrow />
-        <PopoverBody width="auto">
-          <Stack>
-            <Heading>Helllloooo</Heading>
+        <PopoverBody boxSize="md" h="auto">
+          <Stack p="5%">
+            <HStack justifyContent="space-between">
+              <Text> Filters </Text>
+              <Button variant="outline" onClick={resetFilters}>
+                {' '}
+                Reset{' '}
+              </Button>
+            </HStack>
+            <Box>
+              {columns
+                .filter((res) => res.canFilter)
+                .map((column) => (
+                  <Box mb="5%" key={column.id}>
+                    {column.render('Filter')}
+                  </Box>
+                ))}
+            </Box>
           </Stack>
         </PopoverBody>
       </PopoverContent>
     </Popover>
   );
 }
-
-// export function FilterPage<T extends Record<string, unknown>>({
-//   instance,
-//   anchorEl,
-//   onClose,
-//   show,
-// }: FilterPageProps<T>): ReactElement {
-//   const classes = useStyles({});
-//   const { allColumns, setAllFilters } = instance;
-
-//   const onSubmit = useCallback(
-//     (e: FormEvent<HTMLFormElement>) => {
-//       e.preventDefault();
-//       onClose();
-//     },
-//     [onClose],
-//   );
-
-//   const resetFilters = useCallback(() => {
-//     setAllFilters([]);
-//   }, [setAllFilters]);
-
-//   return (
-//     <div>
-//       <Popover
-//         anchorEl={anchorEl}
-//         id="popover-filters"
-//         onClose={onClose}
-//         open={show}
-//         anchorOrigin={{
-//           vertical: 'bottom',
-//           horizontal: 'right',
-//         }}
-//         transformOrigin={{
-//           vertical: 'top',
-//           horizontal: 'right',
-//         }}
-//       >
-//         <div className={classes.columnsPopOver}>
-//           <Typography className={classes.popoverTitle}>Filters</Typography>
-//           <form onSubmit={onSubmit}>
-//             <Button
-//               className={classes.filtersResetButton}
-//               color="primary"
-//               onClick={resetFilters}
-//             >
-//               Reset
-//             </Button>
-//             <div className={classes.grid}>
-//               {allColumns
-//                 .filter((it) => it.canFilter)
-//                 .map((column) => (
-//                   <div key={column.id} className={classes.cell}>
-//                     {column.render('Filter')}
-//                   </div>
-//                 ))}
-//             </div>
-//             <Button className={classes.hidden} type="submit">
-//               &nbsp;
-//             </Button>
-//           </form>
-//         </div>
-//       </Popover>
-//     </div>
-//   );
-// }
