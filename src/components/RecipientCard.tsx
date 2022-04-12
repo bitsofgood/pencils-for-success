@@ -104,7 +104,7 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
       <PopoverTrigger>
         <IconButton
           variant="ghost"
-          aria-label="Edit Supply Request"
+          aria-label="Recipient Actions"
           icon={<BsThreeDotsVertical />}
           _focus={{
             outline: 'none',

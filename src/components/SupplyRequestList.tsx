@@ -92,7 +92,7 @@ function RowContextMenu(requestId: number, recipientId: number) {
       <PopoverTrigger>
         <IconButton
           variant="ghost"
-          aria-label="Edit Supply Request"
+          aria-label="Supply Request Actions"
           icon={<BsThreeDots />}
           _focus={{
             outline: 'none',
@@ -104,18 +104,6 @@ function RowContextMenu(requestId: number, recipientId: number) {
         <PopoverArrow />
         <PopoverBody width="auto">
           <Stack>
-            <Button
-              fontWeight="normal"
-              variant="ghost"
-              color="gray.700"
-              alignItems="center"
-              justifyContent="flex-start"
-              onClick={() => console.log('Edit supply request.')}
-            >
-              <BsPencilFill />
-              <Text ml="3">Edit Supply Request</Text>
-            </Button>
-
             <Button
               fontWeight="normal"
               variant="ghost"
