@@ -17,7 +17,12 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
-import { BsThreeDots, BsPencilFill, BsFillTrashFill } from 'react-icons/bs';
+import {
+  BsThreeDots,
+  BsPencilFill,
+  BsFillTrashFill,
+  BsThreeDotsVertical,
+} from 'react-icons/bs';
 import { DetailedRecipient } from '@/pages/api/chapters/[chapterId]/recipients';
 import {
   RecipientModalContext,
@@ -37,14 +42,14 @@ interface RecipientDetailsProps {
 function RecipientDetails({ recipient }: RecipientDetailsProps) {
   return (
     <Box>
-      <Box my="2">
+      <Box mt="4">
         <Heading size="sm">Contact Information</Heading>
         <Text>{recipient.contactName}</Text>
         <Text>{recipient.email}</Text>
         <Text>{recipient.phoneNumber}</Text>
       </Box>
 
-      <Box my="2">
+      <Box mt="4">
         <Heading size="sm">Address</Heading>
         <Text>{recipient.primaryStreetAddress}</Text>
         {recipient.secondaryStreetAddress && (
@@ -55,7 +60,7 @@ function RecipientDetails({ recipient }: RecipientDetailsProps) {
         </Text>
       </Box>
 
-      <Box my="2">
+      <Box mt="4">
         <Heading size="sm">Username</Heading>
         <Text>{recipient?.recipientUser?.user?.username}</Text>
       </Box>
@@ -100,7 +105,7 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
         <IconButton
           variant="ghost"
           aria-label="Edit Supply Request"
-          icon={<BsThreeDots />}
+          icon={<BsThreeDotsVertical />}
           _focus={{
             outline: 'none',
             boxShadow: 'none',
@@ -117,15 +122,13 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
               color="gray.700"
               alignItems="center"
               justifyContent="flex-start"
-              fontSize="sm"
-              padding="4"
+              fontSize="md"
+              padding="3"
               onClick={onEditRecipient}
             >
               <BsPencilFill />
-              <Text marginLeft={1.5}>Edit Recipient</Text>
+              <Text marginLeft={4}>Edit Recipient</Text>
             </Button>
-
-            <Divider />
 
             <Button
               fontWeight="normal"
@@ -133,12 +136,12 @@ function RecipientContextMenu({ recipient }: RecipientDetailsProps) {
               color="red"
               alignItems="center"
               justifyContent="flex-start"
-              fontSize="sm"
-              padding="4"
+              fontSize="md"
+              padding="3"
               onClick={onDeleteRecipient}
             >
               <BsFillTrashFill />
-              <Text marginLeft={1.5}>Delete Recipient</Text>
+              <Text marginLeft={4}>Delete Recipient</Text>
             </Button>
           </Stack>
         </PopoverBody>
@@ -154,12 +157,15 @@ function RecipientCard({ recipient, onClick, isActive }: RecipientCardProps) {
       borderRadius="lg"
       cursor="pointer"
       bg="white"
-      padding="5"
+      pt="4"
+      pb="4"
+      pl="4"
+      pr="4"
       onClick={() => onClick(recipient.id)}
       fontSize="sm"
     >
-      <Flex>
-        <Heading size="sm" paddingTop="2" marginRight="2">
+      <Flex alignItems="flex-start">
+        <Heading size="sm" paddingTop="2" marginRight="2" mb="0">
           {recipient.name}
         </Heading>
         <Spacer />

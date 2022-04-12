@@ -35,57 +35,53 @@ function RecipientSidePanel({
       bgColor="white"
       py={8}
       px={10}
-      minH="500px"
       boxShadow="lg"
       borderRadius="lg"
       borderWidth="1px"
-      spacing={8}
+      height="fit-content"
     >
-      <Flex>
-        <VStack alignItems="start" spacing="12px">
-          <Image
+      {/* <Image
             borderRadius="md"
             boxSize="220px"
             objectFit="cover"
             src=".../public/logo.png"
-            fallbackSrc="https://via.placeholder.com/150"
+            // fallbackSrc="https://via.placeholder.com/150"
             // src='https://bit.ly/dan-abramov'
             alt="School Image"
-          />
-          <Heading size="md" mb="32px">
-            {recipientName}
-          </Heading>
-          <Heading size="xs" fontWeight={3}>
-            {contactName}
-          </Heading>
-          <Heading size="xs" fontWeight={3}>
-            {email}
-          </Heading>
-          <Heading size="xs" fontWeight={3}>
-            {phoneNumber}
-          </Heading>
-          <Spacer />
-          <Spacer />
-          <Heading size="xs" fontWeight={3}>
-            {streetAddress},
-          </Heading>
-          <Heading size="xs" fontWeight={3}>
-            {city}, {state}, {postalCode}
-          </Heading>
-        </VStack>
-        <Spacer />
-        <Stack position="absolute" bottom="80px" align="center">
-          <Button
-            ml="50px"
-            colorScheme="blue"
-            size="lg"
-            variant="outline"
-            border="2px"
-          >
-            Edit Info
-          </Button>
-        </Stack>
-      </Flex>
+          /> */}
+      <Heading size="md" mb="32px">
+        {recipientName}
+      </Heading>
+      <Heading size="sm">Contact Information</Heading>
+      <Heading size="s" fontWeight={3}>
+        {contactName}
+      </Heading>
+      <Heading size="s" fontWeight={3}>
+        {email}
+      </Heading>
+      <Heading size="s" fontWeight={3}>
+        {phoneNumber}
+      </Heading>
+
+      <Heading size="s" mt="8">
+        Address
+      </Heading>
+      <Heading size="s" fontWeight={3}>
+        {streetAddress},
+      </Heading>
+      <Heading size="s" fontWeight={3}>
+        {city}, {state}, {postalCode}
+      </Heading>
+      <Button
+        colorScheme="blue"
+        size="lg"
+        variant="outline"
+        border="2px"
+        mt="8"
+        width="100%"
+      >
+        Edit Info
+      </Button>
     </Box>
   );
 }

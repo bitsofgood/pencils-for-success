@@ -33,7 +33,6 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
       <Box
         w="100%"
         h="100%"
-        minH="500px"
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -48,18 +47,10 @@ function RecipientDetails({ recipientId }: RecipientDetailsProps) {
   }
 
   return (
-    <Box
-      bg="white"
-      minH="500px"
-      boxShadow="lg"
-      borderRadius="lg"
-      px={10}
-      py={6}
-    >
+    <Box bg="white" boxShadow="lg" borderRadius="lg" px={6} py={6}>
       <SupplyRequestModalProvider>
         <>
           <SupplyRequestModalController />
-          <Heading mb={8}>Supply Requests</Heading>
           <SupplyRequestList recipientId={activeRecipient.id} />
         </>
       </SupplyRequestModalProvider>
