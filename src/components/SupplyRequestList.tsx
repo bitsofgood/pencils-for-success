@@ -14,18 +14,24 @@ import {
   PopoverBody,
   PopoverArrow,
   Stack,
+  Icon,
 } from '@chakra-ui/react';
+
 import {
   useTable,
   usePagination,
   useFilters,
   useGlobalFilter,
+  useSortBy,
   Column,
 } from 'react-table';
+
 import {
   BsThreeDots,
   BsChevronLeft,
   BsChevronRight,
+  BsChevronUp,
+  BsChevronDown,
   BsPencilFill,
   BsTrashFill,
   BsCaretDownFill,
@@ -337,6 +343,7 @@ export default function SupplyRequestList({
         Header: 'Item Name',
         accessor: (row) => row.item.name,
         filter: 'fuzzyText',
+        disableSortBy: true,
       },
       {
         Header: 'Quantity',
@@ -362,6 +369,7 @@ export default function SupplyRequestList({
         Header: 'Notes',
         accessor: 'note',
         disableFilters: true,
+        disableSortBy: true,
       },
     ],
     [],
@@ -407,6 +415,7 @@ export default function SupplyRequestList({
     },
     useFilters,
     useGlobalFilter,
+    useSortBy,
     usePagination,
   );
 
@@ -435,9 +444,20 @@ export default function SupplyRequestList({
                 width={columnWidths[index]}
                 marginLeft={1}
                 marginRight={1}
-                {...column.getHeaderProps()}
+                {...column.getHeaderProps(column.getSortByToggleProps())}
               >
                 {column.render('Header')}
+                {column.isSorted && (
+                  <IconButton
+                    variant="ghost"
+                    aria-label="Previous Page"
+                    w={5}
+                    h={5}
+                    icon={
+                      column.isSortedDesc ? <BsChevronDown /> : <BsChevronUp />
+                    }
+                  />
+                )}
               </Box>
             ))}
             <Box
