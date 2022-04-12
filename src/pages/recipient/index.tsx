@@ -82,8 +82,8 @@ export default function RecipientMapPage({
                   <SupplyRequestList recipientId={recipient?.id || 0} />
                 </Stack>
               </SupplyRequestModalProvider>
+              <RecipientModalController />
             </Grid>
-            <RecipientModalController />
           </RecipientModalProvider>
         </RecipientsProvider>
       </Box>
