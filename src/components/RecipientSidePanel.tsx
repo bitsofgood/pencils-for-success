@@ -1,15 +1,13 @@
+import { Heading, Box, Button } from '@chakra-ui/react';
+import { useContext } from 'react';
+
 import {
-  Heading,
-  Flex,
-  Spacer,
-  Box,
-  VStack,
-  Stack,
-  Button,
-  Image,
-} from '@chakra-ui/react';
+  ModalState,
+  RecipientModalContext,
+} from '@/providers/RecipientModalProvider';
 
 interface RecipientDetailsProps {
+  id: number;
   recipientName: string;
   contactName: string;
   email: string;
@@ -21,6 +19,7 @@ interface RecipientDetailsProps {
 }
 
 function RecipientSidePanel({
+  id,
   recipientName,
   contactName,
   email,
@@ -30,6 +29,16 @@ function RecipientSidePanel({
   state,
   postalCode,
 }: RecipientDetailsProps) {
+  const { setModalState, setActiveRecipient, onOpen } = useContext(
+    RecipientModalContext,
+  );
+
+  const openEditRecipientModal = () => {
+    setActiveRecipient(id);
+    setModalState(ModalState.EditRecipient);
+    onOpen();
+  };
+
   return (
     <Box
       bgColor="white"
@@ -79,6 +88,7 @@ function RecipientSidePanel({
         border="2px"
         mt="8"
         width="100%"
+        onClick={openEditRecipientModal}
       >
         Edit Info
       </Button>

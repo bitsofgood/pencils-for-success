@@ -77,7 +77,7 @@ const EditRecipientModal = () => {
     handleSubmit,
     register,
     reset,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useForm<EditRecipientFormBody>({
     defaultValues: {
       name: activeRecipientInfo?.name,
@@ -144,10 +144,11 @@ const EditRecipientModal = () => {
               {errors.name && errors.name.message}
             </FormErrorMessage>
           </FormControl>
+          {/*
           <FormControl isRequired>
             <FormLabel>Credentials</FormLabel>
           </FormControl>
-          {/* <FormControl
+           <FormControl
             isRequired
             isInvalid={errors.username !== undefined}
             mt={2}
@@ -358,7 +359,6 @@ const EditRecipientModal = () => {
               isLoading={isSubmitting}
               type="submit"
               colorScheme="messenger"
-              disabled={!isDirty}
             >
               Submit
             </Button>
