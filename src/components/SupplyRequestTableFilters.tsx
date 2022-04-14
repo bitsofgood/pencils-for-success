@@ -132,7 +132,7 @@ export function NumberRangeColumnFilter({
           size="sm"
           min={min}
           max={max}
-          value={filterValue[0] ? filterValue[0] : ''}
+          value={filterValue[0] || ''}
         >
           <NumberInputField placeholder={`Min (${min})`} />
           <NumberInputStepper>
@@ -155,7 +155,7 @@ export function NumberRangeColumnFilter({
           size="sm"
           min={min}
           max={max}
-          value={filterValue[1] ? filterValue[1] : ''}
+          value={filterValue[1] || ''}
         >
           <NumberInputField placeholder={`Max (${max})`} />
           <NumberInputStepper>

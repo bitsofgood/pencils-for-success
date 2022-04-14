@@ -349,6 +349,7 @@ export default function SupplyRequestList({
         Header: 'Quantity',
         accessor: 'quantity',
         Filter: NumberRangeColumnFilter,
+        filter: 'between',
       },
       {
         Header: 'Status',
