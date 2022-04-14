@@ -19,7 +19,7 @@ interface EditedUser {
   hash: string;
 }
 
-const CredentialsInformationForm = () => {
+const EditCredentialsAdminForm = () => {
   const { onClose: closePrimaryModal } = useContext(CredentialsModalContext);
   const [loading, setLoading] = useState(false);
   const [editedUsername, setEditedUsername] = useState<string>('');
@@ -30,7 +30,7 @@ const CredentialsInformationForm = () => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm({
+  } = useForm<EditedUser>({
     reValidateMode: 'onChange',
   });
 
@@ -180,4 +180,4 @@ const CredentialsInformationForm = () => {
   );
 };
 
-export default CredentialsInformationForm;
+export default EditCredentialsAdminForm;

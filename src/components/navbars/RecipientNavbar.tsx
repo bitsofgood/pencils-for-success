@@ -24,7 +24,7 @@ ChapterNavbarProps) {
       <HStack spacing="20px">
         <Text fontWeight="bold">{recipientName}</Text>
         <Button size="sm" variant="outline">
-          View Chapter Info
+          View Recipient Info
         </Button>
         <Button size="sm" variant="outline" onClick={handleLogout}>
           Logout

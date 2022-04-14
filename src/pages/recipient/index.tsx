@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { BsPlus } from 'react-icons/bs';
 import { GetServerSideProps } from 'next';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Recipient } from '@prisma/client';
 import { NextIronServerSideContext } from '@/utils/session';
 import { withRecipientAuthPage } from '@/utils/middlewares/auth';
@@ -25,6 +25,11 @@ import NewSupplyRequestModal from '@/components/NewSupplyRequestModal';
 import RecipientSidePanel from '@/components/RecipientSidePanel';
 import prisma from '@/prisma-client';
 import { RecipientsProvider } from '@/providers/RecipientsProvider';
+import {
+  RecipientModalContext,
+  RecipientModalProvider,
+} from '@/providers/RecipientModalProvider';
+import RecipientModalController from '@/components/recipient-modals/RecipientModalController';
 
 interface RecipientDashboardProps {
   user: SessionRecipientUser;
@@ -41,50 +46,45 @@ export default function RecipientMapPage({
   return (
     <>
       <RecipientNavbar recipientName={recipient?.name || ''} />
-      <Box
-        p="10"
-        background="gray.100"
-        position="absolute"
-        top={NAVBAR_HEIGHT}
-        bottom="0"
-        right="0"
-        left="0"
-      >
+      <Box p="10" background="gray.100">
         <RecipientsProvider chapterId={recipient?.chapterId || 0}>
-          <Grid templateColumns="300px 1fr" my="5" gap="10">
-            <RecipientSidePanel
-              recipientName={recipient?.name || ''}
-              contactName={recipient?.contactName || ''}
-              email={recipient?.email || ''}
-              phoneNumber={recipient?.phoneNumber || ''}
-              streetAddress={recipient?.primaryStreetAddress || ''}
-              city={recipient?.city || ''}
-              state={recipient?.state || ''}
-              postalCode={recipient?.postalCode || ''}
-            />
-            <SupplyRequestModalProvider>
-              <Stack
-                bgColor="white"
-                py={8}
-                px={10}
-                minH="500px"
-                boxShadow="lg"
-                borderRadius="lg"
-                borderWidth="1px"
-                spacing={8}
-              >
-                <Flex align="center" justifyContent="space-between">
-                  <Heading>Supply Requests</Heading>
-                  <Button leftIcon={<BsPlus />} onClick={onOpen}>
-                    Add New
-                  </Button>
-                </Flex>
-                {recipientError && <Text>{recipientError}</Text>}
-                <SupplyRequestModalController />
-                <SupplyRequestList recipientId={recipient?.id || 0} />
-              </Stack>
-            </SupplyRequestModalProvider>
-          </Grid>
+          <RecipientModalProvider>
+            <Grid templateColumns="300px 1fr" my="" gap="10">
+              <RecipientSidePanel
+                id={recipient?.id || 0}
+                recipientName={recipient?.name || ''}
+                contactName={recipient?.contactName || ''}
+                email={recipient?.email || ''}
+                phoneNumber={recipient?.phoneNumber || ''}
+                streetAddress={recipient?.primaryStreetAddress || ''}
+                city={recipient?.city || ''}
+                state={recipient?.state || ''}
+                postalCode={recipient?.postalCode || ''}
+              />
+              <SupplyRequestModalProvider>
+                <Stack
+                  bgColor="white"
+                  py={8}
+                  px={10}
+                  minH="500px"
+                  boxShadow="lg"
+                  borderRadius="lg"
+                  borderWidth="1px"
+                >
+                  <Flex align="center" justifyContent="space-between">
+                    <Heading fontSize="24">Supply Requests</Heading>
+                    <Button leftIcon={<BsPlus />} onClick={onOpen}>
+                      Add New
+                    </Button>
+                  </Flex>
+                  {recipientError && <Text>{recipientError}</Text>}
+                  <SupplyRequestModalController />
+                  <SupplyRequestList recipientId={recipient?.id || 0} />
+                </Stack>
+              </SupplyRequestModalProvider>
+              <RecipientModalController />
+            </Grid>
+          </RecipientModalProvider>
         </RecipientsProvider>
       </Box>
       {recipient && (

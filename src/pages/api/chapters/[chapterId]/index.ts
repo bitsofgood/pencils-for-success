@@ -1,8 +1,8 @@
 import { Prisma, Chapter, ChapterUser, User } from '@prisma/client';
 import type { NextApiResponse } from 'next';
 
-import { SessionChapterUser } from './login';
-import { SessionAdminUser } from '../admin/login';
+import { SessionChapterUser } from '../login';
+import { SessionAdminUser } from '../../admin/login';
 
 import { ErrorResponse, serverErrorHandler } from '@/utils/error';
 import { NextIronRequest } from '@/utils/session';
@@ -36,7 +36,8 @@ async function handler(
   const user = req.session.get('user') as SessionAdminUser & SessionChapterUser;
 
   // Verify the provided id is a valid chapter id
-  if (Number.isNaN(chapterId)) {
+  //   console.log(Number.parseInt(chapterId as string, 10));
+  if (!Number.parseInt(chapterId as string, 10)) {
     return res.status(400).json({
       message: 'Please provide a valid chapter id',
       error: true,
@@ -191,7 +192,6 @@ async function handler(
       } catch (e) {
         return serverErrorHandler(e, res);
       }
-
     case 'GET':
       try {
         // Check if the provided chapter user exists

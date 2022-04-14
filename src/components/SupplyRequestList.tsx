@@ -108,7 +108,7 @@ function RowContextMenu(requestId: number, recipientId: number) {
       <PopoverTrigger>
         <IconButton
           variant="ghost"
-          aria-label="Edit Supply Request"
+          aria-label="Supply Request Actions"
           icon={<BsThreeDots />}
           _focus={{
             outline: 'none',
@@ -120,18 +120,6 @@ function RowContextMenu(requestId: number, recipientId: number) {
         <PopoverArrow />
         <PopoverBody width="auto">
           <Stack>
-            <Button
-              fontWeight="normal"
-              variant="ghost"
-              color="gray.700"
-              alignItems="center"
-              justifyContent="flex-start"
-              onClick={() => console.log('Edit supply request.')}
-            >
-              <BsPencilFill />
-              <Text ml="3">Edit Supply Request</Text>
-            </Button>
-
             <Button
               fontWeight="normal"
               variant="ghost"
@@ -431,11 +419,11 @@ export default function SupplyRequestList({
             backgroundColor="#F0F0F0"
             textColor="#858585"
             borderRadius="8px"
-            paddingTop={4}
-            paddingBottom={4}
+            paddingTop={3}
+            paddingBottom={3}
             paddingLeft={6}
             paddingRight={6}
-            marginBottom={6}
+            marginBottom={4}
             {...headerGroup.getHeaderGroupProps()}
           >
             {headerGroup.headers.map((column, index) => (
@@ -474,7 +462,13 @@ export default function SupplyRequestList({
         ))}
       </Box>
 
-      <Box width="100%" display="flex" flexDirection="column">
+      <Box
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        height="60vh"
+        overflowY="scroll"
+      >
         {page.map((row) => {
           prepareRow(row);
           return (
@@ -482,13 +476,13 @@ export default function SupplyRequestList({
               width="100%"
               display="flex"
               flexDirection="row"
-              border="2px solid #AEAEAE"
+              border="1.5px solid rgba(0, 0, 0, 0.1)"
               borderRadius="8px"
-              paddingTop={4}
-              paddingBottom={4}
+              paddingTop={2}
+              paddingBottom={2}
               paddingLeft={6}
               paddingRight={6}
-              marginBottom={6}
+              marginBottom={4}
               key={row.original.id}
             >
               {row.cells.map((cell, index) => (
@@ -524,7 +518,13 @@ export default function SupplyRequestList({
         })}
       </Box>
 
-      <Flex justifyContent="space-between" m={4} alignItems="center">
+      <Flex
+        justifyContent="space-between"
+        pt={2}
+        pb={0}
+        alignItems="center"
+        borderTop="1.5px solid rgba(0, 0, 0, 0.1)"
+      >
         <Flex alignItems="center">
           <Text mr={8}>
             Showing{' '}
